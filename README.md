@@ -142,10 +142,10 @@ $.each(groucho.getActivities('browsing'), function (key, record) {
 ### Collections
 Because records are returned as an object, you can directly access them once retrieved. Example...
 ```javascript
-var myActivities = groucho.getActivities('my_activity');
+var myActivities = groucho.getActivities('browsing');
 
 // Iterate and do something neat.
-$.each(myActivities, function (key, record) {
+$.each(myBrowsing, function (key, record) {
   someComparison(record.bundle, record.taxonomy, record.language);
 });
 ```
@@ -153,7 +153,7 @@ However, because they're objects simple operations can be annoying to work with 
 a library like [Underscore](http://underscorejs.org) or [Lo-Dash](http://lodash.com). To avoid any more
 dependencies the following class and methods were necessary and are available...
 ```javascript
-var myResults = new groucho.Collection(groucho.getActivities('my_activity')),
+var myResults = new groucho.Collection(groucho.getActivities('browsing')),
     // Use the keys from this group.
     resultsKeys = myResults.keys(),
     // Use the tracking objects in this group, the same as directly calling the
@@ -321,6 +321,16 @@ They will be stored and come back like this; filtered down to the group specifie
     "myProperty" : "this-property-value"
   }
 }
+```
+You can work with those activites via included functions...
+```javascript
+var myActivities = groucho.getActivities('my_activity');
+
+// Iterate and do something neat.
+$.each(myActivities, function (key, record) {
+  // Use a stored property the URL and the timestamp.
+  someComparison(record.property, record.url, key.split('.')[2]);
+});
 ```
 
 ## Tests?
