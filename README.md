@@ -135,21 +135,12 @@ groucho.config = {
 To write your own features, grab browsing history and work with it like this...
 ```javascript
 $.each(groucho.getActivities('browsing'), function (key, record) {
-  someComparison(record.url);
+  someComparison(record.property, record.url);
 });
 ```
 
 ### Collections
-Because records are returned as an object, you can directly access them once retrieved. Example...
-```javascript
-var myActivities = groucho.getActivities('browsing');
-
-// Iterate and do something neat.
-$.each(myBrowsing, function (key, record) {
-  someComparison(record.bundle, record.taxonomy, record.language);
-});
-```
-However, because they're objects simple operations can be annoying to work with if you don't use
+Because records are returned as objects simple array type operations can be annoying to work with if you don't use
 a library like [Underscore](http://underscorejs.org) or [Lo-Dash](http://lodash.com). To avoid any more
 dependencies the following class and methods were necessary and are available...
 ```javascript
