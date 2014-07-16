@@ -3,7 +3,7 @@ Groucho
 
 **Know more about your anonymous users.**
 
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top.
+This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 7k.
 
 ### [Full documentation](DOCS.md)
 
@@ -19,8 +19,8 @@ Include the dependencies on your pages, add groucho configs if you want to devia
 ```html
 <head>
   <script src="jquery.min.js"></script>
-  <script src="jstorage.min.js"></script>
   <script src="json2.js"></script>
+  <script src="jstorage.min.js"></script>
   <script src="data-layer-helper.js"></script>
   <script src="groucho.min.js"></script>
   <script>
@@ -141,4 +141,4 @@ This library uses QUnit via Phantom for unit testing with Grunt.
 
 ### Thanks.
 If you've read this far you might have some suggestions. Feel free to send those or make a merge request.
-Find something wrong with these docs? Please send that along as well.
+Find something wrong with these docs? Please send that along as well. Why groucho? Because we can tell who you are with those silly glasses on.
