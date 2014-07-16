@@ -38,31 +38,6 @@
     ok((typeof groucho === "object"), 'Namespace object is an object');
   });
 
-  test('Collection class', 3, function () {
-    var testObj = {
-      'thing': 'blah',
-      'another': 5,
-      'final': 'yup'
-    },
-    testAry = ['thing', 'another', 'final'],
-    stuff = new groucho.Collection(testObj);
-
-    ok(
-      stuff.size() === 3,
-      'Collection size function reports correctly'
-    );
-    deepEqual(
-      stuff.keys(),
-      testAry.sort(),
-      'Collection keys function reports correctly'
-    );
-    deepEqual(
-      stuff.get(),
-      testObj,
-      'Collection getter return correctly'
-    );
-  });
-
 
   module('User');
 
@@ -91,12 +66,11 @@
 
   module('Tracking');
 
-  test('Tracking scafolding', function() {
+  test('Scafolding', function() {
     var functions = [
       'getFavoriteTerms',
       'getActivities',
       'createActivity',
-      'Collection'
     ];
     expect(functions.length);
 
@@ -109,20 +83,21 @@
     }
   });
 
-  test('Tracking activities', 5, function() {
-    var myResults = new groucho.Collection(groucho.getActivities('browsing'));
+  test('Pageview activities', 5, function() {
+    var myResults = groucho.getActivities('browsing');
 
-    ok(
-      myResults.size() === 1,
+    strictEqual(
+      myResults.length,
+      1,
       'Page load activity recorded'
     );
     strictEqual(
-      myResults.get()[myResults.keys()[0]].url.split('?')[0].slice(-12),
+      myResults[0].url.split('?')[0].slice(-12),
       'groucho.html',
       'Recorded url is present and correct'
     );
     strictEqual(
-      myResults.get()[myResults.keys()[0]][groucho.config.taxonomyProperty].my_types['13'],
+      myResults[0][groucho.config.taxonomyProperty].my_types['13'],
       'Some Tag',
       'Taxonomy term hit record is present on first tracking activity record'
     );
@@ -132,102 +107,126 @@
     history.pushState('', 'New Page Title', window.location + '#another-page');
     // Manually create another browsing record.
     groucho.trackHit();
-    myResults = new groucho.Collection(groucho.getActivities('browsing'));
+    myResults = groucho.getActivities('browsing');
     strictEqual(
-      myResults.size(),
+      myResults.length,
       2,
       'Second activity recorded'
     );
     ok(
-      !myResults.get()[myResults.keys()[1]][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
+      !myResults[1][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
       'Second activity does not include removed taxonomy term.'
     );
 
   });
 
-  test('Favorites', 14, function () {
-    var favData = new groucho.Collection(groucho.getFavoriteTerms()),
-        termFavData = new groucho.Collection(favData.get()[favData.keys()[0]]),
-        favDataMyTypes = new groucho.Collection(groucho.getFavoriteTerms('my_types')),
-        termFavDataMyTypes = new groucho.Collection(favDataMyTypes.get()[favDataMyTypes.keys()[0]]),
-        favDataMyTypesAll = new groucho.Collection(groucho.getFavoriteTerms('my_types', true)),
-        termFavDataMyTypesAll = new groucho.Collection(favDataMyTypesAll.get()[favDataMyTypesAll.keys()[0]]),
-        favDataAll = new groucho.Collection(groucho.getFavoriteTerms('*', true)),
-        termFavDataAll = new groucho.Collection(favDataAll.get()[favDataAll.keys()[1]]);
 
-    // Default request.
+  module('Favorites');
+
+  test('Default', 7, function () {
+    var favData = groucho.getFavoriteTerms();
+
     deepEqual(
-      favData.keys(),
+      Object.prototype.toString.call(favData),
+      "[object Object]",
+      'Default function call returns an object'
+    );
+    deepEqual(
+      Object.keys(favData),
       [ "my_category", "my_types" ],
       'All vocabs listed within favorites default function call'
     );
     strictEqual(
-      typeof termFavData.get()[termFavData.keys()[0]].count,
+      typeof favData.my_types[0].count,
       'number',
       'Count number present on at least first favorite term'
     );
     strictEqual(
-      termFavData.get()[termFavData.keys()[0]].count,
+      favData.my_category[0].count,
       2,
       'Count number on first favorite term is two'
-    );
-    ok(
-      !favData.get().my_types.hasOwnProperty(14),
-      'Second term is not returned'
-    );
-
-    // One vocab requested.
-    deepEqual(
-      favDataMyTypes.keys(),
-      ["my_types"],
-      'Only requested vocab listed with argument function call'
     );
     strictEqual(
-      termFavDataMyTypes.get()[termFavDataMyTypes.keys()[0]].count,
+      favData.my_category.length,
+      2,
+      'Both terms from first vocab are included in results'
+    );
+    strictEqual(
+      favData.my_types.length,
+      1,
+      'Only one term from second vocab is included in results'
+    );
+    ok(
+      favData.my_types[0].id !== 14,
+      'Second term from second vocab is not returned'
+    );
+  });
+
+  test('One vocab', 4, function () {
+    var favDataMyTypes = groucho.getFavoriteTerms('my_types');
+
+    deepEqual(
+       Object.prototype.toString.call(favDataMyTypes),
+      "[object Array]",
+      'Vocab argument function call returns an array'
+    );
+    strictEqual(
+      favDataMyTypes[0].count,
       2,
       'Count number on first favorite term is two'
     );
     deepEqual(
-      termFavDataMyTypes.get(),
-      { "13": { "count" : 2, "name" : "Some Tag" } },
+      favDataMyTypes,
+      [{ "id" : "13", "count" : 2, "name" : "Some Tag" }],
       'Correct term is returned within requested vocab function call'
     );
     strictEqual(
-      termFavDataMyTypes.size(),
+      Object.keys(favDataMyTypes).length,
       1,
       'Only one term is returned within requested vocab function call'
     );
+  });
 
-    // All data requested within one vocab.
+  test('One vocab, all data', 4, function () {
+    var favDataMyTypesAll = groucho.getFavoriteTerms('my_types', true);
+
     deepEqual(
-      favDataMyTypesAll.keys(),
-      [ "my_types" ],
-      'Only requested vocab listed with two argument function call'
+       Object.prototype.toString.call(favDataMyTypesAll),
+      "[object Array]",
+      'Requested vocab two argument function call returns an array'
     );
     strictEqual(
-      termFavDataMyTypesAll.size(),
+      favDataMyTypesAll.length,
       2,
       'Both terms are returned with two argument function call'
     );
     strictEqual(
-      termFavDataMyTypesAll.get()[termFavDataMyTypesAll.keys()[0]].count,
+      favDataMyTypesAll[0].count,
       2,
       'Count number on first favorite term is two'
     );
     strictEqual(
-      termFavDataMyTypesAll.get()[termFavDataMyTypesAll.keys()[1]].count,
+      favDataMyTypesAll[1].count,
       1,
       'Count number on second favorite term is one'
     );
+  });
 
-    // All data requested for all vocabs.
+  test('All vocabs, all data', 3, function () {
+    var favDataAll = groucho.getFavoriteTerms('*', true);
+
     deepEqual(
-      favDataAll.keys(),
+      Object.keys(favDataAll),
       [ "my_category", "my_types" ],
       'All vocabs listed within favorites all data, all vocabs function call'
     );
     strictEqual(
-      termFavDataAll.size(),
+      favDataAll.my_category.length,
+      2,
+      'Both terms in first vocab present'
+    );
+    strictEqual(
+      favDataAll.my_types.length,
       2,
       'Both terms in second vocab present'
     );

@@ -86,6 +86,71 @@
 
 
   /**
+   * Put a tracking record into storage.
+   * @todo Could allow TTL as an optional parameter.
+   *
+   * @param {string} group
+   *   Name of the tracking group to store the data as.
+   * @param {string} data
+   *   Blob of data to store. Recommended as JSON.stringify(myDataObject).
+   */
+  groucho.createActivity = function (group, data) {
+
+    var results = new groucho.getActivities(group),
+        n = new Date().getTime(),
+        diff = 0;
+
+    // Log event, first.
+    $.jStorage.set('track.' + group + '.' + n, data);
+
+    // Ensure space limit is maintained.
+    if (results.length > groucho.config.trackExtent) {
+      diff = results.length - groucho.config.trackExtent;
+
+      // Kill off oldest extra tracking activities.
+      for (var i=0; i<=diff; i++) $.jStorage.deleteKey(results[i]._key);
+    }
+  };
+
+
+  /**
+   * Access records of a specific tracking group.
+   *
+   * @param {string} group
+   *   Name of the tracking group to return values for.
+   *
+   * return {array}
+   *   List of tracking localStorage entries.
+   */
+  groucho.getActivities = function (group) {
+
+    var results = $.jStorage.index(),
+        returnVals = [],
+        record,
+        i;
+
+    for (i in results) {
+      // Remove unwanted types and return records.
+      if (group) {
+        if (results[i].indexOf('track.' + group) === 0) {
+          record = JSON.parse($.jStorage.get(results[i]));
+          record._key = results[i];
+          returnVals.push(record);
+        }
+      }
+      else {
+        // Collect and return all.
+        record = JSON.parse($.jStorage.get(results[i]));
+        record._key = results[i];
+        returnVals.push(record);
+      }
+    }
+
+    return returnVals;
+  };
+
+
+  /**
    * Use browsing history and find user's top terms.
    *
    * @param {string} vocab
@@ -93,15 +158,13 @@
    * @param {boolean} returnAll
    *   Whether or not to return all term hit counts.
    *
-   * return {object}
-   *   List of vocabs with top taxonomy term and count.
+   * return {array}
+   *   List of vocabs with top taxonomy terms and counts.
    */
   groucho.getFavoriteTerms = function (vocab, returnAll) {
 
     var results = groucho.getActivities('browsing'),
-        trackTags = groucho.config.taxonomyProperty,
-        output = false,
-        topTerms = {},
+        termProp = groucho.config.taxonomyProperty,
         pages = [],
         returnTerms = {},
         vocName;
@@ -110,12 +173,11 @@
     returnAll = returnAll || false;
     vocab = vocab || '*';
 
-
     /**
-     * Abstraction for reuse, DRY.
+     * Assemble term counts.
      */
-    function collectTerms (vocName, terms) {
-      for (var tid in terms) {
+    function collectTerms (vocName, i) {
+      for (var tid in results[i][termProp][vocName]) {
         // Non-existant vocab.
         if (!returnTerms.hasOwnProperty(vocName)) {
           returnTerms[vocName] = {};
@@ -127,204 +189,88 @@
         }
         else {
           // New, add it on and create count.
-          returnTerms[vocName][tid] = { name: terms[tid], count: 1 };
+          returnTerms[vocName][tid] = { 'name': results[i][termProp][vocName][tid], 'count': 1 };
+        }
+      }
+
+      if (!returnAll) {
+        filterByCount(vocName);
+      }
+    }
+
+    /**
+     * Remove lesser count terms.
+     */
+    function filterByCount (vocName) {
+      var topCount = 0;
+
+      // Walk through terms, to find top count.
+      for (var tid in returnTerms[vocName]) {
+        // Find top term hit count.
+        if (returnTerms[vocName][tid].count >= topCount) {
+          topCount = returnTerms[vocName][tid].count;
+        }
+        else {
+          delete returnTerms[vocName][tid];
         }
       }
     }
 
-    // Only bother to build it once if no arguments were passed.
-    if (typeof trackTags !== 'undefined') {
-      // Walk through tracking records.
-      for (var key in results) {
+    /**
+     * Term returns should be an array.
+     */
+    function makeArray (vocabObject) {
+      var arr = [];
+      for (var i in vocabObject) {
+        vocabObject[i].id = i;
+        arr.push(vocabObject[i]);
+      }
+      return arr;
+    }
+
+    // No data will be available.
+    if (typeof termProp !== 'undefined') {
+      // Walk through all tracking records.
+      for (var i in results) {
         // Only count each URL once.
-        if (typeof pages[results[key].url] === 'undefined' && results[key].hasOwnProperty(trackTags)) {
+        if (typeof pages[results[i].url] === 'undefined' && results[i].hasOwnProperty(termProp)) {
           // For de-duping URL hits.
-          pages[results[key].url] = true;
+          pages[results[i].url] = true;
 
           if (vocab === '*') {
-            // Walk through all vocabs.
-            for (vocName in results[key][trackTags]) {
-              collectTerms(vocName, results[key][trackTags][vocName]);
+            // Walk through all vocabs on record.
+            for (vocName in results[i][termProp]) {
+              collectTerms(vocName, i);
             }
           }
           else {
             // Just use requested vocabulary.
-            if (results[key][trackTags].hasOwnProperty(vocab)) {
-              collectTerms(vocab, results[key][trackTags][vocab]);
+            if (results[i][termProp].hasOwnProperty(vocab)) {
+              collectTerms(vocab, i);
             }
           }
 
         }
       }
 
-      // Reduce to just top terms per vocab.
-      if (!returnAll) {
-        // Walk through vocabs.
+      if (vocab === '*') {
         for (vocName in returnTerms) {
-          var topCount = 0;
-
-          // Walk through terms, to find top count.
-          for (var tidForCount in returnTerms[vocName]) {
-            // Find top term hit count.
-            if (returnTerms[vocName][tidForCount].count > topCount) {
-              topCount = returnTerms[vocName][tidForCount].count;
-            }
-          }
-          // Walk through terms, again, to collect top terms.
-          for (var tidForTop in returnTerms[vocName]) {
-            // Find top term hit count.
-            if (returnTerms[vocName][tidForTop].count === topCount) {
-              if (!topTerms.hasOwnProperty(vocName)) {
-                topTerms[vocName] = {};
-              }
-              topTerms[vocName][tidForTop] = returnTerms[vocName][tidForTop];
-            }
-          }
+          // Return arrays of terms.
+          returnTerms[vocName] = makeArray(returnTerms[vocName]);
         }
 
-        output = topTerms;
+        // Set favorites on page if no arguments were passed.
+        if (returnAll === false) {
+          groucho.favoriteTerms = returnTerms;
+        }
       }
       else {
-        output = returnTerms;
-      }
-
-    }
-
-    // Set favorites if no arguments were passed.
-    if (vocab === '*' && returnAll === false) {
-      groucho.favoriteTerms = output;
-    }
-
-    return output;
-  };
-
-
-  /**
-   * Access records of a specific tracking group.
-   *
-   * @param {string} group
-   *   Name of the tracking group to return values for.
-   *
-   * return {object}
-   *   Key/value list of tracking localStorage entries.
-   */
-  groucho.getActivities = function (group) {
-
-    var results = $.jStorage.index(),
-        returnVals = {},
-        i = 0;
-
-    if (group) {
-      // Remove unwanted types and return records.
-      for (i in results) {
-        if (results[i].indexOf('track.' + group) === 0) {
-          returnVals[results[i]] = JSON.parse($.jStorage.get(results[i]));
-        }
-      }
-    }
-    else {
-      // Collect and return all.
-      for (i in results) {
-        returnVals[results[i]] = JSON.parse($.jStorage.get(results[i]));
+        // // Return array of terms in requested vocabulary.
+        returnTerms = makeArray(returnTerms[vocab]);
       }
     }
 
-    return returnVals;
-  };
-
-
-  /**
-   * Put a tracking record into storage.
-   * @todo Could allow TTL as an optional parameter.
-   *
-   * @param {string} group
-   *   Name of the tracking group to store the data as.
-   * @param {string} data
-   *   Blob of data to store. Recommended as JSON.stringify(myDataObject).
-   */
-  groucho.createActivity = function (group, data) {
-
-    var results = new groucho.Collection(groucho.getActivities(group)),
-        keys = results.keys(),
-        n = new Date().getTime(),
-        diff = 0;
-
-    // Log event, first.
-    $.jStorage.set('track.' + group + '.' + n, data);
-
-    // Ensure space limit is maintained.
-    if (results.size() > groucho.config.trackExtent) {
-      diff = results.size() - groucho.config.trackExtent;
-
-      // Kill off oldest extra tracking activities.
-      for (var i=0; i<=diff; i++) $.jStorage.deleteKey(keys[i]);
-    }
-  };
-
-
-  /**
-   * Utility...
-   * (Avoiding depdencies)
-   */
-
-  /**
-   * Handy object type for record retrieval and use.
-   * Namespaced for easy use to extend the module.
-   *
-   * param {object}
-   *   Set of records to gain methods on.
-   */
-  groucho.Collection = function (obj) {
-
-    // Private vars.
-    var keyList = null,
-        length = null;
-
-    // Public functions.
-    return {
-
-      /**
-       * Get the property keys of an object.
-       *
-       * param {object} obj
-       *   Oject to be inspected.
-       * return {array}
-       *   List of object properties.
-       */
-      keys : function() {
-        if (keyList === null) {
-          keyList = [];
-          for (var key in obj) keyList.push(key);
-        }
-        return keyList.sort();
-      },
-
-      /**
-       * Get the size of an object.
-       *
-       * param {object} obj
-       *   Oject to be inspected.
-       * return {number}
-       *   Size of the object.
-       */
-      size : function () {
-        if (obj == null) return 0;
-        if (length === null) {
-          length = this.keys().length;
-        }
-        return length;
-      },
-
-      /**
-       * Access the object from this instance.
-       *
-       * return {object}
-       *   Use what you started with.
-       */
-      get : function () {
-        return obj;
-      }
-    };
+    return returnTerms;
   };
 
 })(jQuery);
