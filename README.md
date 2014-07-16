@@ -55,28 +55,9 @@ Include the dependencies on your pages, add groucho configs if you want to devia
 ```
 ## Examples
 
-### Basic User Info
+### Favorites
 
-Make use of basic info about your users.
-```javascript
-(function ($) {
-  $(document).ready(function(){
-    // Ensure data availability.
-    groucho.userDeferred = groucho.userDeferred || $.Deferred();
-
-    groucho.userDeferred.done(function () {
-      // Act on a user property.
-      var origin = JSON.parse($.jStorage.get('user.origin'));
-      adjustSomething(origin.url);
-    }
- });
-})(jQuery);
-```
-_All following examples don't include setup shown above._
-
-### Favorites!
-
-Make use of your visitors' favorite tags/terms.
+React to your visitors' favorite tags/terms.
 ```javascript
 var myFavs = groucho.getFavoriteTerms('my_vocab');
 if (myFavs.length > 0) {
@@ -89,15 +70,16 @@ Generate favorites once terms and use results a few times on the page.
 ```javascript
 groucho.getFavoriteTerms();
 
-// Enforce a threshold and react.
+// Set a form filter, but enforce a threshold.
 if (groucho.favoriteTerms.my_vocab[0].count >= 3) {
-  $('select.my-filter').val(groucho.favoriteTerms.my_vocab[0].id);
+  $('form.personalize select.my-vocab').val(groucho.favoriteTerms.my_vocab[0].name);
+  $('form.personalize').submit();
 }
 
 // Trim a list to personalize.
 $('ul.peronalized li').each(function (index, element) {
   // Data attribute does not match user's favorite.
-  if ($(this).attr('data-my_vocab') !== groucho.favoriteTerms.my_vocab[0].name) {
+  if ($(this).attr('data-my_vocab') !== groucho.favoriteTerms.my_vocab[0].id) {
     $(this).addClass('hide');
   }
 });
@@ -134,6 +116,23 @@ $('.my-special-links').bind('click', function (e) {
 // Later...
 myActivites = groucho.getActivities('my_activity');
 ```
+
+### Basic User Info
+
+Wait for data availability and user basic user info.
+```javascript
+(function ($) {
+  $(document).ready(function(){
+    groucho.userDeferred = groucho.userDeferred || $.Deferred();
+    groucho.userDeferred.done(function () {
+      // Act on a user property.
+      var origin = JSON.parse($.jStorage.get('user.origin'));
+      adjustSomething(origin.url);
+    }
+ });
+})(jQuery);
+```
+_Previous examples simplified._
 
 ### This is just a taste, [full docs](DOCS.md).
 
