@@ -9,10 +9,10 @@ This library uses in-browser localStorage to track people. Client-side activitie
 
 ### Dependencies
 1. [jQuery](http://jquery.com) - easy to use JS framework.
-1. [jStorage](http://jstorage.info) - localStorage abstraction library.
- * [JSON2](https://github.com/douglascrockford/JSON-js) - browser compatible JSON methods (if you care).
-1. [dataLayer](https://developers.google.com/tag-manager/android/v3/reference/com/google/tagmanager/DataLayer) - client-side meta data standard. [See below.](#meta-data-output)
-1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties.
+1. [jStorage](http://jstorage.info) - localStorage abstraction library [30k].
+ * [JSON2](https://github.com/douglascrockford/JSON-js) - browser compatible JSON methods (if you care) [17k].
+1. dataLayer - meta data standard.
+1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties [2k].
 
 ## Installation
 Include the dependencies on your pages, add groucho configs if you want to deviate from defaults, and output your data layer attributes. Your HTML should look a bit like this...

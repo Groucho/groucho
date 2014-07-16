@@ -5,23 +5,22 @@ Groucho Docs
  * [Local storage](#local-storage) - data storage basics
  * [User data space](#user-space) - standardized and guaranteed
  * [Page meta data](#meta-data-output) - available properties
-* __[Pageview tracking](#activity-tracking)__
- * [Collections](#collections) - included helper class
+* __[Pageview tracking](#pageview-tracking)__
+ * Rich user browsing history
 * __[Favorite terms](#favorite-terms)__
  * Aggregated profiling at the ready
 * __[Custom tracking](#custom-tracking)__
  * Stash and retrieve your own activities with ease!
 
 ## Getting Started
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top.
+This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 7k.
 
 ### Dependencies
 1. [jQuery](http://jquery.com) - easy to use JS framework.
-1. [jStorage](http://jstorage.info) - localStorage abstraction library.
- * [JSON2](https://github.com/douglascrockford/JSON-js) - browser compatible JSON methods (if you care).
+1. [jStorage](http://jstorage.info) - localStorage abstraction library [30k].
+ * [JSON2](https://github.com/douglascrockford/JSON-js) - browser compatible JSON methods (if you care) [17k].
 1. [dataLayer](https://developers.google.com/tag-manager/android/v3/reference/com/google/tagmanager/DataLayer) - client-side meta data standard. [See below.](#meta-data-output)
-1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties.
-
+1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties [2k].
 
 ### Local Storage
 This library uses in-browser key/value localStorage with the convenient jStorage abstraction library.
@@ -148,7 +147,13 @@ When returned by `groucho.getActivities()` activities will be an array for conve
   "_key": "track.my_activity.398649600",
   "url" : "http://www.mysite.com/some-great-page",
   "type" : "blog-post",
-  "myProperty" : "my value"
+  "pageValue" : "1"
+},
+{
+  "_key": "track.my_activity.398649999",
+  "url" : "http://www.mysite.com/another-page",
+  "type" : "product",
+  "pageValue" : "5"
 }]
 ```
 
@@ -252,13 +257,13 @@ var myActivities = groucho.getActivities('my_activity')
 ```
 ```json
 [{
-    "_key": "track.my_activity.398649600",
-    "linkText" : "Link text from page",
-    "myProperty" : "the-property-value"
-  }, {
-    "_key" : "track.my_activity.398649999",
-    "linkText" : "Other link text",
-    "myProperty" : "this-property-value"
+  "_key": "track.my_activity.398649600",
+  "linkText" : "Link text from page",
+  "myProperty" : "the-property-value"
+}, {
+  "_key" : "track.my_activity.398649999",
+  "linkText" : "Other link text",
+  "myProperty" : "this-property-value"
 }]
 ```
 You can work with activites and creaet your own tracking intelligence functions...
