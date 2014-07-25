@@ -3,7 +3,7 @@ Groucho
 
 **Know more about your anonymous users.**
 
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 7k.
+This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the 'dataLayer.' This is useful for working with heavily cached, non-user-unique pages and adding __personalized front-end features__ on top. Size: 7k.
 
 ### [Full documentation](DOCS.md)
 
@@ -64,9 +64,9 @@ if (myFavs.length > 0) {
   $('input.pre-fill.my-vocab').val(myFavs[0].name);
 }
 ```
-_Results can include multiple terms if their hit counts are equal. Examples just use the first._
+_Results can include multiple terms if their hit counts are equal. These examples just use the first._
 
-Generate favorites once terms and use results a few times on the page.
+Generate favorites once then use results a few times on the page.
 ```javascript
 groucho.getFavoriteTerms();
 
@@ -91,12 +91,12 @@ Use page view activity tracking to dig through history.
 ```javascript
 var history = groucho.getActivities('browsing'),
     links = $('a.promoted'),
-    count;
+    count = 0;
 for (var i in history) {
   // Determine if they've seen a page with a specific property.
   if (history[i].hasOwnProperty('myProperty') count++;
 }
-// Visual alter relevant content.
+// Visual alter relevant content via behavior.
 if (count < 2) links.addClass('feature');
 else if (count > 2 && count < 7) links.addClass('reduce');
 else links.addClass('hide');
@@ -141,4 +141,4 @@ This library uses QUnit via Phantom for unit testing with Grunt.
 
 ### Thanks.
 If you've read this far you might have some suggestions. Feel free to send those or make a merge request.
-Find something wrong with these docs? Please send that along as well. Why groucho? Because we can tell who you are with those silly glasses on.
+Find something wrong with these docs? Please send that along as well. Why groucho? ...because we can tell who you are with those silly glasses on.
