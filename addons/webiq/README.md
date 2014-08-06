@@ -6,9 +6,10 @@ Groucho : WebIQ
 This add on uses Groucho to track events revealing to the level of experience users have with web and computer norms. For example: using Ctrl+F on-page or tab in forms a good sign, while having to delete in forms much or doubleclicking on web pages is likely an confused, or drunk, user.
 
 ## Installation
-Add the addon in Groucho config, then alter your behavior settings.
+Register the addon within Groucho config, then alter your behavior settings.
 ```html
 <head>
+  <script src="groucho/addons/webiq/webiq.min.js"></script>
   <script>
   groucho.config.addons.webiq = {
     'startScore': 0,

@@ -20,8 +20,6 @@ var groucho = window.groucho || {};
     ],
     'addons': {}
   };
-  // Addons namespace.
-  groucho.config.addons = groucho.config.addons || [];
   // Data availability.
   groucho.userDeferred = groucho.userDeferred || $.Deferred();
   // Make favorites "static".
@@ -132,7 +130,7 @@ var groucho = window.groucho || {};
         matchable = new RegExp("^track." + group + ".", "g"),
         record;
 
-    for (var i = 0; i < results.length; i++) {
+    for (i in results) {
       // Remove unwanted types and return records.
       if (group) {
         if (results[i].match(matchable) !== null) {
