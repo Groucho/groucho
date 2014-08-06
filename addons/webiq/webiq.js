@@ -5,11 +5,11 @@
 
 (function ($) {
 
-	// Setup.
+  // Setup.
   window.groucho = window.groucho || {};
-	groucho.config = groucho.config || {};
-	groucho.config.addons = groucho.config.addons || {};
-	// Defaults.
+  groucho.config = groucho.config || {};
+  groucho.config.addons = groucho.config.addons || {};
+  // Defaults.
   groucho.config.addons.webiq = {
     'startScore': 0,
     'behaviors': {
