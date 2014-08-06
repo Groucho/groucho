@@ -5,11 +5,11 @@
 
 (function ($) {
 
-  // Setup.
+	// Setup.
   window.groucho = window.groucho || {};
-  groucho.config = groucho.config || {};
-  groucho.config.addons = groucho.config.addons || {};
-  // Defaults.
+	groucho.config = groucho.config || {};
+	groucho.config.addons = groucho.config.addons || [];
+	// Defaults.
   groucho.config.addons.webiq = {
     'startScore': 0,
     'behaviors': {
@@ -28,7 +28,6 @@
       groucho.addons.webiq[groucho.config.addons.webiq.behavior[i]].call();
     }
   });
-
 
   /**
    * How good is this user at internetting.
@@ -50,16 +49,10 @@
   groucho.addons.webiq.formsDelete = function () {
     $('input').keypress(function (e) {
       if (e.which === 8 || e.which === 46) {
-        // Allow a threshold.
-        groucho.config.addons.webiq.behaviors.stash++;
-        if (groucho.config.addons.webiq.behaviors.formsDelete.stash >=
-          groucho.config.addons.webiq.behaviors.formsDelete.threshold) {
-
-          groucho.createActivity('webiq', { 'type': this.name });
+        groucho.createActivity('webiq', { 'type': this.name });
 
 console.log("Executed: " + this.name);
 
-        }
       }
     });
   };
