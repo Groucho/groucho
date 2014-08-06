@@ -20,8 +20,6 @@ var groucho = window.groucho || {};
     ],
     'addons': {}
   };
-  // Addons namespace.
-  groucho.config.addons = groucho.config.addons || [];
   // Data availability.
   groucho.userDeferred = groucho.userDeferred || $.Deferred();
   // Make favorites "static".

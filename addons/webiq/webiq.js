@@ -8,7 +8,7 @@
 	// Setup.
   window.groucho = window.groucho || {};
 	groucho.config = groucho.config || {};
-	groucho.config.addons = groucho.config.addons || [];
+	groucho.config.addons = groucho.config.addons || {};
 	// Defaults.
   groucho.config.addons.webiq = {
     'startScore': 0,
@@ -28,6 +28,7 @@
       groucho.addons.webiq[groucho.config.addons.webiq.behavior[i]].call();
     }
   });
+
 
   /**
    * How good is this user at internetting.
