@@ -13,7 +13,7 @@
   groucho.config.addons.webiq = {
     'startScore': 0,
     'behaviors': {
-      'formsDelete': { 'increment': '-1' },
+      'formsDelete': { 'increment': '-1', 'theshold': 3, 'stash': 0 },
       'formsTab': { 'increment': '2' },
       'findOnPage': { 'increment': '4' },
       'doubleClick': { 'increment': '.5' }
@@ -48,10 +48,16 @@
   groucho.addons.webiq.formsDelete = function () {
     $('input').keypress(function (e) {
       if (e.which === 8 || e.which === 46) {
-        groucho.createActivity('webiq', { 'type': this.name });
+        // Allow a threshold.
+        groucho.config.addons.webiq.behaviors.stash++;
+        if (groucho.config.addons.webiq.behaviors.formsDelete.stash >=
+          groucho.config.addons.webiq.behaviors.formsDelete.threshold) {
+
+          groucho.createActivity('webiq', { 'type': this.name });
 
 console.log("Executed: " + this.name);
 
+        }
       }
     });
   };
