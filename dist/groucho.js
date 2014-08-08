@@ -1,4 +1,4 @@
-/*! Groucho - v0.1.0 - 2014-07-15
+/*! Groucho - v0.1.0 - 2014-08-07
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2014 Josh Lind; Licensed MIT */
 
@@ -191,10 +191,6 @@
           returnTerms[vocName][tid] = { 'name': results[i][termProp][vocName][tid], 'count': 1 };
         }
       }
-
-      if (!returnAll) {
-        filterByCount(vocName);
-      }
     }
 
     /**
@@ -203,13 +199,16 @@
     function filterByCount (vocName) {
       var topCount = 0;
 
-      // Walk through terms, to find top count.
+      // Find top count.
       for (var tid in returnTerms[vocName]) {
         // Find top term hit count.
         if (returnTerms[vocName][tid].count >= topCount) {
           topCount = returnTerms[vocName][tid].count;
         }
-        else {
+      }
+      // Get those with top count.
+      for (tid in returnTerms[vocName]) {
+        if (returnTerms[vocName][tid].count < topCount) {
           delete returnTerms[vocName][tid];
         }
       }
@@ -252,6 +251,14 @@
         }
       }
 
+      // Filter to top terms if desired.
+      if (!returnAll) {
+        for (vocName in results[i][termProp]) {
+          filterByCount(vocName);
+        }
+      }
+
+      // Format output.
       if (vocab === '*') {
         for (vocName in returnTerms) {
           // Return arrays of terms.

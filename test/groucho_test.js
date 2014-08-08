@@ -123,6 +123,8 @@
 
   module('Favorites');
 
+// @todo Need a test for ascending counts in favorites list.
+
   test('Default', 7, function () {
     var favData = groucho.getFavoriteTerms();
 
