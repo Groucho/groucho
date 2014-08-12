@@ -17,6 +17,7 @@
       'formsTab': { 'increment': '2' },
       'findOnPage': { 'increment': '4' },
       'doubleClick': { 'increment': '.5' }
+      'repeatPage': { 'increment': '3' }
     }
   };
 
@@ -96,6 +97,21 @@ console.log("Executed: " + this.name);
   groucho.addons.webiq.doubleClick = function () {
     $(document).dblclick(function() {
       groucho.createActivity('webiq', { 'type': this.name });
+
+console.log("Executed: " + this.name);
+
+    });
+  };
+
+
+  /**
+   * Listen: Clicking a link to the same page.
+   */
+  groucho.addons.webiq.repeatPage = function () {
+    $('a').click(function() {
+      if (this.href = location.href) {
+        groucho.createActivity('webiq', { 'type': this.name });
+      }
 
 console.log("Executed: " + this.name);
 
