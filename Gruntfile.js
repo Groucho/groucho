@@ -25,6 +25,13 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.js'
       },
     },
+    connect: {
+      server: {
+        options: {
+          port: 8085
+        }
+      }
+    },
     uglify: {
       options: {
         banner: '<%= banner %>',
@@ -79,11 +86,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-qunit-istanbul');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['connect', 'jshint', 'qunit', 'clean', 'concat', 'uglify']);
+
+  // Test task.
+  grunt.registerTask('test', ['connect', 'jshint', 'qunit']);
 
 };
