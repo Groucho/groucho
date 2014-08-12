@@ -15,4 +15,4 @@ before_script:
 script: grunt test --verbose
 
 after_script:
-  - cat lcov.info | codeclimate
+  - codeclimate < report/lcov.info
