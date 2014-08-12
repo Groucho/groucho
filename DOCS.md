@@ -25,6 +25,7 @@ This library uses in-browser localStorage to track people. Client-side activitie
 ### Local Storage
 This library uses in-browser key/value localStorage with the convenient jStorage abstraction library.
 _See the [jStorage](http://jstorage.info) for more info._
+
 ```javascript
 // Set a value.
 $.jStorage.set('myThing', 'neato');
@@ -33,6 +34,7 @@ $.jStorage.set('myThing', 'neato');
 var myVal = $.jStorage.get('myThing');
 ```
 For ease of use you should stash data in JSON format, duh.
+
 ```javascript
 var myObj = {
   'thing': 'something',
@@ -49,6 +51,7 @@ alert(myVal.thing + ' = ' + (myObj.cost * myObj.percent * .01));
 
 ### User Space
 One of the basic features is just knowing where a user came from. Find that info organized like this...
+
 ```json
 {
   "user.origin" : {
@@ -64,6 +67,7 @@ One of the basic features is just knowing where a user came from. Find that info
 ```
 To stash a single user property it's **recommended** to use a `user.property` key format.
 To access user storage, it's **highly recommended** that you ensure the object is available. There can be a very small amount of time associated with jQuery + jStorage setup, additionally this keeps JS include order irrelevant which is good for robustness.
+
 ```javascript
 (function ($) {
   $(document).ready(function(){
@@ -85,6 +89,7 @@ In order to do fun and fancy things on the client-side you need easy access to m
 If you're using a CMS outputing data might be super easy, eg: Drupal [module](https://www.drupal.org/project/datalayer), WordPress [plugin](https://wordpress.org/plugins/mokusiga-google-tag-manager/), [plugin](http://wordpress.org/plugins/gtm-data-layer/).
 
 You can output whatever you want, but to work with Groucho you'll need it to look something like this...
+
 ```javascript
 dataLayer = [{
   "language": "en",
@@ -106,6 +111,7 @@ dataLayer = [{
 NOTE: The structure of taxonomy output is particularly important to work with existing groucho functions, vocabularies must be listed on a single property, with tags beneath that with an ID and name property. As you might expect-- getting user favorites will not work unless the taxonomy property is listed in the stored properties.
 
 If you use Google Analytics or Google Tag Manager at all, you should access your dataLayer properties via the Data Layer Helper. You can't be certain the values you care about are in the first array position.
+
 ```javascript
 var myHelper = new DataLayerHelper(dataLayer);
 alert(myHelper.get('type'));
@@ -113,6 +119,7 @@ alert(myHelper.get('type'));
 
 ## Pageview Tracking
 A user's browsing history is stored per page view. They exist in jStorage as key/value records...
+
 ```json
 {
   "track.browsing.398649600" : {
@@ -123,6 +130,7 @@ A user's browsing history is stored per page view. They exist in jStorage as key
 }
 ```
 You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored along with other configurations by setting configs on the `groucho` object. The tracking extent will be separately used for each type of activity stored.
+
 ```javascript
 window.groucho = window.groucho || {};
 groucho.config = {
@@ -136,12 +144,14 @@ groucho.config = {
 }
 ```
 To write your own features, grab browsing history and work with it like this...
+
 ```javascript
 $.each(groucho.getActivities('browsing'), function (key, record) {
   someComparison(record.property, record.url);
 });
 ```
 When returned by `groucho.getActivities()` activities will be an array for convenience.
+
 ```json
 [{
   "_key": "track.my_activity.398649600",
@@ -160,10 +170,12 @@ When returned by `groucho.getActivities()` activities will be an array for conve
 ## Favorite Terms
 There's no point in locally stashing user activity unless you use it. One great use is infering a person's favorite terms from their rich browsing history records. Because we know how many times a person has seen specific tags we can return counts.
 _NOTE: A vocabulary can have more than one term returned if the hit count is the same._ You can request it, easy as pie...
+
 ```javascript
 var favTerms = groucho.getFavoriteTerms();
 ```
 Here's what you get back...
+
 ```json
 {
   "my_category" : [
@@ -178,6 +190,7 @@ Here's what you get back...
 Once favorites have been built once (with no arguments) it becomes available via `groucho.favoriteTerms` or you run the function again to regenerate. This is useful if you'd like to build favorites once per page load and keep reusing it.
 
 You can also grab it by initially generating favorites on-page load and accessing the vocab you're interested in later. You might use this with some kind of on-page AJAX reaction...
+
 ```javascript
 (function ($) {
   $(document).ready(function(){
@@ -189,6 +202,7 @@ You can also grab it by initially generating favorites on-page load and accessin
 })(jQuery);
 ```
 Later in another script...
+
 ```javascript
 var vocab = 'my_category',
     myThreshold = 3;
@@ -204,6 +218,7 @@ if (groucho.favoriteTerms[vocab] !== 'undefined') {
 
 ### Specific Returns
 Limit favorites to just the vocabulary you care about with an argument.
+
 ```javascript
 var favTerms = groucho.getFavoriteTerms('my_category');
 ```
@@ -215,6 +230,7 @@ var favTerms = groucho.getFavoriteTerms('my_category');
 }]
 ```
 You can also request **all the data** for just one vocab...
+
 ```javascript
 var seenTerms = groucho.getFavoriteTerms('my_category', true);
 ```
@@ -225,6 +241,7 @@ var seenTerms = groucho.getFavoriteTerms('my_category', true);
 ]
 ```
 Use a wildcard argument to see **all terms in all vocabs** from pages seen by the user.
+
 ```javascript
 var allSeenTerms = groucho.getFavoriteTerms('*', true);
 ```
@@ -243,6 +260,7 @@ var allSeenTerms = groucho.getFavoriteTerms('*', true);
 
 ## Custom Tracking!
 You can register your own tracking activities like this...
+
 ```javascript
 // Track your own activities.
 $('.my-special-links').bind('click', function (e) {
@@ -252,6 +270,7 @@ $('.my-special-links').bind('click', function (e) {
 });
 ```
 They will be stored as key/value in jStorage. But can be returned as an array, filtered down to the group specified.
+
 ```javascript
 var myActivities = groucho.getActivities('my_activity')
 ```
@@ -267,6 +286,7 @@ var myActivities = groucho.getActivities('my_activity')
 }]
 ```
 You can work with activites and creaet your own tracking intelligence functions...
+
 ```javascript
 function myActivitySmarts () {
   var myActivities = groucho.getActivities('my_activity');

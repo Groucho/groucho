@@ -16,6 +16,7 @@ This library uses in-browser localStorage to track people. Client-side activitie
 
 ## Installation
 Include the dependencies on your pages, add groucho configs if you want to deviate from defaults, and output your data layer attributes. Your HTML should look a bit like this...
+
 ```html
 <head>
   <script src="jquery.min.js"></script>
@@ -58,15 +59,19 @@ Include the dependencies on your pages, add groucho configs if you want to devia
 ### Favorites
 
 React to your visitors' favorite tags/terms.
+
 ```javascript
 var myFavs = groucho.getFavoriteTerms('my_vocab');
 if (myFavs.length > 0) {
+  // Pre-fill form field.
   $('input.pre-fill.my-vocab').val(myFavs[0].name);
 }
 ```
+
 _Results can include multiple terms if their hit counts are equal. These examples just use the first._
 
 Generate favorites once then use results a few times on the page.
+
 ```javascript
 groucho.getFavoriteTerms();
 
@@ -76,7 +81,7 @@ if (groucho.favoriteTerms.my_vocab[0].count >= 3) {
   $('form.personalize').submit();
 }
 
-// Trim a list to personalize.
+// Prune a list to personalize.
 $('ul.peronalized li').each(function (index, element) {
   // Data attribute does not match user's favorite.
   if ($(this).attr('data-my_vocab') !== groucho.favoriteTerms.my_vocab[0].id) {
@@ -88,6 +93,7 @@ $('ul.peronalized li').each(function (index, element) {
 ### Pageview Tracking
 
 Use page view activity tracking to dig through history.
+
 ```javascript
 var history = groucho.getActivities('browsing'),
     links = $('a.promoted'),
@@ -96,7 +102,7 @@ for (var i in history) {
   // Determine if they've seen a page with a specific property.
   if (history[i].hasOwnProperty('myProperty') count++;
 }
-// Visual alter relevant content via behavior.
+// Visually weight relevant content via past behavior.
 if (count < 2) links.addClass('feature');
 else if (count > 2 && count < 7) links.addClass('reduce');
 else links.addClass('hide');
@@ -105,6 +111,7 @@ else links.addClass('hide');
 ## Custom Activies
 
 Register your own tracking activities like this...
+
 ```javascript
 // Track your own activities.
 $('.my-special-links').bind('click', function (e) {
@@ -120,12 +127,13 @@ myActivites = groucho.getActivities('my_activity');
 ### Basic User Info
 
 Wait for data availability and user basic user info.
+
 ```javascript
 (function ($) {
   $(document).ready(function(){
     groucho.userDeferred = groucho.userDeferred || $.Deferred();
     groucho.userDeferred.done(function () {
-      // Act on a user property.
+      // Act on a specific user property.
       var origin = JSON.parse($.jStorage.get('user.origin'));
       adjustSomething(origin.url);
     }
