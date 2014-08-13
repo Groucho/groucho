@@ -1,4 +1,4 @@
-Groucho
+Groucho [![Build Status](https://travis-ci.org/tableau-mkt/groucho.svg?branch=master)](https://travis-ci.org/tableau-mkt/groucho)
 ==============
 
 **Know more about your anonymous users.**
