@@ -43,13 +43,13 @@
 
     // Stash the session entry point.
     if (!$.jStorage.get('user.session_origin') || !document.referrer) {
-      $.jStorage.set('user.session_origin', JSON.stringify(hit));
+      $.jStorage.set('user.session_origin', hit);
     }
 
     // Stash the deep origin.
     if (!$.jStorage.get('user.origin')) {
       hit.referrer = document.referrer;
-      $.jStorage.set('user.origin', JSON.stringify(hit));
+      $.jStorage.set('user.origin', hit);
     }
 
     // Reliable availability.
@@ -81,7 +81,7 @@
     }
 
     // Stash tracking in localStorage.
-    groucho.createActivity('browsing', JSON.stringify(trackVals));
+    groucho.createActivity('browsing', trackVals);
   };
 
 
@@ -92,11 +92,11 @@
    * @param {string} group
    *   Name of the tracking group to store the data as.
    * @param {string} data
-   *   Blob of data to store. Recommended as JSON.stringify(myDataObject).
+   *   Data to store-- string, int, object.
    */
   groucho.createActivity = function (group, data) {
 
-    var results = new groucho.getActivities(group),
+    var results = groucho.getActivities(group),
         n = new Date().getTime(),
         diff = 0;
 
@@ -104,9 +104,8 @@
     $.jStorage.set('track.' + group + '.' + n, data);
 
     // Ensure space limit is maintained.
-    if (results.length > groucho.config.trackExtent) {
+    if (results.length >= groucho.config.trackExtent) {
       diff = results.length - groucho.config.trackExtent;
-
       // Kill off oldest extra tracking activities.
       for (var i=0; i<=diff; i++) $.jStorage.deleteKey(results[i]._key);
     }
@@ -126,21 +125,23 @@
 
     var results = $.jStorage.index(),
         returnVals = [],
-        record,
-        i;
+        record;
 
-    for (i in results) {
+    for (var i = 0; i < results.length; i++) {
       // Remove unwanted types and return records.
       if (group) {
         if (results[i].indexOf('track.' + group) === 0) {
-          record = JSON.parse($.jStorage.get(results[i]));
+          // Collect relevant.
+          record = $.jStorage.get(results[i]);
+          // Move key to property.
           record._key = results[i];
           returnVals.push(record);
         }
       }
       else {
         // Collect and return all.
-        record = JSON.parse($.jStorage.get(results[i]));
+        record = $.jStorage.get(results[i]);
+        // Move key to property.
         record._key = results[i];
         returnVals.push(record);
       }

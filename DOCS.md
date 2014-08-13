@@ -33,7 +33,7 @@ $.jStorage.set('myThing', 'neato');
 // Get it later on some other page.
 var myVal = $.jStorage.get('myThing');
 ```
-For ease of use you should stash data in JSON format, duh.
+You can can store objects just as easily as strings.
 
 ```javascript
 var myObj = {
@@ -41,10 +41,10 @@ var myObj = {
   'cost': 3,
   'percent': 27
 };
-$.jStorage.set('mySave', JSON.stringify(myObj));
+$.jStorage.set('mySave', myObj);
 
 // Later access and use.
-var myVal = JSON.parse($.jStorage.get('mySave'));
+var myVal = $.jStorage.get('mySave');
 alert(myVal.thing + ' = ' + (myObj.cost * myObj.percent * .01));
 // Output: something = 0.81
 ```
@@ -76,7 +76,7 @@ To access user storage, it's **highly recommended** that you ensure the object i
 
     groucho.userDeferred.done(function () {
       // Act on a user property.
-      var origin = JSON.parse($.jStorage.get('user.origin'));
+      var origin = $.jStorage.get('user.origin');
       doSomethingNeato(origin.url);
     }
  });

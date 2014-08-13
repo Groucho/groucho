@@ -47,12 +47,12 @@
 
     // @todo Could perform param slice first or parse the URL for real.
     strictEqual(
-      JSON.parse(origin).url.split('?')[0].slice(-12),
+      origin.url.split('?')[0].slice(-12),
       'groucho.html',
       'Origin should be test file.'
     );
     strictEqual(
-      JSON.parse(session_origin).url.split('?')[0].slice(-12),
+      session_origin.url.split('?')[0].slice(-12),
       'groucho.html',
       'Session origin should be test file.'
     );
@@ -83,8 +83,10 @@
     }
   });
 
-  test('Pageview activities', 5, function() {
-    var myResults = groucho.getActivities('browsing');
+  test('Pageview activities', function() {
+    var myResults = groucho.getActivities('browsing'),
+        fakeData = { 'meainingLess': 'info' },
+        timeout = 0;
 
     strictEqual(
       myResults.length,
@@ -117,6 +119,41 @@
       !myResults[1][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
       'Second activity does not include removed taxonomy term.'
     );
+
+    // Limited tracking extext.
+    for (var i = 0; i < (groucho.config.trackExtent + 3); i++) {
+      // Prevent clobbering.
+      timeout = i * 150;
+      stop();
+      setTimeout(function () {
+          groucho.createActivity('fake_thing', fakeData);
+        start();
+      }, timeout);
+    }
+
+    // Wait till records are created.
+    stop();
+    setTimeout(function () {
+
+      strictEqual(
+        groucho.getActivities('fake_thing').length,
+        groucho.config.trackExtent,
+        'Tracking activities are kept within the configured extent'
+      );
+      ok(
+        groucho.getActivities().length > groucho.config.trackExtent,
+        'All activies together are more than extent due to multiple types'
+      );
+
+      // Return all activities.
+      strictEqual(
+        groucho.getActivities().length,
+        $.jStorage.index().length,
+        'All storage items returned with general activity call'
+      );
+
+      start();
+    }, 1500);
 
   });
 

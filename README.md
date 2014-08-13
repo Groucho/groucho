@@ -134,7 +134,7 @@ Wait for data availability and user basic user info.
     groucho.userDeferred = groucho.userDeferred || $.Deferred();
     groucho.userDeferred.done(function () {
       // Act on a specific user property.
-      var origin = JSON.parse($.jStorage.get('user.origin'));
+      var origin = $.jStorage.get('user.origin');
       adjustSomething(origin.url);
     }
  });

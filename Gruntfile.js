@@ -44,7 +44,27 @@ module.exports = function(grunt) {
       }
     },
     qunit: {
-      files: ['test/*.html']
+      options: {
+        '--web-security': 'no',
+        coverage: {
+          disposeCollector: true,
+          baseUrl: 'http://localhost:<%= connect.server.options.port %>/',
+          src: ['src/groucho.js'],
+          instrumentedFiles: '.temp/',
+          lcovReport: 'report/',
+          linesThresholdPct: 85,
+          statementsThresholdPct: 85,
+          functionsThresholdPct: 85,
+          branchesThresholdPct: 80
+        }
+      },
+      all: {
+        options: {
+          urls: ['1.5.2', '1.6.4', '1.7.2', '1.8.3', '1.9.1', '1.10.2', '1.11.1', '2.0.3', '2.1.1'].map(function(version) {
+            return 'test/groucho.html?jquery=' + version;
+          })
+        }
+      }
     },
     jshint: {
       gruntfile: {
