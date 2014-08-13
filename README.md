@@ -3,7 +3,7 @@
 
 **Know more about your anonymous users.**
 
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the 'dataLayer.' This is useful for working with heavily cached, non-user-unique pages and adding __personalized front-end features__ on top. Size: 7k.
+This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the 'dataLayer.' This is useful for working with heavily cached, non-user-unique pages and adding __personalized front-end features__ on top. Size: 2k.
 
 ### [Full documentation](DOCS.md)
 

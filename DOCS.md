@@ -13,7 +13,7 @@ Groucho Docs
  * Stash and retrieve your own activities with ease!
 
 ## Getting Started
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 7k.
+This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 2k.
 
 ### Dependencies
 1. [jQuery](http://jquery.com) - easy to use JS framework.
