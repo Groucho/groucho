@@ -6,7 +6,7 @@ node_js:
 addons:
   code_climate:
     repo_token:
-      secure: "WKYh25zNJb5q/OdNFXbVOt9LM3PZbRBghvXwMFsg467RdSSjRG1NIO7dplfvGg0t01yLIwTsyNCw64/CCArh9ojIzqzMXDcknMEwz7+j1KRR+m/r0a+x7wUO18uaD31zmfK66iY8eangAIpuKQtP8OiwvRYMP6NTpuPMXv+KHu0="
+      secure: "EZY4en1Bho7rGlseJZdNZ/hz1GvtF+jYAnVAhgFVA4A5qaClqQ1yjHhVyDWgig+tNk52IMeyyfxjwsf/ta8+UyC6dK5rsM6t8XhfoNPWWFMpFF34U5BS4geFsyuSqh0Z2xD/nn+pNg3+kc6QLgsw6Lg1gq4e6KnlpqGmc5oqLbc="
 
 before_script:
   - npm install -g grunt-cli
