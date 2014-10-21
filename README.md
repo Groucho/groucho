@@ -94,7 +94,7 @@ $('ul.peronalized li').each(function (index, element) {
 
 ### Pageview Tracking
 
-Use page view activity tracking to dig through history.
+Use page view activity tracking to dig through history and alter UX.
 
 ```javascript
 var history = groucho.getActivities('browsing'),
@@ -104,10 +104,10 @@ for (var i in history) {
   // Determine if they've seen a page with a specific property.
   if (history[i].hasOwnProperty('myProperty') count++;
 }
-// Visually weight relevant content via past behavior.
-if (count < 2) links.addClass('feature');
-else if (count > 2 && count < 7) links.addClass('reduce');
-else links.addClass('hide');
+// Visually weight content via past behavior.
+if (count < 2) links.addClass('featured');
+else if (count >= 2 && count < 7) links.addClass('reduced');
+else links.addClass('hidden');
 ```
 
 ## Custom Activies
