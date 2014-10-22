@@ -106,6 +106,7 @@
 
     // Alter page meta data for testable activity results.
     delete dataLayer[0][groucho.config.taxonomyProperty].my_types[14];
+    dataLayer[0][groucho.config.taxonomyProperty].my_category['27'] = 'Yet Another';
     history.pushState('', 'New Page Title', window.location + '#another-page');
     // Manually create another browsing record.
     groucho.trackHit();
@@ -261,8 +262,8 @@
     );
     strictEqual(
       favDataAll.my_category.length,
-      2,
-      'Both terms in first vocab present'
+      3,
+      'Both terms in first vocab present, plus extra'
     );
     strictEqual(
       favDataAll.my_types.length,
