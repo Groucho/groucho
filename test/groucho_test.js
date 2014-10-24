@@ -189,7 +189,7 @@
     strictEqual(
       favData.my_category.length,
       2,
-      'Both terms from first vocab are included in results'
+      'Both, but only two, terms from first vocab are included in results'
     );
     strictEqual(
       favData.my_types.length,

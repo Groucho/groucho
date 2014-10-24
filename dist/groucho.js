@@ -1,4 +1,4 @@
-/*! Groucho - v0.1.0 - 2014-08-13
+/*! Groucho - v0.1.0 - 2014-10-23
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2014 Josh Lind; Licensed MIT */
 
@@ -254,7 +254,7 @@
 
       // Filter to top terms if desired.
       if (!returnAll) {
-        for (vocName in results[i][termProp]) {
+        for (vocName in returnTerms) {
           filterByCount(vocName);
         }
       }
