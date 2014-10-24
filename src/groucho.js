@@ -255,7 +255,7 @@
 
       // Filter to top terms if desired.
       if (!returnAll) {
-        for (vocName in results[i][termProp]) {
+        for (vocName in returnTerms) {
           filterByCount(vocName);
         }
       }
