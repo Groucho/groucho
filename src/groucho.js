@@ -215,7 +215,8 @@ var groucho = window.groucho || {};
       }
       // Get those with top count.
       for (tid in returnTerms[vocName]) {
-        if (returnTerms[vocName][tid].count < topCount) {
+        if (returnTerms[vocName][tid].count < topCount ||
+            returnTerms[vocName][tid].count <= threshold) {
           delete returnTerms[vocName][tid];
         }
       }

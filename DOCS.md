@@ -7,7 +7,7 @@ Groucho Docs
 * __[Pageview tracking](#pageview-tracking)__
  * Rich user browsing history
 * __[Favorite terms](#favorite-terms)__
- * Aggregated profiling at the ready _(skip to the goodies)_
+ * Aggregated profiling at the ready (skip here for the goodies)
 * __[Custom tracking](#custom-tracking)__
  * Stash and retrieve your own activities with ease!
 * [Local storage](#local-storage) - data storage basics

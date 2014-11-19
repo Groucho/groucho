@@ -63,12 +63,12 @@ _Tested with jQuery: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2
 React to your visitors' favorite tags/terms.
 
 ```javascript
-var taxonomy = 'my_category',
-    myFavs = groucho.getFavoriteTerms(taxonomy);
+var vocab = 'my_vocab',
+    myFavs = groucho.getFavoriteTerms(vocab);
 
 if (myFavs.length > 0) {
-  // Pre-fill any marked form elements and the right taxonomy.
-  $('input.pre-fill.' + taxonomy).each(function() {
+  // Pre-fill any form elements marked for pre-fill and the right vocab.
+  $('input.pre-fill.' + vocab).each(function() {
     $(this).val(myFavs[0].name);
   });
 }
@@ -81,20 +81,19 @@ Generate all favorites once, then use results several times on the page.
 ```javascript
 groucho.getFavoriteTerms();
 
-if (groucho.favoriteTerms.hasOwnProperty('my_category')) {
+if (groucho.favoriteTerms.hasOwnProperty('my_vocab')) {
+
+  // Set a form filter automatically.
+  $('form.personalize select.my-vocab').val(groucho.favoriteTerms.my_vocab[0].name);
+  $('form.personalize').submit();
+
   // Prune a list to personalize.
   $('ul.peronalized li').each(function() {
     // Data attribute does not match user's favorite.
-    if ($(this).data('my_category_term') !== groucho.favoriteTerms.my_category[0].id) {
+    if ($(this).attr('data-my_vocab') !== groucho.favoriteTerms.my_vocab[0].id) {
       $(this).addClass('hide');
     }
   });
-
-  // Set an AJAX form filter automatically.
-  $('form.personalize select.my_category').val(
-    groucho.favoriteTerms.my_category[0].name
-  );
-  $('form.personalize').submit();
 }
 ```
 

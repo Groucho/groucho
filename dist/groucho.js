@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*! Groucho - v0.2.1 - 2014-12-15
+=======
+/*! Groucho - v0.2.1 - 2014-11-19
+>>>>>>> establish a global favorites threhold config #10
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2014 Josh Lind; Licensed MIT */
 
@@ -7,11 +11,21 @@ var groucho = window.groucho || {};
 // Functions in need of a little jQuery.
 (function ($, groucho) {
 
+<<<<<<< HEAD
   // Defaults.
   groucho.config = groucho.config || {
     'taxonomyProperty': 'tags',
     'trackExtent': 50,
     'favThreshold': 1,
+=======
+  // Namespace.
+  var groucho = window.groucho || {};
+  // Defaults
+  groucho.config = groucho.config || {
+    'taxonomyProperty': 'tags',
+    'trackExtent': 25,
+    'favThreshold': 2,
+>>>>>>> establish a global favorites threhold config #10
     'trackProperties': [
       'title',
       'type',
@@ -165,7 +179,11 @@ var groucho = window.groucho || {};
    * return {array}
    *   List of vocabs with top taxonomy terms and counts.
    */
+<<<<<<< HEAD
   groucho.getFavoriteTerms = function getFavoriteTerms(vocab, returnAll, threshold) {
+=======
+  groucho.getFavoriteTerms = function (vocab, returnAll, threshold) {
+>>>>>>> establish a global favorites threhold config #10
 
     var results = groucho.getActivities('browsing'),
         termProp = groucho.config.taxonomyProperty,
@@ -214,7 +232,8 @@ var groucho = window.groucho || {};
       }
       // Get those with top count.
       for (tid in returnTerms[vocName]) {
-        if (returnTerms[vocName][tid].count < topCount) {
+        if (returnTerms[vocName][tid].count < topCount ||
+            returnTerms[vocName][tid].count <= threshold) {
           delete returnTerms[vocName][tid];
         }
       }
