@@ -1,7 +1,7 @@
 {
   "name": "groucho",
   "title": "Groucho",
-  "description": "Know more about your anonymous users.",
+  "description": "Know more about your anonymous users. In-browser storage tracking tool.",
   "version": "0.2.1",
   "homepage": "https://github.com/tableau-mkt/groucho",
   "author": {

@@ -206,11 +206,11 @@ Later in another script...
 
 ```javascript
 var vocab = 'my_category',
-    myThreshold = 3;
+    extraThreshold = 3;
 
 if (groucho.favoriteTerms[vocab] !== 'undefined') {
   // Honor some trigger threshold.
-  if (groucho.favoriteTerms[vocab][0].count >= myThreshold) {
+  if (groucho.favoriteTerms[vocab][0].count >= extraThreshold) {
     // React to user profiling!
     doSomeCoolAjaxThing(groucho.favoriteTerms[vocab][0].id);
   }
@@ -221,7 +221,7 @@ if (groucho.favoriteTerms[vocab] !== 'undefined') {
 Limit favorites to just the vocabulary you care about with an argument.
 
 ```javascript
-var favTerms = groucho.getFavoriteTerms('my_category');
+var favCategoryTerms = groucho.getFavoriteTerms('my_category');
 ```
 ```json
 [{
@@ -233,7 +233,7 @@ var favTerms = groucho.getFavoriteTerms('my_category');
 You can also request **all term count data**. Default is false. Here shown by vocab...
 
 ```javascript
-var seenTerms = groucho.getFavoriteTerms('my_category', true);
+var seenCategoryTerms = groucho.getFavoriteTerms('my_category', true);
 ```
 ```json
 [
@@ -258,10 +258,10 @@ var allSeenTerms = groucho.getFavoriteTerms('*', true);
   ]
 }
 ```
-Special threshold override for finding favorites data. Example sets a high threshold, while returning pruned favorites only, within one vocab...
+Global threshold override whening requesting favorites data. Example sets a high threshold, while returning pruned favorites only, within one vocab...
 
 ```javascript
-var seenTerms = groucho.getFavoriteTerms('my_category', false, 5);
+var favCategoryTerms = groucho.getFavoriteTerms('my_category', false, 5);
 ```
 ```json
 {
@@ -269,6 +269,10 @@ var seenTerms = groucho.getFavoriteTerms('my_category', false, 5);
     {"id": "123", "count": 12, "name": "My Term"}
   ]
 }
+```
+Of course works with all vocabs too...
+```javascript
+var allFavTerms = groucho.getFavoriteTerms('*', false, 5);
 ```
 
 
