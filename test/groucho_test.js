@@ -273,4 +273,9 @@
 
   });
 
+  // @todo.
+  test('Threhold enforced', 0, function () {
+
+  });
+
 }(jQuery));

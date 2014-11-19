@@ -8,7 +8,7 @@ Groucho Docs
 * __[Pageview tracking](#pageview-tracking)__
  * Rich user browsing history
 * __[Favorite terms](#favorite-terms)__
- * Aggregated profiling at the ready
+ * Aggregated profiling at the ready (skip here for the goodies)
 * __[Custom tracking](#custom-tracking)__
  * Stash and retrieve your own activities with ease!
 
@@ -136,6 +136,7 @@ window.groucho = window.groucho || {};
 groucho.config = {
   'taxonomyProperty': 'myPageTags',
   'trackExtent': 99,
+  'favThreshold': 2,
   'trackProperties': [
     'myPageTypes',
     'myAuthorIds',
@@ -182,8 +183,8 @@ Here's what you get back...
     {"id": "123", "count": 12, "name": "My Term"}
   ],
   "my_types" : [
-    {"id": "555", "count": 7, "name": "My Type"},
-    {"id": "222", "count": 7, "name": "Another Type"}
+    {"id": "555", "count": 4, "name": "My Type"},
+    {"id": "222", "count": 4, "name": "Another Type"}
   ]
 }
 ```
@@ -229,7 +230,7 @@ var favTerms = groucho.getFavoriteTerms('my_category');
   "name" : "My Term"
 }]
 ```
-You can also request **all the data** for just one vocab...
+You can also request **all term count data**. Default is false. Here shown by vocab...
 
 ```javascript
 var seenTerms = groucho.getFavoriteTerms('my_category', true);
@@ -240,7 +241,7 @@ var seenTerms = groucho.getFavoriteTerms('my_category', true);
   {"id": "456", "count": 3, "name": "My Other Term"}
 ]
 ```
-Use a wildcard argument to see **all terms in all vocabs** from pages seen by the user.
+Use a wildcard argument to see **all term count data in all vocabs** from pages seen by the user.
 
 ```javascript
 var allSeenTerms = groucho.getFavoriteTerms('*', true);
@@ -252,11 +253,24 @@ var allSeenTerms = groucho.getFavoriteTerms('*', true);
     {"id": "456", "count": 3, "name": "My Other Term"}
   ],
   "my_types" : [
-    {"id": "555", "count": 7, "name": "My Type"},
-    {"id": "999", "count": 7, "name": "Another Type"}
+    {"id": "555", "count": 4, "name": "My Type"},
+    {"id": "999", "count": 4, "name": "Another Type"}
   ]
 }
 ```
+Special threshold override for finding favorites data. Example sets a high threshold, while returning pruned favorites only, within one vocab...
+
+```javascript
+var seenTerms = groucho.getFavoriteTerms('my_category', false, 5);
+```
+```json
+{
+  "my_category" : [
+    {"id": "123", "count": 12, "name": "My Term"}
+  ]
+}
+```
+
 
 ## Custom Tracking!
 You can register your own tracking activities like this...

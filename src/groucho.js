@@ -7,11 +7,12 @@
 (function ($) {
 
   // Namespace.
-  window.groucho = window.groucho || {};
+  var groucho = window.groucho || {};
   // Defaults
   groucho.config = groucho.config || {
     'taxonomyProperty': 'tags',
     'trackExtent': 25,
+    'favThreshold': 2,
     'trackProperties': [
       'title',
       'type',
@@ -162,7 +163,7 @@
    * return {array}
    *   List of vocabs with top taxonomy terms and counts.
    */
-  groucho.getFavoriteTerms = function (vocab, returnAll) {
+  groucho.getFavoriteTerms = function (vocab, returnAll, threshold) {
 
     var results = groucho.getActivities('browsing'),
         termProp = groucho.config.taxonomyProperty,
@@ -171,8 +172,9 @@
         vocName;
 
     // Params optional.
-    returnAll = returnAll || false;
     vocab = vocab || '*';
+    returnAll = returnAll || false;
+    threshold = threshold || groucho.config.favThreshold;
 
     /**
      * Assemble term counts.
@@ -210,7 +212,8 @@
       }
       // Get those with top count.
       for (tid in returnTerms[vocName]) {
-        if (returnTerms[vocName][tid].count < topCount) {
+        if (returnTerms[vocName][tid].count < topCount ||
+            returnTerms[vocName][tid].count <= threshold) {
           delete returnTerms[vocName][tid];
         }
       }
