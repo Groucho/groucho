@@ -8,7 +8,7 @@ Groucho Docs
 * __[Pageview tracking](#pageview-tracking)__
  * Rich user browsing history
 * __[Favorite terms](#favorite-terms)__
- * Aggregated profiling at the ready (skip here for the goodies)
+ * Aggregated profiling at the ready _(skip to the goodies)_
 * __[Custom tracking](#custom-tracking)__
  * Stash and retrieve your own activities with ease!
 
@@ -24,7 +24,7 @@ This library uses in-browser localStorage to track people. Client-side activitie
 
 ### Local Storage
 This library uses in-browser key/value localStorage with the convenient jStorage abstraction library.
-_See the [jStorage](http://jstorage.info) for more info._
+_See [jStorage](http://jstorage.info) for more info._
 
 ```javascript
 // Set a value.
@@ -37,9 +37,9 @@ You can can store objects just as easily as strings.
 
 ```javascript
 var myObj = {
-  'thing': 'something',
-  'cost': 3,
-  'percent': 27
+  'thing' : 'something',
+  'cost' : 3,
+  'percent' : 27
 };
 $.jStorage.set('mySave', myObj);
 
@@ -65,7 +65,7 @@ One of the basic features is just knowing where a user came from. Find that info
   }
 }
 ```
-To stash a single user property it's **recommended** to use a `user.property` key format.
+To stash a single user property it's **recommended** to use the `user.property` key format.
 To access user storage, it's **highly recommended** that you ensure the object is available. There can be a very small amount of time associated with jQuery + jStorage setup, additionally this keeps JS include order irrelevant which is good for robustness.
 
 ```javascript
@@ -92,7 +92,7 @@ You can output whatever you want, but to work with Groucho you'll need it to loo
 
 ```javascript
 dataLayer = [{
-  "language": "en",
+  "language" : "en",
   "pageId" : "123",
   "title" : "My Cool Page",
   "type" : "article",
@@ -108,9 +108,9 @@ dataLayer = [{
   }
 }];
 ```
-NOTE: The structure of taxonomy output is particularly important to work with existing groucho functions, vocabularies must be listed on a single property, with tags beneath that with an ID and name property. As you might expect-- getting user favorites will not work unless the taxonomy property is listed in the stored properties.
+NOTE: The structure of taxonomy output is _particularly important_ to work with existing groucho functions. Vocabularies must be listed on a single property, with each tags beneath it as an ID and name. As you might expect-- getting user favorites will not work unless the taxonomy property is listed in the stored properties.
 
-If you use Google Analytics or Google Tag Manager at all, you should access your dataLayer properties via the Data Layer Helper. You can't be certain the values you care about are in the first array position.
+If you use Google Analytics or Google Tag Manager, you should be accessing dataLayer properties via the Data Layer Helper. You can't be certain the values you care about are in the first array position.
 
 ```javascript
 var myHelper = new DataLayerHelper(dataLayer);
@@ -129,15 +129,15 @@ A user's browsing history is stored per page view. They exist in jStorage as key
   }
 }
 ```
-You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored along with other configurations by setting configs on the `groucho` object. The tracking extent will be separately used for each type of activity stored.
+You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored and other options by setting configs on the `groucho` object. The tracking extent will be separately used for each type of activity stored.
 
 ```javascript
 window.groucho = window.groucho || {};
 groucho.config = {
-  'taxonomyProperty': 'myPageTags',
-  'trackExtent': 99,
-  'favThreshold': 2,
-  'trackProperties': [
+  'taxonomyProperty' : 'tags',
+  'trackExtent' : 99,
+  'favThreshold' : 1,
+  'trackProperties' : [
     'myPageTypes',
     'myAuthorIds',
     'myPageTags'
@@ -155,21 +155,31 @@ When returned by `groucho.getActivities()` activities will be an array for conve
 
 ```json
 [{
-  "_key": "track.my_activity.398649600",
+  "_key" : "track.my_activity.398649600",
   "url" : "http://www.mysite.com/some-great-page",
   "type" : "blog-post",
-  "pageValue" : "1"
+  "pageValue" : "1",
+  "tags" : {
+    "my_category" : {
+      "123" : "My Term"
+    }
+  }
 },
 {
-  "_key": "track.my_activity.398649999",
+  "_key" : "track.my_activity.398649999",
   "url" : "http://www.mysite.com/another-page",
   "type" : "product",
-  "pageValue" : "5"
+  "pageValue" : "5",
+  "tags" : {
+    "my_types" : {
+      "555" : "My Type"
+    }
+  }
 }]
 ```
 
 ## Favorite Terms
-There's no point in locally stashing user activity unless you use it. One great use is infering a person's favorite terms from their rich browsing history records. Because we know how many times a person has seen specific tags we can return counts.
+Now that you're locally stashing user activity-- let's use it. One great use is infering a person's favorite terms from their rich browsing history records. Because we know how many times a person has seen specific tags we can return counts. Recall that it's the `taxonomyProperty` from the global config that determines where tags are stored in meta data, this powers favorites.
 _NOTE: A vocabulary can have more than one term returned if the hit count is the same._ You can request it, easy as pie...
 
 ```javascript
@@ -179,42 +189,53 @@ Here's what you get back...
 
 ```json
 {
-  "my_category" : [
-    {"id": "123", "count": 12, "name": "My Term"}
-  ],
-  "my_types" : [
-    {"id": "555", "count": 4, "name": "My Type"},
-    {"id": "222", "count": 4, "name": "Another Type"}
-  ]
+  "my_category" : [{
+    "id" : "123",
+    "count" : 12,
+    "name" : "My Term"
+  }],
+  "my_types" : [{
+      "id" : "555",
+      "count" : 4,
+      "name" : "My Type"
+    }, {
+      "id" : "222",
+      "count" : 4,
+      "name": "Another Type"
+  }]
 }
 ```
-Once favorites have been built once (with no arguments) it becomes available via `groucho.favoriteTerms` or you run the function again to regenerate. This is useful if you'd like to build favorites once per page load and keep reusing it.
+The accuracy of user favorites can be improved by adjusting your `favThreshold`, which controls the term view count required to be returned as a favorite. The default is just 1 to allow easily getting setup, but it's recommended to boost that to at least 2 or 3. _You can still manually specify lower thresholds when calling the function._
 
-You can also grab it by initially generating favorites on-page load and accessing the vocab you're interested in later. You might use this with some kind of on-page AJAX reaction...
+Once favorites have been built once (with no arguments) it becomes available via `groucho.favoriteTerms` but you can run the function again to regenerate. Use the persistence to build favorites on page-load then access the vocabs you're interested in later.
+
+A careful and full setup might look like this...
 
 ```javascript
 (function ($) {
-  $(document).ready(function(){
-    groucho.userDeferred = groucho.userDeferred || $.Deferred();
-    groucho.userDeferred.done(function () {
-      groucho.getFavoriteTerms();
-    });
- });
+  groucho.userDeferred = groucho.userDeferred || $.Deferred();
+  groucho.userDeferred.done(function () {
+    groucho.getFavoriteTerms();
+  });
 })(jQuery);
 ```
-Later in another script...
+Then in another script...
 
 ```javascript
-var vocab = 'my_category',
-    extraThreshold = 3;
-
-if (groucho.favoriteTerms[vocab] !== 'undefined') {
-  // Honor some trigger threshold.
-  if (groucho.favoriteTerms[vocab][0].count >= extraThreshold) {
-    // React to user profiling!
-    doSomeCoolAjaxThing(groucho.favoriteTerms[vocab][0].id);
-  }
-}
+(function ($) {
+  $(document).ready(function() {
+    var taxonomies = ['my_category', 'my_types'];
+    // Set various form inputs.
+    $.each(taxonomies, function(i, vocab) {
+      if (groucho.favoriteTerms.hasOwnProperty(vocab)) {
+        // Set various form inputs.
+        $('select[data-vocab="' + vocab + '"]').val(
+          groucho.favoriteTerms[vocab][0].id
+        );
+      }
+    });
+  });
+})(jQuery);
 ```
 
 ### Specific Returns
@@ -225,9 +246,7 @@ var favCategoryTerms = groucho.getFavoriteTerms('my_category');
 ```
 ```json
 [{
-  "id" : "123",
-  "count" : 12,
-  "name" : "My Term"
+  "id": "123", "count": 12, "name": "My Term"
 }]
 ```
 You can also request **all term count data**. Default is false. Here shown by vocab...
@@ -290,11 +309,11 @@ $('.my-special-links').bind('click', function (e) {
 They will be stored as key/value in jStorage. But can be returned as an array, filtered down to the group specified.
 
 ```javascript
-var myActivities = groucho.getActivities('my_activity')
+var myActivities = groucho.getActivities('my_activity');
 ```
 ```json
 [{
-  "_key": "track.my_activity.398649600",
+  "_key" : "track.my_activity.398649600",
   "linkText" : "Link text from page",
   "myProperty" : "the-property-value"
 }, {
@@ -303,25 +322,26 @@ var myActivities = groucho.getActivities('my_activity')
   "myProperty" : "this-property-value"
 }]
 ```
-You can work with activites and creaet your own tracking intelligence functions...
+You can work directly with tracking activites and create your own smart functions...
 
 ```javascript
 function myActivitySmarts () {
-  var myActivities = groucho.getActivities('my_activity');
+  var myActivities = groucho.getActivities('my_activity'),
+      record;
 
   for (i in myActivities) {
-    // Use a stored property, the URL, and the timestamp.
-    if (myComparison(myActivities[i].property, myActivities[i].url, myActivities[i]._key.split('.')[2])) {
-      return true;
+    record = myActivities[i];
+    if (myComparison(record.property, record.url, record._key.split('.')[2])) {
+      count++;
     }
   }
-  return false;
+  return count;
 }
 ```
 
 ## Tests?
 This library uses QUnit and Phantom for unit testing via Grunt.
-There are also some moderately behavioral tests needed to confirm tracking activities.
+There are also some moderately behavioral tests used to confirm tracking activities.
 
 ## Thanks.
 If you've read this far you might have some suggestions. Feel free to send those or make a merge request.

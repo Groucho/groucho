@@ -29,7 +29,7 @@ Include the dependencies on your pages, add groucho configs if you want to devia
   groucho.config = {
     'taxonomyProperty': 'tags',
     'trackExtent': 25,
-    'favThreshold': 2,
+    'favThreshold': 1,
     'trackProperties': ['pageId', 'title', 'type', 'tags']
   };
   </script>
