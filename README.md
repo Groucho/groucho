@@ -3,7 +3,7 @@
 
 **Know more about your anonymous users.**
 
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the 'dataLayer.' This is useful for working with heavily cached, non-user-unique pages and adding __personalized front-end features__ on top. Size: 2k.
+This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the `dataLayer`. This is useful for working with heavily cached, non-user-unique pages and adding __personalized front-end features__ on top. Size: just 2k!
 
 ### [Full documentation](DOCS.md)
 
@@ -29,6 +29,7 @@ Include the dependencies on your pages, add groucho configs if you want to devia
   groucho.config = {
     'taxonomyProperty': 'tags',
     'trackExtent': 25,
+    'favThreshold': 2,
     'trackProperties': ['pageId', 'title', 'type', 'tags']
   };
   </script>
@@ -63,33 +64,38 @@ _Tested with jQuery: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2
 React to your visitors' favorite tags/terms.
 
 ```javascript
-var myFavs = groucho.getFavoriteTerms('my_vocab');
+var vocab = 'my_vocab',
+    myFavs = groucho.getFavoriteTerms(vocab);
+
 if (myFavs.length > 0) {
-  // Pre-fill form field.
-  $('input.pre-fill.my-vocab').val(myFavs[0].name);
+  // Pre-fill any form elements marked for pre-fill and the right vocab.
+  $('input.pre-fill.' + vocab).each(function() {
+    $(this).val(myFavs[0].name);
+  });
 }
 ```
 
-_Results can include multiple terms if their hit counts are equal. These examples just use the first._
+_Results can include multiple terms if their hit counts are equal. Examples just use the first._
 
-Generate favorites once then use results a few times on the page.
+Generate all favorites once, then use results several times on the page.
 
 ```javascript
 groucho.getFavoriteTerms();
 
-// Set a form filter, but enforce a threshold.
-if (groucho.favoriteTerms.my_vocab[0].count >= 3) {
+if (groucho.favoriteTerms.hasOwnProperty('my_vocab')) {
+
+  // Set a form filter automatically.
   $('form.personalize select.my-vocab').val(groucho.favoriteTerms.my_vocab[0].name);
   $('form.personalize').submit();
-}
 
-// Prune a list to personalize.
-$('ul.peronalized li').each(function (index, element) {
-  // Data attribute does not match user's favorite.
-  if ($(this).attr('data-my_vocab') !== groucho.favoriteTerms.my_vocab[0].id) {
-    $(this).addClass('hide');
-  }
-});
+  // Prune a list to personalize.
+  $('ul.peronalized li').each(function() {
+    // Data attribute does not match user's favorite.
+    if ($(this).attr('data-my_vocab') !== groucho.favoriteTerms.my_vocab[0].id) {
+      $(this).addClass('hide');
+    }
+  });
+}
 ```
 
 ### Pageview Tracking

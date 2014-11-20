@@ -7,11 +7,12 @@
 (function ($) {
 
   // Namespace.
-  window.groucho = window.groucho || {};
+  var groucho = window.groucho || {};
   // Defaults
   groucho.config = groucho.config || {
     'taxonomyProperty': 'tags',
     'trackExtent': 25,
+    'favThreshold': 1,
     'trackProperties': [
       'title',
       'type',
@@ -162,7 +163,7 @@
    * return {array}
    *   List of vocabs with top taxonomy terms and counts.
    */
-  groucho.getFavoriteTerms = function (vocab, returnAll) {
+  groucho.getFavoriteTerms = function (vocab, returnAll, threshold) {
 
     var results = groucho.getActivities('browsing'),
         termProp = groucho.config.taxonomyProperty,
@@ -171,8 +172,9 @@
         vocName;
 
     // Params optional.
-    returnAll = returnAll || false;
     vocab = vocab || '*';
+    returnAll = returnAll || false;
+    threshold = threshold || groucho.config.favThreshold;
 
     /**
      * Assemble term counts.
@@ -199,7 +201,7 @@
      * Remove lesser count terms.
      */
     function filterByCount (vocName) {
-      var topCount = 0;
+      var topCount = threshold;
 
       // Find top count.
       for (var tid in returnTerms[vocName]) {
@@ -214,18 +216,34 @@
           delete returnTerms[vocName][tid];
         }
       }
+      // Destroy empty vocabs.
+      if (isEmpty(returnTerms[vocName])) {
+        delete returnTerms[vocName];
+      }
     }
 
     /**
-     * Term returns should be an array.
+     * Utility: Term returns should be an array.
      */
-    function makeArray (vocabObject) {
+    function makeArray (obj) {
       var arr = [];
-      for (var i in vocabObject) {
-        vocabObject[i].id = i;
-        arr.push(vocabObject[i]);
+      for (var i in obj) {
+        obj[i].id = i;
+        arr.push(obj[i]);
       }
       return arr;
+    }
+
+    /**
+     * Utility: check for empty vocab object.
+     */
+    function isEmpty (obj) {
+      for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+          return false;
+        }
+      }
+      return true;
     }
 
     // No data will be available.

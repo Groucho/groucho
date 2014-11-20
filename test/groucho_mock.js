@@ -16,6 +16,7 @@ window.groucho = window.groucho || {};
 groucho.config = {
   'taxonomyProperty': 'entityTaxonomy',
   'trackExtent': 5,
+  'favThreshold': 1,
   'trackProperties': [
     'entityType',
     'entityTaxonomy',

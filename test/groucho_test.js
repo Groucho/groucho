@@ -270,7 +270,35 @@
       2,
       'Both terms in second vocab present'
     );
+  });
 
+  test('Threhold enforced', 2, function () {
+    var favDataThreshold;
+
+    // Alter page meta data for testable activity results.
+    delete dataLayer[0][groucho.config.taxonomyProperty].my_category[25];
+    delete dataLayer[0][groucho.config.taxonomyProperty].my_types[13];
+    history.pushState('', 'Another Page Title', window.location + '#yet-another');
+    // Manually create another browsing record.
+    groucho.trackHit();
+
+    // Threshold increase.
+    favDataThreshold = groucho.getFavoriteTerms('*', false, 3);
+
+    // Avoid returning empty vocabs with no items.
+    strictEqual(
+      typeof favDataThreshold.my_types,
+      'undefined',
+      'Vocab removed due to threshold limit'
+    );
+
+    // Threshold increase.
+    favDataThreshold = groucho.getFavoriteTerms('*', false, 4);
+    strictEqual(
+      Object.keys(favDataThreshold).length,
+      0,
+      'Threshold increased beyond term counts, results empty'
+    );
   });
 
 }(jQuery));
