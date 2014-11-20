@@ -274,13 +274,14 @@ var allSeenTerms = groucho.getFavoriteTerms('*', true);
   "my_types" : [
     {"id": "555", "count": 4, "name": "My Type"},
     {"id": "999", "count": 4, "name": "Another Type"}
+    {"id": "876", "count": 1, "name": "Yet Another"}
   ]
 }
 ```
-Global threshold override whening requesting favorites data. Example sets a high threshold, while returning pruned favorites only, within one vocab...
+You can also override the global threshold whening requesting favorites data. Example sets a high threshold, while returning pruned favorites only...
 
 ```javascript
-var favCategoryTerms = groucho.getFavoriteTerms('my_category', false, 5);
+var favCategoryTerms = groucho.getFavoriteTerms('*', false, 7);
 ```
 ```json
 {
@@ -289,11 +290,6 @@ var favCategoryTerms = groucho.getFavoriteTerms('my_category', false, 5);
   ]
 }
 ```
-Of course works with all vocabs too...
-```javascript
-var allFavTerms = groucho.getFavoriteTerms('*', false, 5);
-```
-
 
 ## Custom Tracking!
 You can register your own tracking activities like this...
@@ -340,8 +336,7 @@ function myActivitySmarts () {
 ```
 
 ## Tests?
-This library uses QUnit and Phantom for unit testing via Grunt.
-There are also some moderately behavioral tests used to confirm tracking activities.
+This library uses QUnit and Phantom for unit testing via Grunt. There are also some moderately behavioral tests used to confirm tracking activities. Istambul is used for code coverage analysis.
 
 ## Thanks.
 If you've read this far you might have some suggestions. Feel free to send those or make a merge request.
