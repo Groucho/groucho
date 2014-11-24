@@ -28,7 +28,7 @@ Include the dependencies on your pages, add groucho configs if you want to devia
   window.groucho = window.groucho || {};
   groucho.config = {
     'taxonomyProperty': 'tags',
-    'trackExtent': 25,
+    'trackExtent': 50,
     'favThreshold': 1,
     'trackProperties': ['pageId', 'title', 'type', 'tags']
   };

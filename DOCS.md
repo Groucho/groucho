@@ -135,7 +135,7 @@ You'll want to stash specific info with each pageview activity record. You can c
 window.groucho = window.groucho || {};
 groucho.config = {
   'taxonomyProperty' : 'tags',
-  'trackExtent' : 99,
+  'trackExtent' : 50,
   'favThreshold' : 1,
   'trackProperties' : [
     'myPageTypes',

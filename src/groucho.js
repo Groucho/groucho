@@ -11,7 +11,7 @@
   // Defaults
   groucho.config = groucho.config || {
     'taxonomyProperty': 'tags',
-    'trackExtent': 25,
+    'trackExtent': 50,
     'favThreshold': 1,
     'trackProperties': [
       'title',

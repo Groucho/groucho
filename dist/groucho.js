@@ -1,4 +1,4 @@
-/*! Groucho - v0.2.1 - 2014-11-19
+/*! Groucho - v0.2.1 - 2014-11-24
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2014 Josh Lind; Licensed MIT */
 
@@ -10,7 +10,7 @@
   // Defaults
   groucho.config = groucho.config || {
     'taxonomyProperty': 'tags',
-    'trackExtent': 25,
+    'trackExtent': 50,
     'favThreshold': 1,
     'trackProperties': [
       'title',
