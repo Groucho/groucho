@@ -116,6 +116,16 @@ if (count < 2) links.addClass('featured');
 else if (count >= 2 && count < 7) links.addClass('reduced');
 else links.addClass('hidden');
 ```
+Show the last viewed item of a given type. Example is last watched video...
+
+```javascript
+var history = groucho.getActivities('watch');
+if (history.length) {
+  $.get("videos.json?id=" + history[0].videoId, function(data) {
+    $('.recent').html(displayVideo(data));
+  });
+}
+```
 
 ## Custom Activies
 
