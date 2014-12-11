@@ -2,7 +2,6 @@ Groucho Docs
 ==============
 
 * __[Getting started](#getting-started)__
- * [Local storage](#local-storage) - data storage basics
  * [User data space](#user-space) - standardized and guaranteed
  * [Page meta data](#meta-data-output) - available properties
 * __[Pageview tracking](#pageview-tracking)__
@@ -11,6 +10,7 @@ Groucho Docs
  * Aggregated profiling at the ready _(skip to the goodies)_
 * __[Custom tracking](#custom-tracking)__
  * Stash and retrieve your own activities with ease!
+* [Local storage](#local-storage) - data storage basics
 
 ## Getting Started
 This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 2k.
@@ -22,32 +22,8 @@ This library uses in-browser localStorage to track people. Client-side activitie
 1. [dataLayer](https://developers.google.com/tag-manager/android/v3/reference/com/google/tagmanager/DataLayer) - client-side meta data standard. [See below.](#meta-data-output)
 1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties [2k].
 
-### Local Storage
-This library uses in-browser key/value localStorage with the convenient jStorage abstraction library.
-_See [jStorage](http://jstorage.info) for more info._
-
-```javascript
-// Set a value.
-$.jStorage.set('myThing', 'neato');
-
-// Get it later on some other page.
-var myVal = $.jStorage.get('myThing');
-```
-You can can store objects just as easily as strings.
-
-```javascript
-var myObj = {
-  'thing' : 'something',
-  'cost' : 3,
-  'percent' : 27
-};
-$.jStorage.set('mySave', myObj);
-
-// Later access and use.
-var myVal = $.jStorage.get('mySave');
-alert(myVal.thing + ' = ' + (myObj.cost * myObj.percent * .01));
-// Output: something = 0.81
-```
+### Install
+Find "installation" details in the main [README](https://github.com/tableau-mkt/groucho/blob/master/README.md) file.
 
 ### User Space
 One of the basic features is just knowing where a user came from. Find that info organized like this...
@@ -66,7 +42,7 @@ One of the basic features is just knowing where a user came from. Find that info
 }
 ```
 To stash a single user property it's **recommended** to use the `user.property` key format.
-To access user storage, it's **highly recommended** that you ensure the object is available. There can be a very small amount of time associated with jQuery + jStorage setup, additionally this keeps JS include order irrelevant which is good for robustness.
+To access user storage, it's **highly recommended** that you ensure the object is available. There can be a very small amount of time associated with storage libary setup, additionally this keeps JS include order irrelevant which is good for robustness.
 
 ```javascript
 (function ($) {
@@ -132,7 +108,7 @@ A user's browsing history is stored per page view. They exist in jStorage as key
 You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored and other options by setting configs on the `groucho` object. The tracking extent will be separately used for each type of activity stored.
 
 ```javascript
-window.groucho = window.groucho || {};
+var groucho = window.groucho || {};
 groucho.config = {
   'taxonomyProperty' : 'tags',
   'trackExtent' : 50,
@@ -333,6 +309,33 @@ function myActivitySmarts () {
   }
   return count;
 }
+```
+
+### Local Storage
+This library uses in-browser key/value localStorage with the convenient jStorage abstraction library. If you're new to localStorage, it's no big deal and is a new tool we should all be using.
+_See [jStorage](http://jstorage.info) for more info._
+
+```javascript
+// Set a value.
+$.jStorage.set('myThing', 'neato');
+
+// Get it later on some other page.
+var myVal = $.jStorage.get('myThing');
+```
+You can can store objects just as easily as strings.
+
+```javascript
+var myObj = {
+  'thing' : 'something',
+  'cost' : 3,
+  'percent' : 27
+};
+$.jStorage.set('mySave', myObj);
+
+// Later access and use.
+var myVal = $.jStorage.get('mySave');
+alert(myVal.thing + ' = ' + (myObj.cost * myObj.percent * .01));
+// Output: something = 0.81
 ```
 
 ## Tests?

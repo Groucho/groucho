@@ -1,7 +1,7 @@
 <img src="https://raw.githubusercontent.com/tableau-mkt/groucho/master/groucho.png?raw=true" height="30" style="bottom:2px"> Groucho [![Build Status](https://travis-ci.org/tableau-mkt/groucho.svg?branch=master)](https://travis-ci.org/tableau-mkt/groucho) [![Test Coverage](https://codeclimate.com/github/tableau-mkt/groucho/badges/coverage.svg)](https://codeclimate.com/github/tableau-mkt/groucho) [![Code Climate](https://codeclimate.com/github/tableau-mkt/groucho/badges/gpa.svg)](https://codeclimate.com/github/tableau-mkt/groucho)
 ==============
 
-**Know more about your anonymous users.**
+**Know more about your anonymous users. Scalable front-end personalization.**
 
 This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the `dataLayer`. This is useful for working with heavily cached, non-user-unique pages and adding __personalized front-end features__ on top. Size: just 2k!
 
@@ -25,7 +25,7 @@ Include the dependencies on your pages, add groucho configs if you want to devia
   <script src="data-layer-helper.js"></script>
   <script src="groucho.min.js"></script>
   <script>
-  window.groucho = window.groucho || {};
+  var groucho = window.groucho || {};
   groucho.config = {
     'taxonomyProperty': 'tags',
     'trackExtent': 50,
