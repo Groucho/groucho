@@ -130,11 +130,10 @@ var groucho = window.groucho || {};
         matchable = new RegExp("^track." + group + ".", "g"),
         record;
 
-    for (var i = 0; i < results.length; i++) {
+    for (var i in results) {
       // Remove unwanted types and return records.
       if (group) {
         if (results[i].match(matchable) !== null) {
-        //if (results[i].indexOf('track.' + group) === 0) {
           // Collect relevant.
           record = $.jStorage.get(results[i]);
           // Move key to property.

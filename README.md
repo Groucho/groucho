@@ -30,14 +30,14 @@ Include the dependencies on your pages, add groucho configs if you want to devia
     'taxonomyProperty': 'tags',
     'trackExtent': 50,
     'favThreshold': 1,
-    'trackProperties': ['pageId', 'title', 'type', 'tags']
+    'trackProperties': ['type', 'tags']
   };
   </script>
 </head>
 <body>
   <script>
   dataLayer = [{
-    "pageId" : "123",
+    "pageId" : 123,
     "title" : "My Cool Page",
     "type" : "article",
     "tags" : {
@@ -53,7 +53,6 @@ Include the dependencies on your pages, add groucho configs if you want to devia
     'myProperty' : 'my value'
   }];
   </script>
-</body>
 ```
 _Tested with jQuery: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1_
 
@@ -81,19 +80,20 @@ Generate all favorites once, then use results several times on the page.
 
 ```javascript
 groucho.getFavoriteTerms();
+var taxonomy = 'my_category';
 
-if (groucho.favoriteTerms.hasOwnProperty('my_category')) {
+if (groucho.favoriteTerms.hasOwnProperty(taxonomy)) {
   // Prune a list to personalize.
   $('ul.peronalized li').each(function() {
     // Data attribute does not match user's favorite.
-    if ($(this).data('my_category_term') !== groucho.favoriteTerms.my_category[0].id) {
+    if ($(this).data(taxonomy) !== groucho.favoriteTerms[taxonomy][0].id) {
       $(this).addClass('hide');
     }
   });
 
   // Set an AJAX form filter automatically.
-  $('form.personalize select.my_category').val(
-    groucho.favoriteTerms.my_category[0].name
+  $('form.personalize select.' + taxonomy).val(
+    groucho.favoriteTerms[taxonomy][0].name
   );
   $('form.personalize').submit();
 }

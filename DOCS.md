@@ -23,10 +23,10 @@ This library uses in-browser localStorage to track people. Client-side activitie
 1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties [2k].
 
 ### Install
-Find "installation" details in the main [README](https://github.com/tableau-mkt/groucho/blob/master/README.md) file.
+Find basic "installation" details in the main [README](https://github.com/tableau-mkt/groucho/blob/master/README.md) file.
 
 ### User Space
-One of the basic features is just knowing where a user came from. Find that info organized like this...
+One of the basic features is just knowing where a user came from. Data is organized like this...
 
 ```json
 {
@@ -46,16 +46,14 @@ To access user storage, it's **highly recommended** that you ensure the object i
 
 ```javascript
 (function ($) {
-  $(document).ready(function(){
-    // Ensure data availability.
-    groucho.userDeferred = groucho.userDeferred || $.Deferred();
+  // Ensure data availability.
+  groucho.userDeferred = groucho.userDeferred || $.Deferred();
 
-    groucho.userDeferred.done(function () {
-      // Act on a user property.
-      var origin = $.jStorage.get('user.origin');
-      doSomethingNeato(origin.url);
-    }
- });
+  groucho.userDeferred.done(function () {
+    // Act on a user property.
+    var origin = $.jStorage.get('user.origin');
+    doSomethingNeato(origin.url);
+  }
 })(jQuery);
 ```
 
@@ -69,9 +67,10 @@ You can output whatever you want, but to work with Groucho you'll need it to loo
 ```javascript
 dataLayer = [{
   "language" : "en",
-  "pageId" : "123",
+  "pageId" : 123,
   "title" : "My Cool Page",
-  "type" : "article",
+  "pageType" : "article",
+  "authorId" : 555,
   "tags" : {
     "my_category" : {
       "123" : "My Term",
@@ -105,7 +104,7 @@ A user's browsing history is stored per page view. They exist in jStorage as key
   }
 }
 ```
-You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored and other options by setting configs on the `groucho` object. The tracking extent will be separately used for each type of activity stored.
+You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored and other options by setting configs on the `groucho.config` object. The tracking extent will be separately used for each type of activity stored.
 
 ```javascript
 var groucho = window.groucho || {};
@@ -114,9 +113,9 @@ groucho.config = {
   'trackExtent' : 50,
   'favThreshold' : 1,
   'trackProperties' : [
-    'myPageTypes',
-    'myAuthorIds',
-    'myPageTags'
+    'pageType',
+    'authorId',
+    'tags'
   ]
 }
 ```
@@ -134,7 +133,7 @@ When returned by `groucho.getActivities()` activities will be an array for conve
   "_key" : "track.my_activity.398649600",
   "url" : "http://www.mysite.com/some-great-page",
   "type" : "blog-post",
-  "pageValue" : "1",
+  "pageValue" : 1,
   "tags" : {
     "my_category" : {
       "123" : "My Term"
@@ -145,7 +144,7 @@ When returned by `groucho.getActivities()` activities will be an array for conve
   "_key" : "track.my_activity.398649999",
   "url" : "http://www.mysite.com/another-page",
   "type" : "product",
-  "pageValue" : "5",
+  "pageValue" : 5,
   "tags" : {
     "my_types" : {
       "555" : "My Type"
@@ -166,16 +165,16 @@ Here's what you get back...
 ```json
 {
   "my_category" : [{
-    "id" : "123",
+    "id" : 123,
     "count" : 12,
     "name" : "My Term"
   }],
   "my_types" : [{
-      "id" : "555",
+      "id" : 555,
       "count" : 4,
       "name" : "My Type"
     }, {
-      "id" : "222",
+      "id" : 222,
       "count" : 4,
       "name": "Another Type"
   }]
@@ -222,7 +221,7 @@ var favCategoryTerms = groucho.getFavoriteTerms('my_category');
 ```
 ```json
 [{
-  "id": "123", "count": 12, "name": "My Term"
+  "id": 123, "count": 12, "name": "My Term"
 }]
 ```
 You can also request **all term count data**. Default is false. Here shown by vocab...
@@ -232,8 +231,8 @@ var seenCategoryTerms = groucho.getFavoriteTerms('my_category', true);
 ```
 ```json
 [
-  {"id": "123", "count": 12, "name": "My Term"},
-  {"id": "456", "count": 3, "name": "My Other Term"}
+  {"id": 123, "count": 12, "name": "My Term"},
+  {"id": 456, "count": 3, "name": "My Other Term"}
 ]
 ```
 Use a wildcard argument to see **all term count data in all vocabs** from pages seen by the user.
@@ -244,13 +243,13 @@ var allSeenTerms = groucho.getFavoriteTerms('*', true);
 ```json
 {
   "my_category" : [
-    {"id": "123", "count": 12, "name": "My Term"},
-    {"id": "456", "count": 3, "name": "My Other Term"}
+    {"id": 123, "count": 12, "name": "My Term"},
+    {"id": 456, "count": 3, "name": "My Other Term"}
   ],
   "my_types" : [
-    {"id": "555", "count": 4, "name": "My Type"},
-    {"id": "999", "count": 4, "name": "Another Type"}
-    {"id": "876", "count": 1, "name": "Yet Another"}
+    {"id": 555, "count": 4, "name": "My Type"},
+    {"id": 999, "count": 4, "name": "Another Type"}
+    {"id": 876, "count": 1, "name": "Yet Another"}
   ]
 }
 ```
@@ -339,7 +338,7 @@ alert(myVal.thing + ' = ' + (myObj.cost * myObj.percent * .01));
 ```
 
 ## Tests?
-This library uses QUnit and Phantom for unit testing via Grunt. There are also some moderately behavioral tests used to confirm tracking activities. Istambul is used for code coverage analysis.
+This library uses QUnit via Phantom for unit testing via Grunt and Istambul for code coverage analysis. There are also some moderately behavioral tests used to confirm tracking activities. Istambul is used for code coverage analysis.
 
 ## Thanks.
 If you've read this far you might have some suggestions. Feel free to send those or make a merge request.
