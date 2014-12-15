@@ -29,6 +29,27 @@ groucho.config.addons = groucho.config.addons || {};
     }
   });
 
+  /**
+  * Utility: Confirm threshold before recording.
+  *
+  * @param string behavior
+  *   Behavior being monitored.
+  * @param int count
+  *   Current threshold count.
+  *
+  * @return boolean
+  *   Results of check.
+  */
+  var checkThreshold = function checkThreshold(behavior, count) {
+    if (count >= groucho.config.addons.webIQ.behaviors[behavior].threshold) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  };
+
+
   groucho.addons.webIQ = {
 
     /**
@@ -46,48 +67,30 @@ groucho.config.addons = groucho.config.addons || {};
         score = 0;
         // Add it up for better or worse.
         for (var i in results) {
-          score = score + groucho.config.addons.webIQ.behaviors[results[i].type].increment;
+          score = score +
+              groucho.config.addons.webIQ.behaviors[results[i].type].increment;
         }
       }
       else if (behavior === '*') {
         score = {};
         // Segment by behavior type.
         for (i in results) {
-          scores[behavior] = scores[behavior] + groucho.config.addons.webIQ.behaviors[behavior].increment;
+          scores[behavior] = scores[behavior] +
+              groucho.config.addons.webIQ.behaviors[behavior].increment;
         }
       }
       else {
         score = 0;
         // Just the one behavior type.
-        for (var i in results) {
+        for (i in results) {
           if (results[i].type === behavior) {
-            score = score + groucho.config.addons.webIQ.behaviors[behavior].increment;
+            score = score +
+                groucho.config.addons.webIQ.behaviors[behavior].increment;
           }
         }
       }
 
       return score;
-    },
-
-
-    /**
-    * Utility: Confirm threshold before recording.
-    *
-    * @param string behavior
-    *   Behavior being monitored.
-    * @param int count
-    *   Current threshold count.
-    *
-    * @return boolean
-    *   Results of check.
-    */
-    checkThreshold: function checkThreshold(behavior, count) {
-      if (count >= groucho.config.addons.webIQ.behaviors[behavior].threshold) {
-        return true;
-      }
-      else {
-        return false;
-      }
     },
 
     /**
@@ -106,7 +109,6 @@ groucho.config.addons = groucho.config.addons || {};
 
 console.log("Executed: " + this.name);
 
-          }
         }
       });
     },
