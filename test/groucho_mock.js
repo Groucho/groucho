@@ -3,27 +3,30 @@
  * Update meta data and settings found within a page.
  */
 
-(function($) {
+window.groucho = window.groucho || {};
+
+(function($, groucho) {
+
+  // Default configs.
+  groucho.config = {
+    'taxonomyProperty': 'entityTaxonomy',
+    'trackExtent': 5,
+    'favThreshold': 1,
+    'trackProperties': [
+      'entityType',
+      'entityTaxonomy',
+      'entityBundle'
+    ]
+  };
 
   // Clear out past tests, unless explicitly not.
   if (!location.href.match(/\?noflush\=|&noflush\=/)) {
     $.jStorage.flush();
   }
 
-})(jQuery);
+})(jQuery, groucho);
 
-window.groucho = window.groucho || {};
-groucho.config = {
-  'taxonomyProperty': 'entityTaxonomy',
-  'trackExtent': 5,
-  'favThreshold': 1,
-  'trackProperties': [
-    'entityType',
-    'entityTaxonomy',
-    'entityBundle'
-  ]
-};
-
+// Page meta data.
 dataLayer = [{
   "entityId": "123",
   "entityLabel": "My Cool Page",

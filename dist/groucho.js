@@ -1,4 +1,4 @@
-/*! Groucho - v0.2.1 - 2014-12-14
+/*! Groucho - v0.2.1 - 2014-12-15
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2014 Josh Lind; Licensed MIT */
 
@@ -34,7 +34,7 @@ var groucho = window.groucho || {};
   /**
    * Stash user origins.
    */
-  groucho.trackOrigins = function () {
+  groucho.trackOrigins = function trackOrigins() {
 
     var n = new Date().getTime(),
         hit = {
@@ -61,7 +61,7 @@ var groucho = window.groucho || {};
   /**
    * Track page hit.
    */
-  groucho.trackHit = function () {
+  groucho.trackHit = function trackHit() {
 
     var dlHelper = new DataLayerHelper(dataLayer),
         trackIds = groucho.config.trackProperties,
@@ -95,7 +95,7 @@ var groucho = window.groucho || {};
    * @param {string} data
    *   Data to store-- string, int, object.
    */
-  groucho.createActivity = function (group, data) {
+  groucho.createActivity = function createActivity(group, data) {
 
     var results = groucho.getActivities(group),
         n = new Date().getTime(),
@@ -122,18 +122,18 @@ var groucho = window.groucho || {};
    * return {array}
    *   List of tracking localStorage entries.
    */
-  groucho.getActivities = function (group) {
+  groucho.getActivities = function getActivities(group) {
 
     var results = $.jStorage.index(),
         returnVals = [],
-        //matchable = new RegExp('/^' + group + '$/', 'g'),
+        matchable = new RegExp("^track." + group + ".", "g"),
         record;
 
     for (var i = 0; i < results.length; i++) {
       // Remove unwanted types and return records.
       if (group) {
-        //if (results[i].match(matchable)) {
-        if (results[i].indexOf('track.' + group) === 0) {
+        if (results[i].match(matchable) !== null) {
+        //if (results[i].indexOf('track.' + group) === 0) {
           // Collect relevant.
           record = $.jStorage.get(results[i]);
           // Move key to property.
@@ -165,7 +165,7 @@ var groucho = window.groucho || {};
    * return {array}
    *   List of vocabs with top taxonomy terms and counts.
    */
-  groucho.getFavoriteTerms = function (vocab, returnAll, threshold) {
+  groucho.getFavoriteTerms = function getFavoriteTerms(vocab, returnAll, threshold) {
 
     var results = groucho.getActivities('browsing'),
         termProp = groucho.config.taxonomyProperty,
@@ -181,7 +181,7 @@ var groucho = window.groucho || {};
     /**
      * Assemble term counts.
      */
-    function collectTerms (vocName, i) {
+    function collectTerms(vocName, i) {
       for (var tid in results[i][termProp][vocName]) {
         // Non-existant vocab.
         if (!returnTerms.hasOwnProperty(vocName)) {
@@ -202,7 +202,7 @@ var groucho = window.groucho || {};
     /**
      * Remove lesser count terms.
      */
-    function filterByCount (vocName) {
+    function filterByCount(vocName) {
       var topCount = threshold;
 
       // Find top count.
@@ -227,7 +227,7 @@ var groucho = window.groucho || {};
     /**
      * Utility: Term returns should be an array.
      */
-    function makeArray (obj) {
+    function makeArray(obj) {
       var arr = [];
       for (var i in obj) {
         obj[i].id = i;
@@ -239,7 +239,7 @@ var groucho = window.groucho || {};
     /**
      * Utility: check for empty vocab object.
      */
-    function isEmpty (obj) {
+    function isEmpty(obj) {
       for (var prop in obj) {
         if (obj.hasOwnProperty(prop)) {
           return false;
