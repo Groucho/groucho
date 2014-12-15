@@ -68,13 +68,12 @@ var groucho = window.groucho || {};
         trackIds = groucho.config.trackProperties,
         trackVals = {
           'url': window.location.href
-        },
-        i;
+        };
 
     // Log all configured items.
     // @todo Allow toggling tracking on and off as a localStorage help config override.
     if (typeof trackExtent !== false && typeof dataLayer !== 'undefined') {
-      for (i in trackIds) {
+      for (var i in trackIds) {
         // Add each item.
         if (typeof dlHelper.get(trackIds[i]) !== 'undefined') {
           trackVals[trackIds[i]] = dlHelper.get(trackIds[i]);
