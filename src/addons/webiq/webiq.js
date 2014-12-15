@@ -11,11 +11,11 @@ groucho.config.addons = groucho.config.addons || {};
   // Defaults.
   groucho.config.addons.webIQ = {
     'behaviors': {
-      'formsDelete': { 'increment': -1, 'theshold': 3, 'stash': 0 },
+      'formsDelete': { 'increment': -1, 'threshold': 3, 'stash': 0 },
       'formsTab': { 'increment': 2 },
       'findOnPage': { 'increment': 4 },
-      'doubleClick': { 'increment': 0.5 },
-      'repeatPage': { 'increment': 3, 'theshold': 1 }
+      'doubleClick': { 'increment': -0.5 },
+      'repeatPage': { 'increment': -3, 'threshold': 1 }
     }
   };
 
