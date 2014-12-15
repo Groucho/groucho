@@ -1,13 +1,13 @@
-/*! Groucho - v0.2.1 - 2014-11-24
+/*! Groucho - v0.2.1 - 2014-12-14
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2014 Josh Lind; Licensed MIT */
 
-// Functions in need of a little jQuery.
-(function ($) {
+var groucho = window.groucho || {};
 
-  // Namespace.
-  var groucho = window.groucho || {};
-  // Defaults
+// Functions in need of a little jQuery.
+(function ($, groucho) {
+
+  // Defaults.
   groucho.config = groucho.config || {
     'taxonomyProperty': 'tags',
     'trackExtent': 50,
@@ -16,7 +16,8 @@
       'title',
       'type',
       'tags'
-    ]
+    ],
+    'addons': {}
   };
   // Data availability.
   groucho.userDeferred = groucho.userDeferred || $.Deferred();
@@ -125,11 +126,13 @@
 
     var results = $.jStorage.index(),
         returnVals = [],
+        //matchable = new RegExp('/^' + group + '$/', 'g'),
         record;
 
     for (var i = 0; i < results.length; i++) {
       // Remove unwanted types and return records.
       if (group) {
+        //if (results[i].match(matchable)) {
         if (results[i].indexOf('track.' + group) === 0) {
           // Collect relevant.
           record = $.jStorage.get(results[i]);
@@ -298,4 +301,4 @@
     return returnTerms;
   };
 
-})(jQuery);
+})(jQuery, groucho);
