@@ -2,19 +2,19 @@
 var groucho = window.groucho || {};
 
 /**
- * Get pages previously viewed by the user.
+ * Find a specific previous activity of a user.
  *
  * @param  string property
  *   Page history item property to check.
  * @param  array values
  *   Values to accept for return list.
  * @param  string activityType
- *   [Optional] Type of groucoh activity to look through.
+ *   [Optional] Type of groucho activity to look through.
  *
  * @return array
  *   List of history items matching conditions.
  */
-groucho.getPreviouslyViewed = function getPreviouslyViewed(property, values, activityType) {
+groucho.addons.previously.getPrevious = function getPrevious(activityType, property, values) {
   var history = groucho.getActivities(activityType),
       historyReturns = [];
 
