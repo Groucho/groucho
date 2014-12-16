@@ -97,7 +97,7 @@ var groucho = window.groucho || {};
    */
   groucho.createActivity = function createActivity(group, data) {
 
-    var results = groucho.getActivities(group),
+    var results = groucho.getActivities({'group' : group}),
         n = new Date().getTime(),
         diff = 0;
 
@@ -116,36 +116,83 @@ var groucho = window.groucho || {};
   /**
    * Access records of a specific tracking group.
    *
-   * @param {string} group
-   *   Name of the tracking group to return values for.
+   * @param {object} query
+   *   Strucutured conditions for activity lookup: {group, property, [values]}.
    *
    * return {array}
    *   List of tracking localStorage entries.
    */
-  groucho.getActivities = function getActivities(group) {
+  groucho.getActivities = function getActivities(query) {
 
-    var results = $.jStorage.index(),
+    var conditions = query || {},
+        group = (conditions.hasOwnProperty('group')) ? conditions.group : false,
+        property = (conditions.hasOwnProperty('property')) ? conditions.property : false,
+        values = (conditions.hasOwnProperty('values')) ? conditions.values : false,
+        groupMatch = new RegExp("^track." + group + ".", "g"),
+        results = $.jStorage.index(),
         returnVals = [],
-        matchable = new RegExp("^track." + group + ".", "g"),
         record;
 
-    for (var i in results) {
-      // Remove unwanted types and return records.
-      if (group) {
-        if (results[i].match(matchable) !== null) {
-          // Collect relevant.
-          record = $.jStorage.get(results[i]);
-          // Move key to property.
-          record._key = results[i];
-          returnVals.push(record);
+    /**
+     * Grab record from storage, add to returns.
+     *
+     * @param string key
+     *   Browser storage lookup key.
+     */
+    function addRecord(key) {
+      record = $.jStorage.get(key);
+      // Move key to special property.
+      record._key = key;
+      returnVals.push(record);
+    }
+
+    /**
+     * Confirm property is of desired values.
+     * NOTE: String comparison only!
+     *
+     * @param  {string} property
+     *   Name of record property.
+     * @param  {array} values
+     *   List of acceptable values.
+     * @param  {string} record
+     *   Record value to check.
+     *
+     * @return {boolean}
+     *   Result of match check.
+     */
+    function checkProperty(property, values, record) {
+      // Confirm conditions required.
+      if (property && values) {
+        // Picky about types.
+        if (typeof property === 'string' && values instanceof Array) {
+          for (var i in values) {
+            // Confirm an acceptable value.
+            if (record.hasOwnProperty(property) && record.property === values[i]) {
+              addRecord(record);
+              // Only need one match per value set.
+              break;
+            }
+          }
         }
       }
       else {
-        // Collect and return all.
-        record = $.jStorage.get(results[i]);
-        // Move key to property.
-        record._key = results[i];
-        returnVals.push(record);
+        // Property or values not in conditions.
+        addRecord(record);
+      }
+    }
+
+    // Look through storage index.
+    for (var i in results) {
+      // Remove unwanted types and return records.
+      if (group) {
+        if (results[i].match(groupMatch) !== null) {
+          // Move on to checking property or just add.
+          checkProperty(property, values, results[i]);
+        }
+      }
+      else {
+        // Just check property or just add.
+        checkProperty(property, values, results[i]);
       }
     }
 
@@ -166,7 +213,7 @@ var groucho = window.groucho || {};
    */
   groucho.getFavoriteTerms = function getFavoriteTerms(vocab, returnAll, threshold) {
 
-    var results = groucho.getActivities('browsing'),
+    var results = groucho.getActivities({'group' : 'browsing'}),
         termProp = groucho.config.taxonomyProperty,
         pages = [],
         returnTerms = {},

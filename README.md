@@ -100,11 +100,11 @@ if (groucho.favoriteTerms.hasOwnProperty(taxonomy)) {
 ### Pageview Tracking
 
 Use page view activity tracking to dig through history and alter UX.
-
 ```javascript
-var history = groucho.getActivities('browsing'),
+var history = groucho.getActivities(),
     links = $('a.promoted'),
     count = 0;
+
 for (var i in history) {
   // Determine if they've seen a page with a specific property.
   if (history[i].hasOwnProperty('myProperty') count++;
@@ -114,37 +114,32 @@ if (count < 2) links.addClass('featured');
 else if (count >= 2 && count < 7) links.addClass('reduced');
 else links.addClass('hidden');
 ```
-Show the last viewed item of a given type. Example is last watched video...
-
-```javascript
-var history = groucho.getActivities('watch');
-if (history.length) {
-  $.get("videos.json?id=" + history[0].videoId, function(data) {
-    $('.recent').html(displayVideo(data));
-  });
-}
-```
 
 ## Custom Activies
 
 Register your own tracking activities like this...
-
 ```javascript
-// Track your own activities.
-$('.my-special-links').bind('click', function (e) {
-  groucho.createActivity('my_activity', {
-    'linkText' : $(this).text(),
-    'myProperty' : $(this).attr('data-property')
-  });
+$('.videos a.play').bind('click', function() {
+  groucho.createActivity('watch', {'videoId' : 789});
 });
-// Later...
-myActivites = groucho.getActivities('my_activity');
+```
+
+Retrieve activities later to personalize pages. Example swaps in the last watched video...
+```javascript
+var history = groucho.getActivities({'group' : 'watch'});
+
+if (history.length) {
+  $.get("videos.json?id=" + history[0].videoId, function(data) {
+    $('.recent').find('.title').text(data.title)
+      .find('.graphic').text(data.graphic)
+      .find('a').attr('href', data.url);
+  });
+}
 ```
 
 ### Basic User Info
 
 Wait for data availability and user basic user info.
-
 ```javascript
 (function ($) {
   $(document).ready(function(){

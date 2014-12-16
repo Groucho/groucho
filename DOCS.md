@@ -119,10 +119,11 @@ groucho.config = {
   ]
 }
 ```
-To write your own features, grab browsing history and work with it like this...
+
+To write your own features, grab browsing history and work with it. You'll need to use a little structure to define the condition, in this case: the name of the tracking group...
 
 ```javascript
-$.each(groucho.getActivities('browsing'), function (key, record) {
+$.each(groucho.getActivities(), function (key, record) {
   someComparison(record.property, record.url);
 });
 ```
@@ -270,45 +271,70 @@ var favCategoryTerms = groucho.getFavoriteTerms('*', false, 7);
 You can register your own tracking activities like this...
 
 ```javascript
-// Track your own activities.
-$('.my-special-links').bind('click', function (e) {
-  myObj.linkText = $(this).text()
-  myObj.myProperty = $(this).attr('data-property');
-  groucho.createActivity('my_activity', myObj);
+$('.videos a.play').bind('click', function() {
+  groucho.createActivity('watch', {
+    'videoId' : $(this).data('videoId'),
+    'category' : $(this).data('category'),
+    'videoTitle' : $(this).text()
+  });
 });
 ```
-They will be stored as key/value in jStorage. But can be returned as an array, filtered down to the group specified.
+They will be stored as key/value in jStorage. But can be returned as an array, filtered down to the group specified. Remember to structure the condition.
 
 ```javascript
-var myActivities = groucho.getActivities('my_activity');
+var condition = {'group' : 'watch'},
+    myActivities = groucho.getActivities(condition);
 ```
+
 ```json
 [{
-  "_key" : "track.my_activity.398649600",
-  "linkText" : "Link text from page",
-  "myProperty" : "the-property-value"
+  "_key" : "track.watch.398649600",
+  "videoId" : 456,
+  "category" : "tutorial",
+  "videoTitle" : "Learn About Something"
 }, {
-  "_key" : "track.my_activity.398649999",
-  "linkText" : "Other link text",
-  "myProperty" : "this-property-value"
+  "_key" : "track.watch.398649999",
+  "videoId" : 789,
+  "category" : "fun",
+  "videoTitle" : "Be Entertained"
 }]
 ```
-You can work directly with tracking activites and create your own smart functions...
+You can work directly with tracking activites and create your own smart functions. This example finds tutorial videos watched in the last week...
+
 
 ```javascript
-function myActivitySmarts () {
-  var myActivities = groucho.getActivities('my_activity'),
-      record;
+function recentVideos(timeframe, category) {
+  var query = {
+        'group' : 'watch',
+        'conditions' : [
+          'property' : 'type',
+          'values' : category
+        ]
+      },
+      myActivities = groucho.getActivities(query),
+      now = new Date().getTime(),
+      recentList,
+      timestamp;
 
-  for (i in myActivities) {
-    record = myActivities[i];
-    if (myComparison(record.property, record.url, record._key.split('.')[2])) {
-      count++;
+  for (var i in myActivities) {
+    timestamp = myActivities[i]._key.split('.')[2]);
+    if (timestamp > (now - timeframe)) {
+      returnRecent.push({
+        'videoTitle' : myActivities[i].videoTitle,
+        'url' : myActivities[i].url
+      });
     }
   }
-  return count;
 }
+
+$.each(recentVideos(604800, ['tutorial']), function() {
+  newItem = '<li><a href="' + this.url + '">' + this.videoTitle + '</a></li>';
+  $('ul.recentlyWatched').append(newItem);
+});
 ```
+_...but you shouldn't insert HTML this way._
+
+
 
 ### Local Storage
 This library uses in-browser key/value localStorage with the convenient jStorage abstraction library. If you're new to localStorage, it's no big deal and is a new tool we should all be using.
