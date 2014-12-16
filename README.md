@@ -101,7 +101,7 @@ if (groucho.favoriteTerms.hasOwnProperty(taxonomy)) {
 
 Use page view activity tracking to dig through history and alter UX.
 ```javascript
-var history = groucho.getActivities({'group' : 'browsing'}),
+var history = groucho.getActivities('browsing'),
     links = $('a.promoted'),
     count = 0;
 
@@ -126,7 +126,7 @@ $('.videos a.play').bind('click', function() {
 
 Retrieve activities later to personalize pages. Example swaps in the last watched video...
 ```javascript
-var history = groucho.getActivities({'group' : 'watch'});
+var history = groucho.getActivities('watch');
 
 if (history.length) {
   $.get("videos.json?id=" + history[0].videoId, function(data) {

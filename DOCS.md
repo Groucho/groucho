@@ -123,7 +123,7 @@ groucho.config = {
 To write your own features, grab browsing history and work with it. You'll need to use a little structure to define the condition, in this case: the name of the tracking group...
 
 ```javascript
-$.each(groucho.getActivities({'group' : 'browsing'}), function (key, record) {
+$.each(groucho.getActivities('browsing'), function (key, record) {
   someComparison(record.property, record.url);
 });
 ```
@@ -282,8 +282,7 @@ $('.videos a.play').bind('click', function() {
 They will be stored as key/value in jStorage. But can be returned as an array, filtered down to the group specified. Remember to structure the condition.
 
 ```javascript
-var condition = {'group' : 'watch'},
-    myActivities = groucho.getActivities(condition);
+var myActivities = groucho.getActivities('watch');
 ```
 
 ```json
@@ -304,28 +303,26 @@ You can work directly with tracking activites and create your own smart function
 
 ```javascript
 function recentVideos(timeframe, category) {
-  var query = {
-        'group' : 'watch',
-        'property' : 'type',
-        'values' : [category]
-      },
-      myActivities = groucho.getActivities(query),
+  var conditions = [{'type' : [category]}],
+      activityList = groucho.getActivities('watch', conditions),
       now = new Date().getTime(),
-      recentList,
+      recentList = [],
       timestamp;
 
-  for (var i in myActivities) {
-    timestamp = myActivities[i]._key.split('.')[2]);
+  for (var i in activityList) {
+    timestamp = activityList[i]._key.split('.')[2]);
     if (timestamp > (now - timeframe)) {
-      returnRecent.push({
-        'videoTitle' : myActivities[i].videoTitle,
-        'url' : myActivities[i].url
+      recentList.push({
+        'videoTitle' : activityList[i].videoTitle,
+        'url' : activityList[i].url
       });
     }
   }
+
+  return recentList;
 }
 
-$.each(recentVideos(604800, ['tutorial']), function() {
+$.each(recentVideos(604800, 'tutorial'), function() {
   newItem = '<li><a href="' + this.url + '">' + this.videoTitle + '</a></li>';
   $('ul.recentlyWatched').append(newItem);
 });

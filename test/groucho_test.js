@@ -84,7 +84,7 @@
   });
 
   test('Pageview activities', function() {
-    var myResults = groucho.getActivities({'group' : 'browsing'}),
+    var myResults = groucho.getActivities('browsing'),
         fakeData = { 'meainingLess': 'info' },
         timeout = 0;
 
@@ -110,7 +110,7 @@
     history.pushState('', 'New Page Title', window.location + '#another-page');
     // Manually create another browsing record.
     groucho.trackHit();
-    myResults = groucho.getActivities({'group' : 'browsing'});
+    myResults = groucho.getActivities('browsing');
     strictEqual(
       myResults.length,
       2,
@@ -137,7 +137,7 @@
     setTimeout(function () {
 
       strictEqual(
-        groucho.getActivities({'group' : 'fake_thing'}).length,
+        groucho.getActivities('fake_thing').length,
         groucho.config.trackExtent,
         'Tracking activities are kept within the configured extent'
       );
@@ -165,48 +165,52 @@
 
     groucho.getActivities();
 
-    groucho.getActivities({
-      'group' : 'fake_thing',
+    groucho.getActivities('fake_thing');
+
+    groucho.getActivities('wrong');
+
+    groucho.getActivities(
+      'fake_thing',
+      [{'entityBundle'}]
     });
 
     groucho.getActivities({
-      'group' : 'wrong',
+      'fake_thing',
+      [{'entityBundle' : 'article'}]
     });
 
     groucho.getActivities({
-      'group' : 'fake_thing',
-      'property' : 'entityBundle'
+      'fake_thing',
+      [{entityBundle' : ['article']}]
     });
 
     groucho.getActivities({
-      'group' : 'fake_thing',
-      'value' : ['article']
+      'fake_thing',
+      [{'entityBundle' : ['wrong', 'article']}}
     });
 
     groucho.getActivities({
-      'group' : 'fake_thing',
-      'property' : 'entityBundle',
-      'value' : 'article'
+      'fake_thing',
+      ['entityBundle' : ['wrong']}]
     });
 
     groucho.getActivities({
-      'group' : 'fake_thing',
-      'property' : 'entityBundle',
-      'value' : ['article']
+      'fake_thing',
+      [
+        {entityBundle' : ['article']},
+        {entityBundle' : ['article']}
+      ]
     });
 
     groucho.getActivities({
-      'group' : 'fake_thing',
-      'property' : 'entityBundle',
-      'value' : ['wrong', 'article']
-    });
-
-    groucho.getActivities({
-      'group' : 'fake_thing',
-      'property' : 'entityBundle',
-      'value' : ['wrong']
+      'fake_thing',
+      [
+        {entityBundle' : ['article']},
+        {entityBundle' : ['profile', 'blog']}
+      ]
     });
 */
+
   });
 
   module('Favorites');

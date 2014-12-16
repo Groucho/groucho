@@ -97,7 +97,7 @@ var groucho = window.groucho || {};
    */
   groucho.createActivity = function createActivity(group, data) {
 
-    var results = groucho.getActivities({'group' : group}),
+    var results = groucho.getActivities(group),
         n = new Date().getTime(),
         diff = 0;
 
@@ -116,22 +116,80 @@ var groucho = window.groucho || {};
   /**
    * Access records of a specific tracking group.
    *
-   * @param {object} query
-   *   Strucutured conditions for activity lookup: {group, property, [values]}.
+   * @param {string} group
+   *   Strucutured conditions for activity lookup: {type, [conditionList]}.
+   * @param {array} conditions
+   *   List of acceptable property [key/[values]] objects.
    *
    * return {array}
    *   List of tracking localStorage entries.
    */
-  groucho.getActivities = function getActivities(query) {
+  groucho.getActivities = function getActivities(type, conditionList) {
 
-    var conditions = query || {},
-        group = (conditions.hasOwnProperty('group')) ? conditions.group : false,
-        property = (conditions.hasOwnProperty('property')) ? conditions.property : false,
-        values = (conditions.hasOwnProperty('values')) ? conditions.values : false,
+    // Optional params.
+    var group = type || false,
+        conditions = conditionList || false,
         groupMatch = new RegExp("^track." + group + ".", "g"),
         results = $.jStorage.index(),
         returnVals = [],
         record;
+
+    /**
+     * Confirm properties are of desired values.
+     * NOTE: String comparisons only!
+     *
+     * @param  {array} conditions
+     *   List of acceptable property [key/[values]] objects.
+     * @param  {string} record
+     *   History record to check against.
+     *
+     * @return {boolean}
+     *   Result of match check.
+     */
+    function checkProperties(conditions, record) {
+      // Check all conditions, be picky about type.
+      if (conditions && conditions instanceof Array) {
+        for (var i in conditions) {
+          // Confirm an acceptable value.
+          if (checkValues(i, conditions[i], record)) {
+            addRecord(record);
+          }
+
+        }
+      }
+      else {
+        // No conditions, or wrong type-- add everything.
+        addRecord(record);
+      }
+    }
+
+    /**
+     * Confirm one of values matches the record.
+     * NOTE: String comparisons only!
+     *
+     * @param  {string} property
+     *   Property to check.
+     * @param {array} values
+     *   List of acceptable values.
+     * @param  {string} record
+     *   History record to check against.
+     *
+     * @return {boolean}
+     *   Result of match check.
+     */
+    function checkValues(property, values, record) {
+      // Check all values, be picky about type.
+      if (values instanceof Array) {
+        for (var i in values) {
+          // Confirm an acceptable value.
+          if (record.hasOwnProperty(property) && record.property === values[i]) {
+            addRecord(record);
+            // Only need one match per value set.
+            break;
+          }
+        }
+      }
+    }
 
     /**
      * Grab record from storage, add to returns.
@@ -146,53 +204,19 @@ var groucho = window.groucho || {};
       returnVals.push(record);
     }
 
-    /**
-     * Confirm property is of desired values.
-     * NOTE: String comparison only!
-     *
-     * @param  {string} property
-     *   Name of record property.
-     * @param  {array} values
-     *   List of acceptable values.
-     * @param  {string} record
-     *   Record value to check.
-     *
-     * @return {boolean}
-     *   Result of match check.
-     */
-    function checkProperty(property, values, record) {
-      // Confirm conditions required.
-      if (property && values) {
-        // Picky about types.
-        if (typeof property === 'string' && values instanceof Array) {
-          for (var i in values) {
-            // Confirm an acceptable value.
-            if (record.hasOwnProperty(property) && record.property === values[i]) {
-              addRecord(record);
-              // Only need one match per value set.
-              break;
-            }
-          }
-        }
-      }
-      else {
-        // Property or values not in conditions.
-        addRecord(record);
-      }
-    }
 
     // Look through storage index.
     for (var i in results) {
       // Remove unwanted types and return records.
       if (group) {
         if (results[i].match(groupMatch) !== null) {
-          // Move on to checking property or just add.
-          checkProperty(property, values, results[i]);
+          // Move on to checking conditions (potentially just add it).
+          checkProperties(conditions, results[i]);
         }
       }
       else {
         // Just check property or just add.
-        checkProperty(property, values, results[i]);
+        checkProperties(conditions, results[i]);
       }
     }
 
@@ -213,7 +237,7 @@ var groucho = window.groucho || {};
    */
   groucho.getFavoriteTerms = function getFavoriteTerms(vocab, returnAll, threshold) {
 
-    var results = groucho.getActivities({'group' : 'browsing'}),
+    var results = groucho.getActivities('browsing'),
         termProp = groucho.config.taxonomyProperty,
         pages = [],
         returnTerms = {},
