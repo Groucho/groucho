@@ -149,11 +149,12 @@ console.log("Executed: " + this.name);
      */
     findOnPage: function findOnPage() {
       $(document).keypress('f', function (e) {
-        if (e.ctrlKey)
+        if (e.ctrlKey) {
           groucho.createActivity('webIQ', { 'type': this.name });
 
 console.log("Executed: " + this.name);
 
+        }
       });
     },
 
@@ -175,7 +176,7 @@ console.log("Executed: " + this.name);
      */
     repeatPage: function repeatPage() {
       $('a').click(function() {
-        if (this.href = location.href) {
+        if (this.href === location.href) {
           // Allow a threshold, persistent.
           if (checkThreshold(this.name, groucho.getActivities('webIQ:' + this.name).length)) {
             groucho.createActivity('webIQ', { 'type': this.name });
