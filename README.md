@@ -101,7 +101,7 @@ if (groucho.favoriteTerms.hasOwnProperty(taxonomy)) {
 
 Use page view activity tracking to dig through history and alter UX.
 ```javascript
-var history = groucho.getActivities(),
+var history = groucho.getActivities({'group' : 'browsing'}),
     links = $('a.promoted'),
     count = 0;
 

@@ -159,7 +159,7 @@
   });
 
   //@todo Confirm granular activity request work.
-  test('Activity retrieval', function() {
+  test('Activity retrieval', 0, function() {
 
 /*
 

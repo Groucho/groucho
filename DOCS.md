@@ -123,7 +123,7 @@ groucho.config = {
 To write your own features, grab browsing history and work with it. You'll need to use a little structure to define the condition, in this case: the name of the tracking group...
 
 ```javascript
-$.each(groucho.getActivities(), function (key, record) {
+$.each(groucho.getActivities({'group' : 'browsing'}), function (key, record) {
   someComparison(record.property, record.url);
 });
 ```
@@ -306,10 +306,8 @@ You can work directly with tracking activites and create your own smart function
 function recentVideos(timeframe, category) {
   var query = {
         'group' : 'watch',
-        'conditions' : [
-          'property' : 'type',
-          'values' : category
-        ]
+        'property' : 'type',
+        'values' : [category]
       },
       myActivities = groucho.getActivities(query),
       now = new Date().getTime(),
