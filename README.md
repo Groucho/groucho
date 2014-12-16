@@ -18,41 +18,39 @@ This library uses in-browser localStorage to track people. Client-side activitie
 Include the dependencies on your pages, add groucho configs if you want to deviate from defaults, and output your data layer attributes. Your HTML should look a bit like this...
 
 ```html
-<head>
   <script src="jquery.min.js"></script>
   <script src="json2.min.js"></script>
   <script src="jstorage.min.js"></script>
   <script src="data-layer-helper.js"></script>
   <script src="groucho.min.js"></script>
   <script>
-  var groucho = window.groucho || {};
-  groucho.config = {
-    'taxonomyProperty': 'tags',
-    'trackExtent': 50,
-    'favThreshold': 1,
-    'trackProperties': ['type', 'tags']
-  };
-  </script>
-</head>
-<body>
-  <script>
-  dataLayer = [{
-    "pageId" : 123,
-    "title" : "My Cool Page",
-    "type" : "article",
-    "tags" : {
-      "my_category" : {
-        "123" : "My Term",
-        "456" : "My Other Term"
+    dataLayer = [{
+      "pageId" : 123,
+      "title" : "My Cool Page",
+      "type" : "article",
+      "tags" : {
+        "my_category" : {
+          "123" : "My Term",
+          "456" : "My Other Term"
+        },
+        "my_types" : {
+          "555" : "My Type",
+          "222" : "Another Type"
+        }
       },
-      "my_types" : {
-        "555" : "My Type",
-        "222" : "Another Type"
-      }
-    },
-    'myProperty' : 'my value'
-  }];
+      'myProperty' : 'my value'
+    }];
   </script>
+  <script>
+    var groucho = window.groucho || {};
+    groucho.config = {
+      'taxonomyProperty': 'tags',
+      'trackExtent': 50,
+      'favThreshold': 1,
+      'trackProperties': ['type', 'tags']
+    };
+  </script>
+</body>
 ```
 _Tested with jQuery: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1_
 
