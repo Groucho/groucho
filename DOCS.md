@@ -2,56 +2,100 @@ Groucho Docs
 ==============
 
 * __[Getting started](#getting-started)__
- * [User data space](#user-space) - standardized and guaranteed
- * [Page meta data](#meta-data-output) - available properties
-* __[Pageview tracking](#pageview-tracking)__
- * Rich user browsing history
+ * [Install](#install) - dependencies, config, dataLayer.
+ * [User data space](#user-space) - standardized and guaranteed.
+ * [Page meta data](#meta-data-output) - available properties.
 * __[Favorite terms](#favorite-terms)__
- * Aggregated profiling at the ready _(skip to the goodies)_
-* __[Custom tracking](#custom-tracking)__
+ * [Concepts](#concepts) - aggregated profiling at the ready.
+ * [Advanced queries](#advanced-queries) - control what data is returned.
+* __[Personalize](#personalize)__
+ * Adjust page content per user.
+* [Pageview tracking](#pageview-tracking)
+ * Rich user browsing history.
+* [Custom tracking](#custom-tracking)
  * Stash and retrieve your own activities with ease!
-* [Local storage](#local-storage) - data storage basics
+* [Local storage](#local-storage) - data storage basics.
 
 ## Getting Started
-This library uses in-browser localStorage to track people. Client-side activities are stashed, which rely on the presence of on-page meta data in the dataLayer. This is useful for working with cached, non-user-unique pages and adding personalized front-end features on top. Size: 2k.
+This library uses in-browser localStorage to track people and allow easy personalization. Browsing and client-side activities are stashed, which rely on the presence of on-page meta data in the `dataLayer`. This is useful for working with heavily cached, non-user-unique pages and adding user-specific front-end features on top.
 
-### Dependencies
-1. [jQuery](http://jquery.com) - easy to use JS framework.
-1. [jStorage](http://jstorage.info) - localStorage abstraction library [8k].
- * [JSON2](http://cdnjs.com/libraries/json2) - browser compatible JSON methods (if you care) [3k].
-1. [dataLayer](https://developers.google.com/tag-manager/android/v3/reference/com/google/tagmanager/DataLayer) - client-side meta data standard. [See below.](#meta-data-output)
-1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties [2k].
+## Install
+Include the dependencies on your pages, add groucho configs if you want to deviate from defaults, and output your data layer attributes. Your HTML should look a bit like this...
 
-### Install
-Find basic "installation" details in the main [README](https://github.com/tableau-mkt/groucho/blob/master/README.md) file.
+```html
+  <script src="jquery.min.js"></script>
+  <script src="json2.min.js"></script>
+  <script src="jstorage.min.js"></script>
+  <script src="data-layer-helper.js"></script>
+  <script src="groucho.min.js"></script>
+  <script>
+    var groucho = window.groucho || {};
+    groucho.config = {
+      'trackExtent': 50,
+      'taxonomyProperty': 'tags',
+      'favThreshold': 1,
+      'trackProperties': ['type', 'tags', 'myProperty'],
+      'adjustments': [
+        {'status': 'user'},
+        {'my-category': 'favorites'}
+      ]
+    };
+  </script>
+  <script>
+    dataLayer = [{
+      "pageId" : 123,
+      "title" : "My Cool Page",
+      "type" : "article",
+      "tags" : {
+        "my-category" : {
+          "123" : "My Term",
+          "456" : "My Other Term"
+        },
+        "my-types" : {
+          "555" : "My Type",
+          "222" : "Another Type"
+        }
+      },
+      'myProperty' : 'my value'
+    }];
+  </script>
+</body>
+```
+_Tested with jQuery: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1_
+
 
 ### User Space
-One of the basic features is just knowing where a user came from. Data is organized like this...
+One of the basic features is just knowing where a user came from. Access data like this...
+```javascript
+getUserProperty('origin');
+getUserProperty('session_origin');
+```
+
+The local storage data is organized like this...
 
 ```json
+console.log($.jStorage.get('user.origin'));
 {
-  "user.origin" : {
-    "url" : "http://www.mysite.com/some-great-page?param=value",
-    "timestamp" : "398649600",
-    "referrer" : "http://www.anothersite.com/their-linking-page"
-  },
-  "user.session_origin" : {
-    "url" : "http://www.mysite.com/recent-entry-point",
-    "timestamp" : "398649999"
-  }
+  "url" : "http://www.mysite.com/some-great-page?param=value",
+  "timestamp" : "398649600",
+  "referrer" : "http://www.anothersite.com/their-linking-page"
+}
+
+console.log($.jStorage.get('user.session_origin'));
+{
+  "url" : "http://www.mysite.com/recent-entry-point",
+  "timestamp" : "398649999"
 }
 ```
-To stash a single user property it's **recommended** to use the `user.property` key format.
-To access user storage, it's **highly recommended** that you ensure the object is available. There can be a very small amount of time associated with storage libary setup, additionally this keeps JS include order irrelevant which is good for robustness.
+To set your own user property use the `setUserProperty('myProperty', 'value')` function.  To access variables use `getUserProperty('myProperty')`, you get a strcutured return incliding the timestamp if you pass a second param as `true`. _It can be handy to ensure the user object is available; all libraries need to be available, values need to be set, etc. To be super safe, wrap all groucho actions in this deferral._
 
 ```javascript
 (function ($) {
   // Ensure data availability.
   groucho.userDeferred = groucho.userDeferred || $.Deferred();
-
   groucho.userDeferred.done(function () {
     // Act on a user property.
-    var origin = $.jStorage.get('user.origin');
+    var origin = getUserProperty('origin');
     doSomethingNeato(origin.url);
   }
 })(jQuery);
@@ -72,11 +116,11 @@ dataLayer = [{
   "pageType" : "article",
   "authorId" : 555,
   "tags" : {
-    "my_category" : {
+    "my-category" : {
       "123" : "My Term",
       "456" : "My Other Term"
     },
-    "my_types" : {
+    "my-types" : {
       "555" : "My Type",
       "222" : "Another Type"
     }
@@ -92,69 +136,10 @@ var myHelper = new DataLayerHelper(dataLayer);
 alert(myHelper.get('type'));
 ```
 
-## Pageview Tracking
-A user's browsing history is stored per page view. They exist in jStorage as key/value records...
-
-```json
-{
-  "track.browsing.398649600" : {
-    "url" : "http://www.mysite.com/some-great-page",
-    "type" : "blog-post",
-    "myProperty" : "my value"
-  }
-}
-```
-You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored and other options by setting configs on the `groucho.config` object. The tracking extent will be separately used for each type of activity stored.
-
-```javascript
-var groucho = window.groucho || {};
-groucho.config = {
-  'taxonomyProperty' : 'tags',
-  'trackExtent' : 50,
-  'favThreshold' : 1,
-  'trackProperties' : [
-    'pageType',
-    'authorId',
-    'tags'
-  ]
-}
-```
-
-To write your own features, grab browsing history and work with it. You'll need to use a little structure to define the condition, in this case: the name of the tracking group...
-
-```javascript
-$.each(groucho.getActivities('browsing'), function (key, record) {
-  someComparison(record.property, record.url);
-});
-```
-When returned by `groucho.getActivities()` activities will be an array for convenience.
-
-```json
-[{
-  "_key" : "track.my_activity.398649600",
-  "url" : "http://www.mysite.com/some-great-page",
-  "type" : "blog-post",
-  "pageValue" : 1,
-  "tags" : {
-    "my_category" : {
-      "123" : "My Term"
-    }
-  }
-},
-{
-  "_key" : "track.my_activity.398649999",
-  "url" : "http://www.mysite.com/another-page",
-  "type" : "product",
-  "pageValue" : 5,
-  "tags" : {
-    "my_types" : {
-      "555" : "My Type"
-    }
-  }
-}]
-```
 
 ## Favorite Terms
+
+### Concepts
 Now that you're locally stashing user activity-- let's use it. One great use is infering a person's favorite terms from their rich browsing history records. Because we know how many times a person has seen specific tags we can return counts. Recall that it's the `taxonomyProperty` from the global config that determines where tags are stored in meta data, this powers favorites.
 _NOTE: A vocabulary can have more than one term returned if the hit count is the same._ You can request it, easy as pie...
 
@@ -165,12 +150,12 @@ Here's what you get back...
 
 ```json
 {
-  "my_category" : [{
+  "my-category" : [{
     "id" : 123,
     "count" : 12,
     "name" : "My Term"
   }],
-  "my_types" : [{
+  "my-types" : [{
       "id" : 555,
       "count" : 4,
       "name" : "My Type"
@@ -183,42 +168,13 @@ Here's what you get back...
 ```
 The accuracy of user favorites can be improved by adjusting your `favThreshold`, which controls the term view count required to be returned as a favorite. The default is just 1 to allow easily getting setup, but it's recommended to boost that to at least 2 or 3. _You can still manually specify lower thresholds when calling the function._
 
-Once favorites have been built once (with no arguments) it becomes available via `groucho.favoriteTerms` but you can run the function again to regenerate. Use the persistence to build favorites on page-load then access the vocabs you're interested in later.
+Once favorites have been built once (on the page, with no arguments) data becomes available via `groucho.favoriteTerms`, or you can run the function again to generate fresh. Use the persistence to build favorites on page-load then access the vocabs you're interested in later.
 
-A careful and full setup might look like this...
-
-```javascript
-(function ($) {
-  groucho.userDeferred = groucho.userDeferred || $.Deferred();
-  groucho.userDeferred.done(function () {
-    groucho.getFavoriteTerms();
-  });
-})(jQuery);
-```
-Then in another script...
-
-```javascript
-(function ($) {
-  $(document).ready(function() {
-    var taxonomies = ['my_category', 'my_types'];
-    // Set various form inputs.
-    $.each(taxonomies, function(i, vocab) {
-      if (groucho.favoriteTerms.hasOwnProperty(vocab)) {
-        // Set various form inputs.
-        $('select[data-vocab="' + vocab + '"]').val(
-          groucho.favoriteTerms[vocab][0].id
-        );
-      }
-    });
-  });
-})(jQuery);
-```
-
-### Specific Returns
+### Advanced queries
 Limit favorites to just the vocabulary you care about with an argument.
 
 ```javascript
-var favCategoryTerms = groucho.getFavoriteTerms('my_category');
+var favCategoryTerms = groucho.getFavoriteTerms('my-category');
 ```
 ```json
 [{
@@ -228,7 +184,7 @@ var favCategoryTerms = groucho.getFavoriteTerms('my_category');
 You can also request **all term count data**. Default is false. Here shown by vocab...
 
 ```javascript
-var seenCategoryTerms = groucho.getFavoriteTerms('my_category', true);
+var seenCategoryTerms = groucho.getFavoriteTerms('my-category', true);
 ```
 ```json
 [
@@ -243,11 +199,11 @@ var allSeenTerms = groucho.getFavoriteTerms('*', true);
 ```
 ```json
 {
-  "my_category" : [
+  "my-category" : [
     {"id": 123, "count": 12, "name": "My Term"},
     {"id": 456, "count": 3, "name": "My Other Term"}
   ],
-  "my_types" : [
+  "my-types" : [
     {"id": 555, "count": 4, "name": "My Type"},
     {"id": 999, "count": 4, "name": "Another Type"}
     {"id": 876, "count": 1, "name": "Yet Another"}
@@ -261,13 +217,56 @@ var favCategoryTerms = groucho.getFavoriteTerms('*', false, 7);
 ```
 ```json
 {
-  "my_category" : [
+  "my-category" : [
     {"id": "123", "count": 12, "name": "My Term"}
   ]
 }
 ```
 
-## Custom Tracking!
+
+## Personalize
+
+You can easily filter and/or reveal content based on each users' personal preference. The markup allows for both initally hidden and initally shown panes and elements.
+```html
+<div class="personalize">
+  You should
+  <span data-groucho-preferred-media="videos">watch</span>
+  <span data-groucho-preferred-media="podcasts">listen</span>
+  to
+  <span data-groucho-genre="pop">Lady Gaga</span>
+  <span data-groucho-genre="rock">Led Zeppelin</span>
+  and eat
+  <span data-groucho-dietary="vegetarian" class="hidden">kale treats</span>
+  <span data-groucho-dietary="default">pizza</span>
+</div>
+
+<div class="personalize hidden">
+  <a href="/order-history" data-groucho-lead-status="customer">Past Orders</a>
+</div>
+```
+
+When your page is built run the `groucho.personalize()` function. This will find _"panes"_ with the class `personalize` and process each element with any `data-groucho-ADJUSTMENT="VALUE"` data attribute. The suffix must correlate to an adustment registered within: `groucho.config.adjustments`.  You can reference localStorage values in several ways...
+```javascript
+groucho.config.adjustments = {
+  'genre': 'favorites',
+  'dietary': 'user',
+  'preferred-media': {'key': 'myMediaChoice'},
+  'lead-status': {'key': 'CRMConnector', 'property': 'status'}
+};
+groucho.personalizeInit();
+groucho.personalize();
+```
+
+Properties of type `user` refer to those set with `setUserProperty()`, while favorites will search for valid Groucho favorites.  With any `storage` adjustments the localStorage key will obtain a user preference from either strings or  objects.
+
+You can provide default content using `data-groucho-ADJUSTMENT="default"` to pick if no preference exists.  Default elements will act if matching content was found.  Default content is a great place to provide actions that populate favorites or user properties.
+
+NOTE: You'll need to run `groucho.personalizeInit()` in order to hide elements, or opt to include a CSS rule like `.personalize.hidden, .personalize .hidden { display:none }` This library is purely JS at this time.
+
+_This config/DOM structure requires data attribute labels to be unique acress sources, but that's a good limitation._
+
+
+## Custom Tracking
 You can register your own tracking activities like this...
 
 ```javascript
@@ -329,6 +328,68 @@ $.each(recentVideos(604800, 'tutorial'), function() {
 ```
 _...but you shouldn't insert HTML this way._
 
+
+## Pageview Tracking
+A user's browsing history is stored per page view. They exist in jStorage as key/value records...
+
+```json
+{
+  "track.browsing.398649600" : {
+    "url" : "http://www.mysite.com/some-great-page",
+    "type" : "blog-post",
+    "myProperty" : "my value"
+  }
+}
+```
+You'll want to stash specific info with each pageview activity record. You can control which dataLayer properties are stored and other options by setting configs on the `groucho.config` object. The tracking extent will be separately used for each type of activity stored.
+
+```javascript
+var groucho = window.groucho || {};
+groucho.config = {
+  'taxonomyProperty' : 'tags',
+  'trackExtent' : 50,
+  'favThreshold' : 1,
+  'trackProperties' : [
+    'pageType',
+    'authorId',
+    'tags'
+  ]
+}
+```
+
+To write your own features, grab browsing history and work with it. You'll need to use a little structure to define the condition, in this case: the name of the tracking group...
+
+```javascript
+$.each(groucho.getActivities('browsing'), function (key, record) {
+  someComparison(record.property, record.url);
+});
+```
+When returned by `groucho.getActivities()` activities will be an array for convenience.
+
+```json
+[{
+  "_key" : "track.my_activity.398649600",
+  "url" : "http://www.mysite.com/some-great-page",
+  "type" : "blog-post",
+  "pageValue" : 1,
+  "tags" : {
+    "my-category" : {
+      "123" : "My Term"
+    }
+  }
+},
+{
+  "_key" : "track.my_activity.398649999",
+  "url" : "http://www.mysite.com/another-page",
+  "type" : "product",
+  "pageValue" : 5,
+  "tags" : {
+    "my-types" : {
+      "555" : "My Type"
+    }
+  }
+}]
+```
 
 
 ### Local Storage

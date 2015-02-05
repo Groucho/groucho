@@ -10,14 +10,15 @@ var groucho = window.groucho || {};
 
   // Defaults.
   groucho.config = groucho.config || {
-    'taxonomyProperty': 'tags',
     'trackExtent': 50,
+    'taxonomyProperty': 'tags',
     'favThreshold': 1,
     'trackProperties': [
       'title',
       'type',
       'tags'
     ],
+    'adjustments': [],
     'addons': {}
   };
   // Data availability.
@@ -33,25 +34,48 @@ var groucho = window.groucho || {};
 
 
   /**
+   * Set a user value for storage.
+   *
+   * @param {string} varname
+   * @param {string} value
+   */
+  groucho.setUserProperty = function setUserProperty(varName, value) {
+    var now = new Date().getTime();
+    $.jStorage.set('user.' + varName, {
+      'timestamp': now,
+      'value': value
+    });
+  };
+
+
+  /**
+   * Get a user value from storage.
+   *
+   * @param {string} varname
+   * @param {boolean} meta (optional)
+   */
+  groucho.getUserProperty = function getUserProperty(varName, meta) {
+   var property = $.jStorage.get('user.' + varName);
+   return (meta !== null) ? property : property.value;
+  };
+
+
+  /**
    * Stash user origins.
    */
   groucho.trackOrigins = function trackOrigins() {
-
-    var n = new Date().getTime(),
-        hit = {
-          'timestamp': n,
-          'url': window.location.href
+    var hit = {
+          'url': window.location.href,
+          'referrer': document.referrer
         };
 
     // Stash the session entry point.
-    if (!$.jStorage.get('user.session_origin') || !document.referrer) {
-      $.jStorage.set('user.session_origin', hit);
+    if (!groucho.getUserProperty('session_origin') || !document.referrer) {
+      groucho.setUserProperty('session_origin', hit)
     }
-
     // Stash the deep origin.
-    if (!$.jStorage.get('user.origin')) {
-      hit.referrer = document.referrer;
-      $.jStorage.set('user.origin', hit);
+    if (!groucho.getUserProperty('origin')) {
+      groucho.setUserProperty('origin', hit);
     }
 
     // Reliable availability.
@@ -231,6 +255,8 @@ var groucho = window.groucho || {};
    *   The taxonomy vocabulary to collect favorites from.
    * @param {boolean} returnAll
    *   Whether or not to return all term hit counts.
+   * @param {int} threshold
+   *   Number of hits to be returned with favorites.
    *
    * return {array}
    *   List of vocabs with top taxonomy terms and counts.
@@ -369,6 +395,154 @@ var groucho = window.groucho || {};
     }
 
     return returnTerms;
+  };
+
+
+  /**
+   * Initialize personalzation.
+   */
+  groucho.personalizeInit = function personalizeInit() {
+    var hiddenPanes = document.querySelectorAll('.personalize.hidden');
+    for (var p = 0; p < hiddenPanes.length; p++) {
+      hiddenPanes[p].style.display = 'none';
+    }
+  };
+
+
+  /**
+   * Audience-specific content.
+   *
+   * Filter and/or reveal content based on personal preference.
+   */
+  groucho.personalize = function personalize() {
+    var preferences = groucho.adjustments,
+        panes = document.querySelectorAll('.personalize'),
+        source,
+        anyKept;
+
+    /**
+     * Obtain value and label of preference.
+     *
+     * @param {string} label
+     *   Label for preference, both DOM and storage.
+     * @param  {string|object} pref
+     *   Source for preference value.
+     *
+     * @return {array|boolean}
+     *   Preference value and DOM label.
+     */
+    function getPrefDetails(label, source) {
+      var prefValue,
+          favs,
+          container;
+
+      if (source === 'user') {
+        prefValue = groucho.getUserProperty(label);
+      }
+      else if (source === 'favorite') {
+        favs = groucho.getFavoriteTerms(label, false);
+        prefValue = favs[0];
+      }
+      else if (typeof source === 'object') {
+        // Custom localStorage data source.
+        if (source.hasOwnProperty('key') && source.hasOwnProperty('property')) {
+          // Strcutured data source.
+          // @todo Recursive.
+          container = $.jStorage.get(source.key);
+          if (container !== null) {
+            if (container.hasOwnProperty(source.property)) {
+              prefValue = container[source.property];
+            }
+            else {
+              return false;
+            }
+          }
+          else {
+            return false;
+          }
+        }
+        else if (source.hasOwnProperty('key')) {
+          // Simple data source.
+          prefValue = $.jStorage.get(source.key);
+          if (prefValue === null) {
+            return false;
+          }
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
+
+      return {
+        'matchValue': String(prefValue),
+        'domLabel': label
+      };
+    }
+
+
+    /**
+     * Use preferences to alter a pane.
+     *
+     * @todo Sorting.
+     *
+     * @param  {nodeList element}
+     *   Element to act on.
+     * @param  {object} pref
+     *   Qualified preference object.
+     *
+     * @return {bool}
+     *   If relevant content was found.
+     */
+    function applyPrefsToElements(pane, pref) {
+      var anyKept = false,
+          elements,
+          elmVal;
+
+      // All the elements.
+      elements = pane.querySelectorAll('[data-groucho-' + pref.domLabel + ']');
+      if (elements.length > 0) {
+        for (var e = 0; e < elements.length; e++) {
+          // Hide irrelevant.
+          elmVal = elements[e].data('data-groucho-' + pref.domLabel);
+          if (elmVal !== pref.matchValue && elmVal !== 'default') {
+            elements[e].style.display = 'none';
+          }
+          else {
+            // Found.
+            anyKept = true;
+            if ($(elements[e]).hasClass('hidden')) {
+              elements[e].style.display = '';
+            }
+          }
+        }
+      }
+
+      return anyKept;
+    }
+
+
+    // Process each pane.
+    for (var p = 0; p < panes.length; p++) {
+      anyKept = false;
+      // One pass per preference.
+      // @todo Allow mulitple favs per preference group.
+      for (var label in preferences) {
+        if (preferences.hasOwnProperty(label)) {
+          source = getPrefDetails(label, preferences[label]);
+          if (applyPrefsToElements(panes[p], source)) {
+            anyKept = true;
+          }
+        }
+      }
+
+      // Hidden gems were found OR shown pane had nothing good.
+      if ($(panes[p]).hasClass('hidden') === anyKept) {
+        panes[p].style.display = '';
+      }
+    }
   };
 
 })(jQuery, groucho);
