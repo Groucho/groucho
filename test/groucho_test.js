@@ -43,7 +43,7 @@
 
   test('Origins', 3, function() {
     var origin = $.jStorage.get('user.origin'),
-        session_origin = $.jStorage.get('user.session_origin');
+        sessionOrigin = $.jStorage.get('user.sessionOrigin');
 
     // @todo Could perform param slice first or parse the URL for real.
     strictEqual(
@@ -52,7 +52,7 @@
       'Origin should be test file.'
     );
     strictEqual(
-      session_origin.url.split('?')[0].slice(-12),
+      sessionOrigin.url.split('?')[0].slice(-12),
       'groucho.html',
       'Session origin should be test file.'
     );

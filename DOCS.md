@@ -35,7 +35,7 @@ One of the basic features is just knowing where a user came from. Data is organi
     "timestamp" : "398649600",
     "referrer" : "http://www.anothersite.com/their-linking-page"
   },
-  "user.session_origin" : {
+  "user.sessionOrigin" : {
     "url" : "http://www.mysite.com/recent-entry-point",
     "timestamp" : "398649999"
   }
