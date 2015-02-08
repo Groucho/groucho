@@ -36,6 +36,7 @@ module.exports = function(grunt) {
       options: {
         banner: '<%= banner %>',
         mangle: true,
+        sourceMap: 'dist/<%= pkg.name %>.map',
         compress: true
       },
       dist: {

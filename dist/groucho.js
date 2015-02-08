@@ -1,6 +1,6 @@
-/*! Groucho - v0.2.1 - 2014-12-15
+/*! Groucho - v0.2.1 - 2015-02-07
 * https://github.com/tableau-mkt/groucho
-* Copyright (c) 2014 Josh Lind; Licensed MIT */
+* Copyright (c) 2015 Josh Lind; Licensed MIT */
 
 var groucho = window.groucho || {};
 
@@ -26,6 +26,9 @@ var groucho = window.groucho || {};
 
   // React to page load.
   $(document).ready(function () {
+    // Data transforms due to version updates.
+    groucho.schema();
+    // Automatic events.
     groucho.trackOrigins();
     groucho.trackHit();
   });
@@ -43,8 +46,8 @@ var groucho = window.groucho || {};
         };
 
     // Stash the session entry point.
-    if (!$.jStorage.get('user.session_origin') || !document.referrer) {
-      $.jStorage.set('user.session_origin', hit);
+    if (!$.jStorage.get('user.sessionOrigin') || !document.referrer) {
+      $.jStorage.set('user.sessionOrigin', hit);
     }
 
     // Stash the deep origin.
@@ -297,6 +300,24 @@ var groucho = window.groucho || {};
     }
 
     return returnTerms;
+  };
+
+
+  /**
+   * Data transforms due to version updates.
+   */
+  groucho.schema = function schema() {
+    // Update keys.
+    var keys = {
+          'user.sessionOrigin': {'oldKey': 'user.session_origin', 'version': '0.2.0'}
+        };
+
+    for (var newKey in keys) {
+      if (($.jStorage.get(newKey) === null) && ($.jStorage.get(keys[newKey].oldKey) !== null)) {
+        $.jStorage.set(newKey, $.jStorage.set(keys[newKey].oldKey));
+        $.jStorage.deleteKey(keys[newKey].oldKey);
+      }
+    }
   };
 
 })(jQuery, groucho);
