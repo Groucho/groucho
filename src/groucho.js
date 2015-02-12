@@ -71,7 +71,7 @@ var groucho = window.groucho || {};
 
     // Stash the session entry point.
     if (!groucho.getUserProperty('session_origin') || !document.referrer) {
-      groucho.setUserProperty('session_origin', hit)
+      groucho.setUserProperty('session_origin', hit);
     }
     // Stash the deep origin.
     if (!groucho.getUserProperty('origin')) {
@@ -402,9 +402,12 @@ var groucho = window.groucho || {};
    * Initialize personalzation.
    */
   groucho.personalizeInit = function personalizeInit() {
-    var hiddenPanes = document.querySelectorAll('.personalize.hidden');
-    for (var p = 0; p < hiddenPanes.length; p++) {
-      hiddenPanes[p].style.display = 'none';
+    var hiddenPanes = document.querySelectorAll('.personalize.hidden'),
+        pane;
+
+    hiddenPanes = Array.prototype.slice.call(hiddenPanes);
+    while (pane = hiddenPanes.shift()) {
+      pane.style.display = 'none';
     }
   };
 
@@ -417,6 +420,7 @@ var groucho = window.groucho || {};
   groucho.personalize = function personalize() {
     var preferences = groucho.adjustments,
         panes = document.querySelectorAll('.personalize'),
+        pane,
         source,
         anyKept;
 
@@ -498,24 +502,23 @@ var groucho = window.groucho || {};
      */
     function applyPrefsToElements(pane, pref) {
       var anyKept = false,
-          elements,
+          elements = pane.querySelectorAll('[data-groucho-' + pref.domLabel + ']'),
+          elm,
           elmVal;
 
       // All the elements.
-      elements = pane.querySelectorAll('[data-groucho-' + pref.domLabel + ']');
-      if (elements.length > 0) {
-        for (var e = 0; e < elements.length; e++) {
-          // Hide irrelevant.
-          elmVal = elements[e].data('data-groucho-' + pref.domLabel);
-          if (elmVal !== pref.matchValue && elmVal !== 'default') {
-            elements[e].style.display = 'none';
-          }
-          else {
-            // Found.
-            anyKept = true;
-            if ($(elements[e]).hasClass('hidden')) {
-              elements[e].style.display = '';
-            }
+      elements = Array.prototype.slice.call(elements);
+      while (elm = elements.shift()) {
+        // Hide irrelevant.
+        elmVal = elm.getAttribute('data-groucho-' + pref.domLabel);
+        if (elmVal !== pref.matchValue && elmVal !== 'default') {
+          elm.style.display = 'none';
+        }
+        else {
+          // Found.
+          anyKept = true;
+          if (elm.className.match(/\bhidden\b/)) {
+            elm.style.display = '';
           }
         }
       }
@@ -523,24 +526,23 @@ var groucho = window.groucho || {};
       return anyKept;
     }
 
-
     // Process each pane.
-    for (var p = 0; p < panes.length; p++) {
+    panes = Array.prototype.slice.call(panes);
+    while (pane = panes.shift()) {
       anyKept = false;
       // One pass per preference.
       // @todo Allow mulitple favs per preference group.
       for (var label in preferences) {
         if (preferences.hasOwnProperty(label)) {
           source = getPrefDetails(label, preferences[label]);
-          if (applyPrefsToElements(panes[p], source)) {
+          if (applyPrefsToElements(pane, source)) {
             anyKept = true;
           }
         }
       }
-
       // Hidden gems were found OR shown pane had nothing good.
-      if ($(panes[p]).hasClass('hidden') === anyKept) {
-        panes[p].style.display = '';
+      if ($(pane).className.match(/\bhidden\b/) === anyKept) {
+        pane.style.display = '';
       }
     }
   };

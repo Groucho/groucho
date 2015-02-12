@@ -1,6 +1,10 @@
 {
   "name": "Groucho",
   "version": "0.2.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tableau-mkt/groucho.git"
+  },
   "engines": {
     "node": ">= 0.8.0"
   },
