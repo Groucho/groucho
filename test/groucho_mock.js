@@ -19,11 +19,6 @@ window.groucho = window.groucho || {};
     ]
   };
 
-  // Clear out past tests, unless explicitly not.
-  if (!location.href.match(/\?noflush\=|&noflush\=/)) {
-    groucho.storage.flush();
-  }
-
 })(jQuery, groucho);
 
 // Page meta data.

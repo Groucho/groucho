@@ -1,4 +1,8 @@
-(function($) {
+/**
+ * @file QUnit tests.
+ */
+
+(function ($, groucho) {
   /*
     ======== A Handy Little QUnit Reference ========
     http://api.qunitjs.com/
@@ -301,4 +305,4 @@
     );
   });
 
-}(jQuery));
+}(jQuery, groucho));

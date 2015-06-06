@@ -18,7 +18,8 @@ module.exports = function(grunt) {
     concat: {
       options: {
         banner: '<%= banner %>',
-        stripBanners: true
+        stripBanners: true,
+        sourceMap :true
       },
       dist: {
         src: ['src/*.js'],
@@ -36,7 +37,9 @@ module.exports = function(grunt) {
       options: {
         banner: '<%= banner %>',
         mangle: true,
-        sourceMap: 'dist/<%= pkg.name %>.map',
+        sourceMap: true,
+        sourceMapIncludeSources: true,
+        sourceMapIn: 'dist/<%= pkg.name %>.map',
         compress: true
       },
       dist: {

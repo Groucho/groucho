@@ -15,11 +15,13 @@
  * };
  */
 
+var groucho = window.groucho || {};
+
 (function grouchoStorage($, g) {
 
   // Flexible storage backend.
   var storage = g.storage || false,
-      config = g.config.storage || {
+      config = (g.hasOwnProperty('config') && g.config.storage) || {
         set: 'set',
         get: 'get',
         remove: 'deleteKey',
@@ -30,7 +32,7 @@
       error;
 
   // jStorage default.
-  if (!storage && $.hasOwnProperty('jStorage') && (typeof $.jStorage === 'function')) {
+  if (!storage && $.hasOwnProperty('jStorage') && (typeof $.jStorage === 'object')) {
     storage = $.jStorage;
   }
 
@@ -39,46 +41,45 @@
     console.error('No localStorage backend libary');
   };
 
+
   // Scafold abstract storage.
-  g.storage = {
+  g.storage = storage || {};
 
-    /**
-     * Set localStorage item.
-     *
-     * @param {string} id
-     * @param {string} value
-     */
-    set: storage[config.set] || error,
+  /**
+   * Set localStorage item.
+   *
+   * @param {string} id
+   * @param {string} value
+   */
+  g.storage.set = storage[config.set] || error;
 
-    /**
-     * Get localStorage item.
-     *
-     * @param {string} id
-     */
-    get: storage[config.get] || error,
+  /**
+   * Get localStorage item.
+   *
+   * @param {string} id
+   */
+  g.storage.get = storage[config.get] || error;
 
-    /**
-     * Remove localStorage item.
-     *
-     * @param {string} id
-     */
-    remove: storage[config.remove] || error,
+  /**
+   * Remove localStorage item.
+   *
+   * @param {string} id
+   */
+  g.storage.remove = storage[config.remove] || error;
 
-    /**
-     * Get entire localStorage index.
-     */
-    index: storage[config.index] || error,
+  /**
+   * Get entire localStorage index.
+   */
+  g.storage.index = storage[config.index] || error;
 
-    /**
-     * Determine if storage is available. Only required for testing.
-     */
-    available: storage[config.available] || error,
+  /**
+   * Determine if storage is available. Only required for testing.
+   */
+  g.storage.available = storage[config.available] || error;
 
-    /**
-     * Determine if storage is available. Only required for testing.
-     */
-    clear: storage[config.clear] || error,
-
-  };
+  /**
+   * Determine if storage is available. Only required for testing.
+   */
+  g.storage.clear = storage[config.clear] || error;
 
 })(window.jQuery || window.Zepto || window.$, groucho);
