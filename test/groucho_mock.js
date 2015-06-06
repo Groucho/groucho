@@ -21,7 +21,7 @@ window.groucho = window.groucho || {};
 
   // Clear out past tests, unless explicitly not.
   if (!location.href.match(/\?noflush\=|&noflush\=/)) {
-    $.jStorage.flush();
+    groucho.storage.flush();
   }
 
 })(jQuery, groucho);

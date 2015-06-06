@@ -47,14 +47,14 @@ var groucho = window.groucho || {};
         };
 
     // Stash the session entry point.
-    if (!$.jStorage.get('user.sessionOrigin') || !document.referrer) {
-      $.jStorage.set('user.sessionOrigin', hit);
+    if (!groucho.storage.get('user.sessionOrigin') || !document.referrer) {
+      groucho.storage.set('user.sessionOrigin', hit);
     }
 
     // Stash the deep origin.
-    if (!$.jStorage.get('user.origin')) {
+    if (!groucho.storage.get('user.origin')) {
       hit.referrer = document.referrer;
-      $.jStorage.set('user.origin', hit);
+      groucho.storage.set('user.origin', hit);
     }
 
     // Reliable availability.
@@ -105,13 +105,13 @@ var groucho = window.groucho || {};
         diff = 0;
 
     // Log event, first.
-    $.jStorage.set('track.' + group + '.' + n, data);
+    groucho.storage.set('track.' + group + '.' + n, data);
 
     // Ensure space limit is maintained.
     if (results.length >= groucho.config.trackExtent) {
       diff = results.length - groucho.config.trackExtent;
       // Kill off oldest extra tracking activities.
-      for (var i=0; i<=diff; i++) $.jStorage.deleteKey(results[i]._key);
+      for (var i=0; i<=diff; i++) groucho.storage.remove(results[i]._key);
     }
   };
 
@@ -127,7 +127,7 @@ var groucho = window.groucho || {};
    */
   groucho.getActivities = function getActivities(group) {
 
-    var results = $.jStorage.index(),
+    var results = groucho.storage.index(),
         returnVals = [],
         matchable = new RegExp("^track." + group + ".", "g"),
         record;
@@ -137,7 +137,7 @@ var groucho = window.groucho || {};
       if (group) {
         if (results[i].match(matchable) !== null) {
           // Collect relevant.
-          record = $.jStorage.get(results[i]);
+          record = groucho.storage.get(results[i]);
           // Move key to property.
           record._key = results[i];
           returnVals.push(record);
@@ -145,7 +145,7 @@ var groucho = window.groucho || {};
       }
       else {
         // Collect and return all.
-        record = $.jStorage.get(results[i]);
+        record = groucho.storage.get(results[i]);
         // Move key to property.
         record._key = results[i];
         returnVals.push(record);
@@ -314,9 +314,9 @@ var groucho = window.groucho || {};
         };
 
     for (var newKey in keys) {
-      if (($.jStorage.get(newKey) === null) && ($.jStorage.get(keys[newKey].oldKey) !== null)) {
-        $.jStorage.set(newKey, $.jStorage.set(keys[newKey].oldKey));
-        $.jStorage.deleteKey(keys[newKey].oldKey);
+      if ((groucho.storage.get(newKey) === null) && (groucho.storage.get(keys[newKey].oldKey) !== null)) {
+        groucho.storage.set(newKey, groucho.storage.set(keys[newKey].oldKey));
+        groucho.storage.remove(keys[newKey].oldKey);
       }
     }
   };

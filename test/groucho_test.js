@@ -31,9 +31,9 @@
   module('Basics');
 
   test('Init', 5, function () {
-    ok($.jStorage.storageAvailable(), 'Storage object exists');
-    ok((typeof $.jStorage === "object"), 'Storage object is an object');
-    ok((typeof $.jStorage.index()), 'Index is available');
+    ok((typeof groucho.storage === "object"), 'Storage object is an object');
+    ok(groucho.storage.available(), 'Storage object exists');
+    ok((typeof groucho.storage.index()), 'Index is available');
     ok(groucho, 'Main namespace exists');
     ok((typeof groucho === "object"), 'Namespace object is an object');
   });
@@ -42,8 +42,8 @@
   module('User');
 
   test('Origins', 3, function() {
-    var origin = $.jStorage.get('user.origin'),
-        sessionOrigin = $.jStorage.get('user.sessionOrigin');
+    var origin = groucho.storage.get('user.origin'),
+        sessionOrigin = groucho.storage.get('user.sessionOrigin');
 
     // @todo Could perform param slice first or parse the URL for real.
     strictEqual(
@@ -149,7 +149,7 @@
       // Return all activities.
       strictEqual(
         groucho.getActivities().length,
-        $.jStorage.index().length,
+        groucho.storage.index().length,
         'All storage items returned with general activity call'
       );
 
