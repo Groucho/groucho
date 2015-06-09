@@ -96,6 +96,8 @@
     var myResults = groucho.getActivities('browsing'),
         fakeData = { 'meainingLess': 'info' },
         timeout = 0;
+        origin = groucho.storage.get('user.origin'),
+        sessionOrigin = groucho.storage.get('user.sessionOrigin');
 
     strictEqual(
       myResults.length,
@@ -117,6 +119,12 @@
     delete dataLayer[0][groucho.config.taxonomyProperty].my_types[14];
     dataLayer[0][groucho.config.taxonomyProperty].my_category['27'] = 'Yet Another';
     history.pushState('', 'New Page Title', window.location + '#another-page');
+
+    // Attempt a second origin track, which should do nothing.
+    groucho.trackOrigins();
+    deepEqual(origin, groucho.storage.get('user.origin'), 'Origin remains intact');
+    deepEqual(sessionOrigin, groucho.storage.get('user.sessionOrigin'), 'Session origin remains intact');
+
     // Manually create another browsing record.
     groucho.trackHit();
     myResults = groucho.getActivities('browsing');
