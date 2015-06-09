@@ -39,6 +39,7 @@ var groucho = window.groucho || {};
   // Provide feedback for missing backend.
   error = function error() {
     console.error('No localStorage backend libary');
+    return false;
   };
 
 

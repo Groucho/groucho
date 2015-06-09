@@ -19,6 +19,21 @@ var groucho = window.groucho || {};
     ]
   };
 
+  // Alternate storage backend configs.
+  // @todo Extendable.
+  var store = store || {};
+  if (location.search.match(new RegExp('[?&]store.js=(.*?)(?=&|$)')) !== null) {
+    g.storage = store;
+    g.config.storage = {
+      set: 'set',
+      get: 'get',
+      remove: 'remove',
+      index: 'getAll',
+      available: 'enabled',
+      clear: 'clear'
+    };
+  }
+
 })(window.jQuery || window.Zepto || window.$, groucho);
 
 // Page meta data.

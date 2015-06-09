@@ -36,7 +36,12 @@
 
   test('Init', 5, function () {
     ok((typeof groucho.storage === "object"), 'Storage object is an object');
-    ok(groucho.storage.available(), 'Storage object exists');
+    if (typeof groucho.storage.available === 'function') {
+      ok(groucho.storage.available(), 'Storage available function exists');
+    }
+    else {
+      ok(groucho.storage.available, 'Storage available property exists');
+    }
     ok((typeof groucho.storage.index()), 'Index is available');
     ok(groucho, 'Main namespace exists');
     ok((typeof groucho === "object"), 'Namespace object is an object');

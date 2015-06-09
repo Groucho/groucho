@@ -52,8 +52,8 @@
   libraryParamInclude({
     'default': ['../libs/jstorage/jstorage.js'],
     'storage': [],
-    'jstorage': ['//rawgit.com/andris9/jStorage/v__VERSION__/jstorage.js'],
-    'store.js': ['//rawgit.com/marcuswestin/store.js/blob/v__VERSION__/store.min.js'],
+    'jstorage': ['http://rawgit.com/andris9/jStorage/v__VERSION__/jstorage.min.js'],
+    'store.js': ['http://rawgit.com/marcuswestin/store.js/v__VERSION__/store.min.js'],
     'simplestorage': ['//rawgit.com/andris9/simpleStorage/v__VERSION__/simpleStorage.js'],
     'lawnchair': ['//rawgit.com/brianleroux/lawnchair/__VERSION__/src/Lawnchair.js']
   });
