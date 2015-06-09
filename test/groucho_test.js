@@ -96,8 +96,7 @@
     var myResults = groucho.getActivities('browsing'),
         fakeData = { 'meainingLess': 'info' },
         timeout = 0,
-        origin = groucho.storage.get('user.origin'),
-        sessionOrigin = groucho.storage.get('user.sessionOrigin');
+        origin = groucho.storage.get('user.origin');
 
     strictEqual(
       myResults.length,
@@ -123,7 +122,6 @@
     // Attempt a second origin track, which should do nothing.
     groucho.trackOrigins();
     deepEqual(origin, groucho.storage.get('user.origin'), 'Origin remains intact');
-    deepEqual(sessionOrigin, groucho.storage.get('user.sessionOrigin'), 'Session origin remains intact');
 
     // Manually create another browsing record.
     groucho.trackHit();
