@@ -53,7 +53,7 @@ module.exports = function(grunt) {
         coverage: {
           disposeCollector: true,
           baseUrl: 'http://localhost:<%= connect.server.options.port %>/',
-          src: ['src/groucho.js'],
+          src: ['src/*.js'],
           instrumentedFiles: '.temp/',
           lcovReport: 'report/',
           linesThresholdPct: 85,
@@ -64,8 +64,29 @@ module.exports = function(grunt) {
       },
       all: {
         options: {
-          urls: ['1.5.2', '1.6.4', '1.7.2', '1.8.3', '1.9.1', '1.10.2', '1.11.1', '2.0.3', '2.1.1'].map(function(version) {
-            return 'test/groucho.html?jquery=' + version;
+          urls: [
+            'storage=false',
+            'jquery=1.5.2',
+            'jquery=1.6.4',
+            'jquery=1.7.2',
+            'jquery=1.8.3',
+            'jquery=1.9.1',
+            'jquery=1.10.2',
+            'jquery=1.11.1',
+            'jquery=2.0.3',
+            'jquery=2.1.1',
+            'jquery=2.1.4',
+            'zepto=1.1.0',
+            'zepto=1.1.4',
+            'zepto=1.1.5',
+            'zepto=1.1.6',
+            //'sizzle=2.2.0',
+            //'sizzle=2.0.0',
+            //'sizzle=1.11.1',
+            //'sizzle=1.9.3',
+            //'sizzle=1.7.2',
+            ].map(function(version) {
+              return 'test/groucho.html?' + version;
           })
         }
       }

@@ -305,4 +305,4 @@
     );
   });
 
-}(jQuery, groucho));
+}(window.jQuery || window.Zepto || window.$, groucho));

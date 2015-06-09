@@ -3,12 +3,12 @@
  * Update meta data and settings found within a page.
  */
 
-window.groucho = window.groucho || {};
+var groucho = window.groucho || {};
 
-(function($, groucho) {
+(function($, g) {
 
   // Default configs.
-  groucho.config = {
+  g.config = {
     'taxonomyProperty': 'entityTaxonomy',
     'trackExtent': 5,
     'favThreshold': 1,
@@ -19,7 +19,7 @@ window.groucho = window.groucho || {};
     ]
   };
 
-})(jQuery, groucho);
+})(window.jQuery || window.Zepto || window.$, groucho);
 
 // Page meta data.
 dataLayer = [{

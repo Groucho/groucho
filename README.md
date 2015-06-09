@@ -8,51 +8,58 @@ This library uses in-browser localStorage to track people. Client-side activitie
 ### [Full documentation](DOCS.md)
 
 ### Dependencies
-1. [jQuery](http://jquery.com) - easy to use JS framework.
-1. [jStorage](http://jstorage.info) - localStorage abstraction library [8k].
- * [JSON2](https://github.com/douglascrockford/JSON-js) - browser compatible JSON methods (if you care) [3k].
-1. dataLayer - meta data standard.
-1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access dataLayer properties [2k].
+1. Selector library.
+ * [jQuery](http://jquery.com) - JS library standard.
+   - Tested: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1, 2.1.4
+ * [Zepto](http://zeptojs.com) - Minimal jQuery alternative (core, callbacks, deferred).
+   - Tested: 1.1.0, 1.1.4, 1.1.5, 1.1.6
+1. In-browser storage abstraction library. Configurable! Tested with...
+ * [jStorage](http://jstorage.info) - localStorage or userData [8k].
+ * [Store.js](https://github.com/marcuswestin/store.js) - localStorage, globalStorage, and userData [3k].
+ * [simpleStorage](https://github.com/andris9/simpleStorage) - fork of jStorage [6k].
+ * [Lawnchair](http://brian.io/lawnchair) - smaller than a couch [6k].
+1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access "dataLayer" properties [2k].
+1. [JSON2](https://github.com/douglascrockford/JSON-js) - old browser JSON methods (if you care) [3k].
 
-## Installation
+_(Sizes are minified, pre-gzipped.)_
+
+## Example Installation
 Include the dependencies on your pages, add groucho configs if you want to deviate from defaults, and output your data layer attributes. Your HTML should look a bit like this...
 
 ```html
-  <script src="jquery.min.js"></script>
-  <script src="json2.min.js"></script>
-  <script src="jstorage.min.js"></script>
-  <script src="data-layer-helper.js"></script>
-  <script src="groucho.min.js"></script>
-  <script>
-    dataLayer = [{
-      "pageId" : 123,
-      "title" : "My Cool Page",
-      "type" : "article",
-      "tags" : {
-        "my_category" : {
-          "123" : "My Term",
-          "456" : "My Other Term"
-        },
-        "my_types" : {
-          "555" : "My Type",
-          "222" : "Another Type"
-        }
+<script src="jquery.min.js"></script>
+<script src="json2.min.js"></script>
+<script src="jstorage.min.js"></script>
+<script src="data-layer-helper.js"></script>
+<script src="groucho.min.js"></script>
+<script>
+  dataLayer = [{
+    'pageId' : 123,
+    'title' : 'My Cool Page',
+    'type' : 'article',
+    'tags' : {
+      'my_category' : {
+        '123' : 'My Term',
+        '456' : 'My Other Term'
       },
-      'myProperty' : 'my value'
-    }];
-  </script>
-  <script>
-    var groucho = window.groucho || {};
-    groucho.config = {
-      'taxonomyProperty': 'tags',
-      'trackExtent': 50,
-      'favThreshold': 1,
-      'trackProperties': ['type', 'tags']
-    };
-  </script>
-</body>
+      'my_types' : {
+        '555' : 'My Type',
+        '222' : 'Another Type'
+      }
+    },
+    'myProperty' : 'my value'
+  }];
+</script>
+<script>
+  var groucho = window.groucho || {};
+  groucho.config = {
+    'taxonomyProperty': 'tags',
+    'trackExtent': 50,
+    'favThreshold': 1,
+    'trackProperties': ['type', 'tags']
+  };
+</script>
 ```
-_Tested with jQuery: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1_
 
 ## Examples
 

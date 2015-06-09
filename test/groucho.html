@@ -3,22 +3,29 @@
 <head>
   <meta charset="utf-8">
   <title>Groucho | QUnit testing</title>
-  <!-- Load local jQuery. This can be overridden with a ?jquery=___ param. -->
-  <script src="../libs/jquery-loader.js"></script>
-  <!-- Load local QUnit. -->
-  <link rel="stylesheet" href="../libs/qunit/qunit.css" media="screen">
+  <script src="../libs/library-loader.js"></script>
+  <link rel="stylesheet" href="../libs/qunit/qunit.css">
   <script src="../libs/qunit/qunit.js"></script>
-  <script type="text/javascript">
-    QUnit.config.reorder = false
+  <script>
+    // Force tests to run in order.
+    QUnit.config.reorder = false;
   </script>
-  <!-- Load local lib and tests. -->
+  <!-- Local lib and tests. -->
   <script src="../libs/jstorage/jstorage.js"></script>
   <script src="../libs/json2/json2.js"></script>
   <script src="../libs/data-layer-helper/data-layer-helper.js"></script>
   <script src="groucho_mock.js"></script>
   <script src="../src/storage.js"></script>
   <script src="../src/groucho.js"></script>
-  <script src="groucho_test.js"></script>
+  <script>
+    // Test error conditions.
+    var script = document.createElement('script');
+    script.src = 'groucho_storage_errors.js';
+    if (location.search.match(new RegExp('[?&]storage=false')) === null) {
+      script.src = 'groucho_test.js';
+    }
+    document.head.appendChild(script);
+  </script>
   <script>
     // Clear out past tests, unless explicitly not.
     if (!location.href.match(/\?noflush\=|&noflush\=/)) {
@@ -28,7 +35,15 @@
   <!-- Removing access to jQuery and $. But it'll still be available as _$, if
        you REALLY want to mess around with jQuery in the console. REMEMBER WE
        ARE TESTING A PLUGIN HERE, THIS HELPS ENSURE BEST PRACTICES. REALLY. -->
-  <script>window._$ = jQuery.noConflict(true);</script>
+  <script>
+    if (typeof jQuery !== 'undefined') {
+      window._$ = jQuery.noConflict(true);
+    }
+    else {
+      window._$ = $;
+      delete window.$;
+    }
+  </script>
 </head>
 <body>
   <div id="qunit"></div>
