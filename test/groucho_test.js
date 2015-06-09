@@ -95,7 +95,7 @@
   test('Pageview activities', function() {
     var myResults = groucho.getActivities('browsing'),
         fakeData = { 'meainingLess': 'info' },
-        timeout = 0;
+        timeout = 0,
         origin = groucho.storage.get('user.origin'),
         sessionOrigin = groucho.storage.get('user.sessionOrigin');
 
