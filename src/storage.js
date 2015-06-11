@@ -17,7 +17,9 @@
 
 var groucho = window.groucho || {};
 
-(function grouchoStorage($, g) {
+(function($, g) {
+
+console.log('init storage');
 
   // Flexible storage backend.
   var storage = g.storage || false,
@@ -31,9 +33,15 @@ var groucho = window.groucho || {};
       },
       error;
 
+console.log($.jStorage);
+
   // jStorage default.
   if (!storage && $.hasOwnProperty('jStorage') && (typeof $.jStorage === 'object')) {
     storage = $.jStorage;
+
+console.log('storage default');
+console.log(storage);
+
   }
 
   // Provide feedback for missing backend.
@@ -82,5 +90,9 @@ var groucho = window.groucho || {};
    * Determine if storage is available. Only required for testing.
    */
   g.storage.clear = storage[config.clear] || error;
+
+console.log('storage done');
+console.log(storage);
+console.log(storage[config.clear]);
 
 })(window.jQuery || window.Zepto || window.$, groucho);

@@ -6,7 +6,7 @@
 var groucho = window.groucho || {};
 
 // Functions in need of a little jQuery.
-(function ($, groucho) {
+(function($, groucho) {
 
   // Defaults.
   groucho.config = groucho.config || {

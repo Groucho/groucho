@@ -19,9 +19,10 @@ var groucho = window.groucho || {};
     ]
   };
 
+console.log('mocking storage config');
+
   // Alternate storage backend configs.
   // @todo Extendable.
-  var store = store || {};
   if (location.search.match(new RegExp('[?&]store.js=(.*?)(?=&|$)')) !== null) {
     g.storage = store;
     g.config.storage = {

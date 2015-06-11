@@ -4,6 +4,11 @@
 
 (function ($, g) {
 
+  // Clear out past tests, unless explicitly not.
+  if (!location.href.match(/\?noflush\=|&noflush\=/)) {
+    groucho.storage.clear();
+  }
+
   module('jQuery#groucho', {
     // This will run before each test in this module.
     setup: function() {
