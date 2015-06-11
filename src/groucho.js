@@ -25,15 +25,6 @@ var groucho = window.groucho || {};
   // Make favorites "static".
   groucho.favoriteTerms = false;
 
-  // React to page load.
-  $(document).ready(function () {
-    // Data transforms due to version updates.
-    groucho.schema();
-    // Automatic events.
-    groucho.trackOrigins();
-    groucho.trackHit();
-  });
-
 
   /**
    * Stash user origins.
@@ -310,7 +301,10 @@ var groucho = window.groucho || {};
   groucho.schema = function schema() {
     // Update keys.
     var keys = {
-          'user.sessionOrigin': {'oldKey': 'user.session_origin', 'version': '0.2.0'}
+          'user.sessionOrigin': {
+            'oldKey': 'user.session_origin',
+            'version': '0.2.0'
+          }
         };
 
     for (var newKey in keys) {
@@ -320,5 +314,15 @@ var groucho = window.groucho || {};
       }
     }
   };
+
+
+  // React to page load.
+  $(document).ready(function () {
+    // Data transforms due to version updates.
+    groucho.schema();
+    // Automatic events.
+    groucho.trackOrigins();
+    groucho.trackHit();
+  });
 
 })(window.jQuery || window.Zepto || window.$, groucho);

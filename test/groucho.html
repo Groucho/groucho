@@ -3,12 +3,15 @@
 <head>
   <meta charset="utf-8">
   <title>Groucho | QUnit testing</title>
+  <script src="../node_modules/es6-promise/dist/es6-promise.min.js"></script>
   <script src="../libs/library-loader.js"></script>
   <link rel="stylesheet" href="../libs/qunit/qunit.css">
   <script src="../libs/qunit/qunit.js"></script>
   <script>
     // Force tests to run in order.
     QUnit.config.reorder = false;
+    // Wait for file to load.
+    QUnit.config.autostart = false;
   </script>
   <!-- Local lib and tests. -->
   <script src="../libs/json2/json2.js"></script>
@@ -16,23 +19,33 @@
   <script>
     // External dependency includes.
     libraryLoader()
-      // Internal includes.
       .then(function() {
+        // Test/example setup.
         return simpleInclude('groucho_mock.js');
       })
       .then(function() {
+        // Utilities.
         return simpleInclude('../src/storage.js');
       })
       .then(function() {
+        // Clear out past tests, unless explicitly not.
+        if (!location.href.match(/\?noflush\=|&noflush\=/)) {
+          groucho.storage.clear();
+        }
         return simpleInclude('../src/groucho.js');
       })
-      // Run tests.
       .then(function() {
+        // Which test?
         var test = 'groucho_test.js';
         if (location.search.match(/[?&]storage=false/) !== null) {
           test = 'groucho_storage_errors.js';
         }
-        simpleInclude(test);
+        // Load test.
+        return simpleInclude(test);
+      })
+      .then(function() {
+        // Run tests.
+        QUnit.start();
       });
   </script>
   <script>

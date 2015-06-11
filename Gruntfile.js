@@ -67,6 +67,7 @@ module.exports = function(grunt) {
           // @todo Extendable.
           urls: [
             'storage=false',
+            '',
             'jquery=1.5.2&jstorage=0.4.12',
             'jquery=1.6.4&jstorage=0.4.12',
             'jquery=1.7.2&jstorage=0.4.12',
@@ -79,7 +80,6 @@ module.exports = function(grunt) {
             'jquery=2.1.4&jstorage=0.4.12',
             'zepto=1.1.0&jstorage=0.4.12',
             'zepto=1.1.4&jstorage=0.4.12',
-            'zepto=1.1.5&jstorage=0.4.12',
             'zepto=1.1.6&jstorage=0.4.12',
             // 'jquery=1.5.2&store.js=1.3.17',
             // 'jquery=1.6.4&store.js=1.3.17',

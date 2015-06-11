@@ -19,9 +19,7 @@ var groucho = window.groucho || {};
 
 (function($, g) {
 
-console.log('init storage');
-
-  // Flexible storage backend.
+  // Flexible storage backend config.
   var storage = g.storage || false,
       config = (g.hasOwnProperty('config') && g.config.storage) || {
         set: 'set',
@@ -33,26 +31,40 @@ console.log('init storage');
       },
       error;
 
-console.log($.jStorage);
+  // Default configs (jStorage).
+  g.config.storage = config;
 
   // jStorage default.
   if (!storage && $.hasOwnProperty('jStorage') && (typeof $.jStorage === 'object')) {
     storage = $.jStorage;
-
-console.log('storage default');
-console.log(storage);
-
   }
 
   // Provide feedback for missing backend.
   error = function error() {
-    console.error('No localStorage backend libary');
+    console.log('No localStorage backend libary');
     return false;
   };
 
 
   // Scafold abstract storage.
   g.storage = storage || {};
+
+
+  // @todo New Approach...
+  //
+  // Wrapper function IS configuration.  Otherwise it's never flexible enough.
+  //
+  // g.storage.set = function(id, val) {
+  //   mySetter(id, val);
+  // }
+  //
+  // g.storage.get = function(id) {
+  //   myGetter(id);
+  // }
+  //
+  // g.storage.clear = function() {
+  //   myFlush();
+  // }
 
   /**
    * Set localStorage item.
@@ -90,9 +102,5 @@ console.log(storage);
    * Determine if storage is available. Only required for testing.
    */
   g.storage.clear = storage[config.clear] || error;
-
-console.log('storage done');
-console.log(storage);
-console.log(storage[config.clear]);
 
 })(window.jQuery || window.Zepto || window.$, groucho);

@@ -4,19 +4,16 @@
 
 /* jslint browser:true */
 /* jshint -W060 */
+/* globals Promise:false */
 
 function simpleInclude(path) {
   return new Promise(function (resolve, reject) {
     var script = document.createElement('script');
     script.src = path;
     document.head.appendChild(script);
-
-
-console.log(path);
-
-
+    //console.log('loading: ' + path);
     script.onload = function() {
-      console.log('loaded: ' + path);
+      //console.log('loaded: ' + path);
       resolve();
     };
   });
@@ -55,8 +52,16 @@ function libraryLoader() {
       }
 
       // Load library file(s).
-      for (p in paths) {
-        promises.push(simpleInclude(paths[p]));
+      // promises = paths.map(function(path) {
+      //   simpleInclude(path);
+      // });
+
+      for (var p in paths) {
+        // Allow loading none for error testing.
+        if (paths[p] !== '') {
+          promises.push(simpleInclude(paths[p]));
+        }
+        else return true;
       }
 
       // All paths loaded.
@@ -78,7 +83,7 @@ function libraryLoader() {
       // Storage libraries to allow (returns promise).
       return libraryParamInclude({
         'default': '../libs/jstorage/jstorage.js',
-        'storage': [],
+        'storage': [''],
         'jstorage': ['http://rawgit.com/andris9/jStorage/v__VERSION__/jstorage.min.js'],
         'store.js': ['http://rawgit.com/marcuswestin/store.js/v__VERSION__/store.min.js'],
         'simplestorage': ['//rawgit.com/andris9/simpleStorage/v__VERSION__/simpleStorage.js'],
@@ -88,4 +93,4 @@ function libraryLoader() {
     .then(resolve);
 
   });
-};
+}
