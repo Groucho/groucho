@@ -21,7 +21,12 @@ var groucho = window.groucho || {};
 
   // Alternate storage backend configs.
   // @todo Extendable.
-  if (location.search.match(new RegExp('[?&]store.js=(.*?)(?=&|$)')) !== null) {
+  if (location.search.match(/[?&]store.js=(.*?)(?=&|$)/) !== null) {
+
+
+//console.log('Store.js');
+
+
     var store = window.store || {};
     g.storage = store;
     g.config.storage = {
@@ -53,3 +58,5 @@ dataLayer = [{
     }
   }
 }];
+
+//console.log(groucho);

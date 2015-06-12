@@ -17,8 +17,28 @@
   <script src="../libs/json2/json2.js"></script>
   <script src="../libs/data-layer-helper/data-layer-helper.js"></script>
   <script>
+    // External dependencies.
+    var dependencies = [{
+          'default': '../libs/jquery/jquery.js',
+          'jquery': ['http://code.jquery.com/jquery-__VERSION__.js'],
+          'zepto': [
+            'http://rawgit.com/madrobby/zepto/v__VERSION__/src/zepto.js',
+            'http://rawgit.com/madrobby/zepto/v__VERSION__/src/callbacks.js',
+            'http://rawgit.com/madrobby/zepto/v__VERSION__/src/deferred.js'
+          ]
+          //'sizzle': ['http://rawgit.com/jquery/sizzle/__VERSION__/src/sizzle.js']
+        },
+        {
+          'default': '../libs/jstorage/jstorage.js',
+          'storage': [''],
+          'jstorage': ['http://rawgit.com/andris9/jStorage/v__VERSION__/jstorage.min.js'],
+          'store.js': ['http://rawgit.com/marcuswestin/store.js/v__VERSION__/store.min.js'],
+          'simplestorage': ['//rawgit.com/andris9/simpleStorage/v__VERSION__/simpleStorage.js'],
+          'lawnchair': ['//rawgit.com/brianleroux/lawnchair/__VERSION__/src/Lawnchair.js']
+        }];
+
     // External dependency includes.
-    libraryLoader()
+    libraryLoader(dependencies)
       .then(function() {
         // Test/example setup.
         return simpleInclude('groucho_mock.js');

@@ -6,91 +6,108 @@
 /* jshint -W060 */
 /* globals Promise:false */
 
+/**
+ * File loader with promise emitter.
+ *
+ * @param {string} path
+ */
 function simpleInclude(path) {
   return new Promise(function (resolve, reject) {
     var script = document.createElement('script');
+
     script.src = path;
     document.head.appendChild(script);
     //console.log('loading: ' + path);
+
     script.onload = function() {
       //console.log('loaded: ' + path);
       resolve();
     };
+    script.addEventListener('error', function() {
+      reject();
+    }, true);
   });
 }
 
-function libraryLoader() {
-  return new Promise(function (resolve, reject) {
+
+/**
+ * Load required libraries based on params.
+ *
+ * @param {array} dependencies
+ *   List of dependencies, which can contain mulitple files to load.
+ *
+ * @return {Promise}
+ */
+function libraryLoader(dependencies) {
+  var libPromise,
+      current,
+      previous;
+
+  /**
+   * Load some version of some library.
+   *
+   * @param {array}
+   */
+  function libraryParamInclude(libraries) {
+    var version = false,
+        paths = [],
+        loadedPromise,
+        current,
+        previous;
 
     /**
-     * Load some version of some library.
+     * Replace version mask with actual version in filepath.
+     *
+     * @param {string} pathMask
+     * @param {string} version
+     *
+     * @return {string}
      */
-    function libraryParamInclude(libraries) {
-      var version = false,
-          paths = [],
-          promises = [];
-
-      function replaceVersion(pathMask, version) {
-        return pathMask.replace('__VERSION__', version);
-      }
-
-      // Check for library params (honored in order).
-      for (var lib in libraries) {
-        version = window.location.search.match(new RegExp('[?&]' + lib + '=(.*?)(?=&|$)'));
-
-        if (version && version.length) {
-          // Use each path mask to add another include to the list.
-          libraries[lib].map(function(pathMask) {
-            paths.push(replaceVersion(pathMask, version[1]));
-          });
-        }
-      }
-
-      // Use the default.
-      if (!paths.length) {
-        paths.push(libraries.default);
-      }
-
-      // Load library file(s).
-      // promises = paths.map(function(path) {
-      //   simpleInclude(path);
-      // });
-
-      for (var p in paths) {
-        // Allow loading none for error testing.
-        if (paths[p] !== '') {
-          promises.push(simpleInclude(paths[p]));
-        }
-        else return true;
-      }
-
-      // All paths loaded.
-      return Promise.all(promises);
+    function replaceVersion(pathMask, version) {
+      return pathMask.replace('__VERSION__', version);
     }
 
-    // Selector libraries to allow (returns promise).
-    libraryParamInclude({
-      'default': '../libs/jquery/jquery.js',
-      'jquery': ['http://code.jquery.com/jquery-__VERSION__.js'],
-      'zepto': [
-        'http://rawgit.com/madrobby/zepto/v__VERSION__/src/zepto.js',
-        'http://rawgit.com/madrobby/zepto/v__VERSION__/src/callbacks.js',
-        'http://rawgit.com/madrobby/zepto/v__VERSION__/src/deferred.js'
-      ]
-      //'sizzle': ['http://rawgit.com/jquery/sizzle/__VERSION__/src/sizzle.js']
-    })
-    .then(function() {
-      // Storage libraries to allow (returns promise).
-      return libraryParamInclude({
-        'default': '../libs/jstorage/jstorage.js',
-        'storage': [''],
-        'jstorage': ['http://rawgit.com/andris9/jStorage/v__VERSION__/jstorage.min.js'],
-        'store.js': ['http://rawgit.com/marcuswestin/store.js/v__VERSION__/store.min.js'],
-        'simplestorage': ['//rawgit.com/andris9/simpleStorage/v__VERSION__/simpleStorage.js'],
-        'lawnchair': ['//rawgit.com/brianleroux/lawnchair/__VERSION__/src/Lawnchair.js']
-      });
-    })
-    .then(resolve);
+    // Check for library params (honored in order).
+    for (var lib in libraries) {
+      version = window.location.search.match(new RegExp('[?&]' + lib + '=(.*?)(?=&|$)'));
 
-  });
+      if (version && version.length) {
+        // Use each path mask to add another include to the list.
+        libraries[lib].map(function (pathMask) {
+          paths.push(replaceVersion(pathMask, version[1]));
+        });
+      }
+    }
+
+    // Use the default.
+    if (!paths.length) {
+      paths.push(libraries.default);
+    }
+
+    // Sequential file loading.
+    loadedPromise = paths.reduce(function (previous, current) {
+      return previous.then(function () {
+        if (current) {
+          return simpleInclude(current);
+        }
+        else {
+          return Promise.resolve(true);
+        }
+      });
+      // Initial promise to kick off the chain.
+    }, Promise.resolve(true));
+
+    // All paths loaded.
+    return loadedPromise;
+  }
+
+  // Sequential library loading.
+  libPromise = dependencies.reduce(function (previous, current) {
+    return previous.then(function () {
+      return libraryParamInclude(current);
+    });
+    // Initial promise to kick off the chain.
+  }, Promise.resolve(true));
+
+  return libPromise;
 }
