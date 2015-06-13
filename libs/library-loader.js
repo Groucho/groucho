@@ -7,6 +7,21 @@
 /* globals Promise:false */
 
 /**
+ * Add event, used for waiting to run tests.
+ */
+function addEvent(elem, event, fn) {
+  if (elem.addEventListener) {
+    elem.addEventListener(event, fn, false);
+  }
+  else {
+    elem.attachEvent('on' + event, function() {
+      // set the this pointer same as addEventListener when fn is called
+      return(fn.call(elem, window.event));
+    });
+  }
+}
+
+/**
  * File loader with promise emitter.
  *
  * @param {string} path

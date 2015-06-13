@@ -90,7 +90,6 @@ var groucho = window.groucho || {};
    *   Data to store-- string, int, object.
    */
   groucho.createActivity = function createActivity(group, data) {
-
     var results = groucho.getActivities(group),
         n = new Date().getTime(),
         diff = 0;
@@ -102,7 +101,9 @@ var groucho = window.groucho || {};
     if (results.length >= groucho.config.trackExtent) {
       diff = results.length - groucho.config.trackExtent;
       // Kill off oldest extra tracking activities.
-      for (var i=0; i<=diff; i++) groucho.storage.remove(results[i]._key);
+      for (var i=0; i<=diff; i++) {
+        groucho.storage.remove(results[i]._key);
+      }
     }
   };
 
@@ -120,7 +121,7 @@ var groucho = window.groucho || {};
 
     var results = groucho.storage.index(),
         returnVals = [],
-        matchable = new RegExp("^track." + group + ".", "g"),
+        matchable = (group) ? new RegExp("^track." + group + ".", "g") : false,
         record;
 
     for (var i in results) {
@@ -142,6 +143,14 @@ var groucho = window.groucho || {};
         returnVals.push(record);
       }
     }
+
+    // Ensure sorting regardless of index.
+    returnVals.sort(function (a, b) {
+      if (parseInt(b._key.split('.')[2], 10) > parseInt(a._key.split('.')[2], 10)) {
+        return -1;
+      }
+      else return 1;
+    });
 
     return returnVals;
   };

@@ -3,6 +3,8 @@
  * Update meta data and settings found within a page.
  */
 
+/* globals store:false */
+
 var groucho = window.groucho || {};
 
 (function($, g) {
@@ -10,7 +12,7 @@ var groucho = window.groucho || {};
   // Default configs.
   g.config = {
     'taxonomyProperty': 'entityTaxonomy',
-    'trackExtent': 5,
+    'trackExtent': 10,
     'favThreshold': 1,
     'trackProperties': [
       'entityType',
@@ -20,22 +22,38 @@ var groucho = window.groucho || {};
   };
 
   // Alternate storage backend configs.
-  // @todo Extendable.
+  // @todo Extendable, and select tested backends by name.
   if (location.search.match(/[?&]store.js=(.*?)(?=&|$)/) !== null) {
+    g.storage = {
+      set: function set(id, value) {
+        return store.set(id, value);
+      },
+      get: function get(id) {
+        return store.get(id);
+      },
+      remove: function remove(id) {
+        return store.remove(id);
+      },
+      index: function index() {
 
 
-//console.log('Store.js');
+        // Just get the keys.
+        //var keys = Object.keys(store.getAll());
+        // for (var key in store.getAll()) {
+        //   keys.push(key);
+        // }
 
 
-    var store = window.store || {};
-    g.storage = store;
-    g.config.storage = {
-      set: 'set',
-      get: 'get',
-      remove: 'remove',
-      index: 'getAll',
-      available: 'enabled',
-      clear: 'clear'
+
+        return Object.keys(store.getAll());
+      },
+      available: function available() {
+        // Property vs function.
+        return store.enabled;
+      },
+      clear: function clear() {
+        return store.clear();
+      }
     };
   }
 

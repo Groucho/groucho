@@ -12,6 +12,8 @@
     QUnit.config.reorder = false;
     // Wait for file to load.
     QUnit.config.autostart = false;
+    var pageLoad = false;
+    addEvent(window, 'load', function () { pageLoad = true });
   </script>
   <!-- Local lib and tests. -->
   <script src="../libs/json2/json2.js"></script>
@@ -65,7 +67,12 @@
       })
       .then(function() {
         // Run tests.
-        QUnit.start();
+        if (pageLoad) {
+          QUnit.start();
+        }
+        else {
+          addEvent(window, 'load', function () { QUnit.start() });
+        }
       });
   </script>
   <script>

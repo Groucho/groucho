@@ -123,18 +123,26 @@
     groucho.trackOrigins();
     deepEqual(origin, groucho.storage.get('user.origin'), 'Origin remains intact');
 
-    // Manually create another browsing record.
-    groucho.trackHit();
-    myResults = groucho.getActivities('browsing');
-    strictEqual(
-      myResults.length,
-      2,
-      'Second activity recorded'
-    );
-    ok(
-      !myResults[1][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
-      'Second activity does not include removed taxonomy term.'
-    );
+    stop();
+
+    window.setTimeout(function () {
+
+      // Manually create another browsing record.
+      groucho.trackHit();
+      myResults = groucho.getActivities('browsing');
+      strictEqual(
+        myResults.length,
+        2,
+        'Second activity recorded'
+      );
+
+      start();
+
+      ok(
+        !myResults[1][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
+        'Second activity does not include removed taxonomy term.'
+      );
+    }, 1000);
 
     // Limited tracking extext.
     for (var i = 0; i < (groucho.config.trackExtent + 3); i++) {
