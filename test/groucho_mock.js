@@ -3,7 +3,7 @@
  * Update meta data and settings found within a page.
  */
 
-/* globals store:false */
+/* globals store:false, simpleStorage:false */
 
 var groucho = window.groucho || {};
 
@@ -53,6 +53,31 @@ var groucho = window.groucho || {};
       },
       clear: function clear() {
         return store.clear();
+      }
+    };
+  }
+
+  // SimpleStorage.
+  if (location.search.match(/[?&]simplestorage=(.*?)(?=&|$)/) !== null) {
+    g.storage = {
+      set: function set(id, value) {
+        return simpleStorage.set(id, value);
+      },
+      get: function get(id) {
+        return simpleStorage.get(id);
+      },
+      remove: function remove(id) {
+        return simpleStorage.deleteKey(id);
+      },
+      index: function index() {
+        return simpleStorage.index();
+      },
+      available: function available() {
+        // Property vs function.
+        return simpleStorage.canUse();
+      },
+      clear: function clear() {
+        return simpleStorage.flush();
       }
     };
   }

@@ -30,6 +30,8 @@ var groucho = window.groucho || {};
   };
 
   // jStorage default, or error handler.
+  // @todo Allow only overriding some functions.
+
   if (!g.storage) {
     defaultStorage = ($.hasOwnProperty('jStorage')) && (typeof $.jStorage === 'object');
 

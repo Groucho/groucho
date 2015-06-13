@@ -12,16 +12,21 @@ This library uses in-browser localStorage to track people. Client-side activitie
  * [jQuery](http://jquery.com) - JS library standard.
    - Tested: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1, 2.1.4
  * [Zepto](http://zeptojs.com) - Minimal jQuery alternative (core, callbacks, deferred).
-   - Tested: 1.1.0, 1.1.4, 1.1.5, 1.1.6
+   - Tested: 1.1.0, 1.1.4, 1.1.6
 1. In-browser storage abstraction library. Configurable! Tested with...
  * [jStorage](http://jstorage.info) - localStorage or userData [8k].
+   - Tested: 0.4.12
  * [Store.js](https://github.com/marcuswestin/store.js) - localStorage, globalStorage, and userData [3k].
+   - Tested: 1.3.17
  * [simpleStorage](https://github.com/andris9/simpleStorage) - fork of jStorage [6k].
- * [Lawnchair](http://brian.io/lawnchair) - smaller than a couch [6k].
+   - Tested: 0.1.3
+<!-- * [Lawnchair](http://brian.io/lawnchair) - smaller than a couch [6k].
+   - Tested: 0.6.4 -->
 1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access "dataLayer" properties [2k].
 1. [JSON2](https://github.com/douglascrockford/JSON-js) - old browser JSON methods (if you care) [3k].
 
 _(Sizes are minified, pre-gzipped.)_
+
 
 ## Example Installation
 Include the dependencies on your pages, add groucho configs if you want to deviate from defaults, and output your data layer attributes. Your HTML should look a bit like this...
