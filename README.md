@@ -20,8 +20,6 @@ This library uses in-browser localStorage to track people. Client-side activitie
    - Tested: 1.3.17
  * [simpleStorage](https://github.com/andris9/simpleStorage) - fork of jStorage [6k].
    - Tested: 0.1.3
-<!-- * [Lawnchair](http://brian.io/lawnchair) - smaller than a couch [6k].
-   - Tested: 0.6.4 -->
 1. [Data Layer Helper](https://github.com/google/data-layer-helper) - access "dataLayer" properties [2k].
 1. [JSON2](https://github.com/douglascrockford/JSON-js) - old browser JSON methods (if you care) [3k].
 

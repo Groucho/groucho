@@ -82,6 +82,37 @@ var groucho = window.groucho || {};
     };
   }
 
+  // Lawnchair.
+  if (location.search.match(/[?&]simplestorage=(.*?)(?=&|$)/) !== null) {
+    g.storage = {
+      set: function set(id, value) {
+        Lawnchair({name: 'Groucho'}, function() {
+          this.save({id: value});
+        });
+      },
+      get: function get(id) {
+        Lawnchair({name: 'Groucho'}, function() {
+          this.get(id, function(value) {
+            return value;
+          });
+        });
+      },
+      remove: function remove(id) {
+        return lawnChair.remove(id);
+      },
+      index: function index() {
+        return lawnChair.keys();
+      },
+      available: function available() {
+        // Property vs function.
+        return (typeof lawnChair === 'Object');
+      },
+      clear: function clear() {
+        return lawnChair.nuke();
+      }
+    };
+  }
+
 })(window.jQuery || window.Zepto || window.$, groucho);
 
 // Page meta data.
