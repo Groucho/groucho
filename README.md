@@ -8,7 +8,7 @@ This library uses in-browser localStorage to track people. Client-side activitie
 ### [Full documentation](DOCS.md)
 
 ### Dependencies
-1. Selector library.
+1. Selector library, one of...
  * [jQuery](http://jquery.com) - JS library standard.
    - Tested: 1.5.2, 1.6.4, 1.7.2, 1.8.3, 1.9.1, 1.10.2, 1.11.1, 2.0.3, 2.1.1, 2.1.4
  * [Zepto](http://zeptojs.com) - Minimal jQuery alternative (core, callbacks, deferred).
