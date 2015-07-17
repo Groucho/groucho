@@ -64,6 +64,7 @@ module.exports = function(grunt) {
       },
       all: {
         options: {
+          timeout: 10000,
           // @todo Extendable.
           urls: [
             'storage=false',
