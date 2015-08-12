@@ -1,6 +1,6 @@
 {
   "name": "Groucho",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -8,6 +8,7 @@
     "test": "grunt qunit"
   },
   "devDependencies": {
+    "es6-promise": "^2.3.0",
     "grunt": "~0.4.5",
     "grunt-contrib-clean": "^0.4.1",
     "grunt-contrib-concat": "^0.3.0",

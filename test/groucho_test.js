@@ -1,4 +1,8 @@
-(function($) {
+/**
+ * @file QUnit tests.
+ */
+
+(function ($, groucho) {
   /*
     ======== A Handy Little QUnit Reference ========
     http://api.qunitjs.com/
@@ -31,9 +35,14 @@
   module('Basics');
 
   test('Init', 5, function () {
-    ok($.jStorage.storageAvailable(), 'Storage object exists');
-    ok((typeof $.jStorage === "object"), 'Storage object is an object');
-    ok((typeof $.jStorage.index()), 'Index is available');
+    ok((typeof groucho.storage === "object"), 'Storage object is an object');
+    if (typeof groucho.storage.available === 'function') {
+      ok(groucho.storage.available(), 'Storage available function exists');
+    }
+    else {
+      ok(groucho.storage.available, 'Storage available property exists');
+    }
+    ok((typeof groucho.storage.index()), 'Index is available');
     ok(groucho, 'Main namespace exists');
     ok((typeof groucho === "object"), 'Namespace object is an object');
   });
@@ -42,8 +51,8 @@
   module('User');
 
   test('Origins', 3, function() {
-    var origin = $.jStorage.get('user.origin'),
-        sessionOrigin = $.jStorage.get('user.sessionOrigin');
+    var origin = groucho.storage.get('user.origin'),
+        sessionOrigin = groucho.storage.get('user.sessionOrigin');
 
     // @todo Could perform param slice first or parse the URL for real.
     strictEqual(
@@ -86,7 +95,8 @@
   test('Pageview activities', function() {
     var myResults = groucho.getActivities('browsing'),
         fakeData = { 'meainingLess': 'info' },
-        timeout = 0;
+        timeout = 0,
+        origin = groucho.storage.get('user.origin');
 
     strictEqual(
       myResults.length,
@@ -108,18 +118,31 @@
     delete dataLayer[0][groucho.config.taxonomyProperty].my_types[14];
     dataLayer[0][groucho.config.taxonomyProperty].my_category['27'] = 'Yet Another';
     history.pushState('', 'New Page Title', window.location + '#another-page');
-    // Manually create another browsing record.
-    groucho.trackHit();
-    myResults = groucho.getActivities('browsing');
-    strictEqual(
-      myResults.length,
-      2,
-      'Second activity recorded'
-    );
-    ok(
-      !myResults[1][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
-      'Second activity does not include removed taxonomy term.'
-    );
+
+    // Attempt a second origin track, which should do nothing.
+    groucho.trackOrigins();
+    deepEqual(origin, groucho.storage.get('user.origin'), 'Origin remains intact');
+
+    stop();
+
+    window.setTimeout(function () {
+
+      // Manually create another browsing record.
+      groucho.trackHit();
+      myResults = groucho.getActivities('browsing');
+      strictEqual(
+        myResults.length,
+        2,
+        'Second activity recorded'
+      );
+
+      start();
+
+      ok(
+        !myResults[1][groucho.config.taxonomyProperty].my_types.hasOwnProperty(14),
+        'Second activity does not include removed taxonomy term.'
+      );
+    }, 1000);
 
     // Limited tracking extext.
     for (var i = 0; i < (groucho.config.trackExtent + 3); i++) {
@@ -149,7 +172,7 @@
       // Return all activities.
       strictEqual(
         groucho.getActivities().length,
-        $.jStorage.index().length,
+        groucho.storage.index().length,
         'All storage items returned with general activity call'
       );
 
@@ -301,4 +324,4 @@
     );
   });
 
-}(jQuery));
+}(window.jQuery || window.Zepto || window.$, groucho));

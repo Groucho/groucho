@@ -3,14 +3,16 @@
  * Update meta data and settings found within a page.
  */
 
-window.groucho = window.groucho || {};
+/* globals store:false, simpleStorage:false */
 
-(function($, groucho) {
+var groucho = window.groucho || {};
+
+(function($, g) {
 
   // Default configs.
-  groucho.config = {
+  g.config = {
     'taxonomyProperty': 'entityTaxonomy',
-    'trackExtent': 5,
+    'trackExtent': 10,
     'favThreshold': 1,
     'trackProperties': [
       'entityType',
@@ -19,12 +21,94 @@ window.groucho = window.groucho || {};
     ]
   };
 
-  // Clear out past tests, unless explicitly not.
-  if (!location.href.match(/\?noflush\=|&noflush\=/)) {
-    $.jStorage.flush();
+  // Alternate storage backend configs.
+  // @todo Extendable, and select tested backends by name.
+  if (location.search.match(/[?&]store.js=(.*?)(?=&|$)/) !== null) {
+    g.storage = {
+      set: function set(id, value) {
+        return store.set(id, value);
+      },
+      get: function get(id) {
+        return store.get(id);
+      },
+      remove: function remove(id) {
+        return store.remove(id);
+      },
+      index: function index() {
+        // Just get the keys (browse compatible).
+        var keys = [];
+        for (var key in store.getAll()) {
+          keys.push(key);
+        }
+        return keys;
+      },
+      available: function available() {
+        // Property vs function.
+        return store.enabled;
+      },
+      clear: function clear() {
+        return store.clear();
+      }
+    };
   }
 
-})(jQuery, groucho);
+  // SimpleStorage.
+  if (location.search.match(/[?&]simplestorage=(.*?)(?=&|$)/) !== null) {
+    g.storage = {
+      set: function set(id, value) {
+        return simpleStorage.set(id, value);
+      },
+      get: function get(id) {
+        return simpleStorage.get(id);
+      },
+      remove: function remove(id) {
+        return simpleStorage.deleteKey(id);
+      },
+      index: function index() {
+        return simpleStorage.index();
+      },
+      available: function available() {
+        // Property vs function.
+        return simpleStorage.canUse();
+      },
+      clear: function clear() {
+        return simpleStorage.flush();
+      }
+    };
+  }
+
+  // Lawnchair.
+  // if (location.search.match(/[?&]simplestorage=(.*?)(?=&|$)/) !== null) {
+  //   g.storage = {
+  //     set: function set(id, value) {
+  //       Lawnchair({name: 'Groucho'}, function() {
+  //         this.save({id: value});
+  //       });
+  //     },
+  //     get: function get(id) {
+  //       Lawnchair({name: 'Groucho'}, function() {
+  //         this.get(id, function(value) {
+  //           return value;
+  //         });
+  //       });
+  //     },
+  //     remove: function remove(id) {
+  //       return lawnChair.remove(id);
+  //     },
+  //     index: function index() {
+  //       return lawnChair.keys();
+  //     },
+  //     available: function available() {
+  //       // Property vs function.
+  //       return (typeof lawnChair === 'Object');
+  //     },
+  //     clear: function clear() {
+  //       return lawnChair.nuke();
+  //     }
+  //   };
+  // }
+
+})(window.jQuery || window.Zepto || window.$, groucho);
 
 // Page meta data.
 dataLayer = [{
@@ -43,3 +127,5 @@ dataLayer = [{
     }
   }
 }];
+
+//console.log(groucho);

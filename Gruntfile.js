@@ -18,10 +18,11 @@ module.exports = function(grunt) {
     concat: {
       options: {
         banner: '<%= banner %>',
-        stripBanners: true
+        stripBanners: true,
+        sourceMap :true
       },
       dist: {
-        src: ['src/<%= pkg.name %>.js'],
+        src: ['src/*.js'],
         dest: 'dist/<%= pkg.name %>.js'
       },
     },
@@ -37,6 +38,8 @@ module.exports = function(grunt) {
         banner: '<%= banner %>',
         mangle: true,
         sourceMap: 'dist/<%= pkg.name %>.map',
+        //sourceMapIncludeSources: true,
+        //sourceMapIn: 'dist/<%= pkg.name %>.map',
         compress: true
       },
       dist: {
@@ -50,7 +53,7 @@ module.exports = function(grunt) {
         coverage: {
           disposeCollector: true,
           baseUrl: 'http://localhost:<%= connect.server.options.port %>/',
-          src: ['src/groucho.js'],
+          src: ['src/*.js'],
           instrumentedFiles: '.temp/',
           lcovReport: 'report/',
           linesThresholdPct: 85,
@@ -61,8 +64,70 @@ module.exports = function(grunt) {
       },
       all: {
         options: {
-          urls: ['1.5.2', '1.6.4', '1.7.2', '1.8.3', '1.9.1', '1.10.2', '1.11.1', '2.0.3', '2.1.1'].map(function(version) {
-            return 'test/groucho.html?jquery=' + version;
+          timeout: 10000,
+          // @todo Extendable.
+          urls: [
+            'storage=false',
+            '',
+            // 'jquery=1.5.2&jstorage=0.4.12',
+            // 'jquery=1.6.4&jstorage=0.4.12',
+            // 'jquery=1.7.2&jstorage=0.4.12',
+            // 'jquery=1.8.3&jstorage=0.4.12',
+            // 'jquery=1.9.1&jstorage=0.4.12',
+            // 'jquery=1.10.2&jstorage=0.4.12',
+            // 'jquery=1.11.1&jstorage=0.4.12',
+            // 'jquery=2.0.3&jstorage=0.4.12',
+            // 'jquery=2.1.1&jstorage=0.4.12',
+            // 'jquery=2.1.4&jstorage=0.4.12',
+            // 'zepto=1.1.0&jstorage=0.4.12',
+            // 'zepto=1.1.4&jstorage=0.4.12',
+            // 'zepto=1.1.6&jstorage=0.4.12',
+            'jquery=1.5.2&store.js=1.3.17',
+            'jquery=1.6.4&store.js=1.3.17',
+            'jquery=1.7.2&store.js=1.3.17',
+            'jquery=1.8.3&store.js=1.3.17',
+            'jquery=1.9.1&store.js=1.3.17',
+            'jquery=1.10.2&store.js=1.3.17',
+            'jquery=1.11.1&store.js=1.3.17',
+            'jquery=2.0.3&store.js=1.3.17',
+            'jquery=2.1.1&store.js=1.3.17',
+            'jquery=2.1.4&store.js=1.3.17',
+            'zepto=1.1.0&store.js=1.3.17',
+            'zepto=1.1.4&store.js=1.3.17',
+            'zepto=1.1.6&store.js=1.3.17',
+            'jquery=1.5.2&simplestorage=0.1.3',
+            'jquery=1.6.4&simplestorage=0.1.3',
+            'jquery=1.7.2&simplestorage=0.1.3',
+            'jquery=1.8.3&simplestorage=0.1.3',
+            'jquery=1.9.1&simplestorage=0.1.3',
+            'jquery=1.10.2&simplestorage=0.1.3',
+            'jquery=1.11.1&simplestorage=0.1.3',
+            'jquery=2.0.3&simplestorage=0.1.3',
+            'jquery=2.1.1&simplestorage=0.1.3',
+            'jquery=2.1.4&simplestorage=0.1.3',
+            'zepto=1.1.0&simplestorage=0.1.3',
+            'zepto=1.1.4&simplestorage=0.1.3',
+            'zepto=1.1.6&simplestorage=0.1.3',
+            // 'jquery=1.5.2&lawnchair=0.6.4',
+            // 'jquery=1.6.4&lawnchair=0.6.4',
+            // 'jquery=1.7.2&lawnchair=0.6.4',
+            // 'jquery=1.8.3&lawnchair=0.6.4',
+            // 'jquery=1.9.1&lawnchair=0.6.4',
+            // 'jquery=1.10.2&lawnchair=0.6.4',
+            // 'jquery=1.11.1&lawnchair=0.6.4',
+            // 'jquery=2.0.3&lawnchair=0.6.4',
+            // 'jquery=2.1.1&lawnchair=0.6.4',
+            // 'jquery=2.1.4&lawnchair=0.6.4',
+            // 'zepto=1.1.0&lawnchair=0.6.4',
+            // 'zepto=1.1.4&lawnchair=0.6.4',
+            // 'zepto=1.1.6&lawnchair=0.6.4',
+            //'sizzle=2.2.0',
+            //'sizzle=2.0.0',
+            //'sizzle=1.11.1',
+            //'sizzle=1.9.3',
+            //'sizzle=1.7.2',
+            ].map(function(version) {
+              return 'test/groucho.html?' + version;
           })
         }
       }
