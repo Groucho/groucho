@@ -18,18 +18,37 @@ var groucho = window.groucho || {};
       'entityType',
       'entityTaxonomy',
       'entityBundle'
-    ]
+    ],
+    'ttl': 0
   };
 
   // Alternate storage backend configs.
   // @todo Extendable, and select tested backends by name.
   if (location.search.match(/[?&]store.js=(.*?)(?=&|$)/) !== null) {
     g.storage = {
-      set: function set(id, value) {
-        return store.set(id, value);
+      set: function set(id, value, ttl) {
+        ttl = ttl || g.config.ttl || 0;
+        return store.set(id, {
+          value: value,
+          ttl: ttl,
+          time: new Date().getTime()
+        });
       },
       get: function get(id) {
-        return store.get(id);
+        var info = store.get(id),
+            now = new Date().getTime();
+
+        if (!info || typeof(info.time) === 'undefined' ||
+          typeof(info.ttl) === 'undefined') {
+          return info;
+        }
+
+        if (now - info.time >= info.ttl) {
+          return info.value;
+        }
+        else {
+          return null;
+        }
       },
       remove: function remove(id) {
         return store.remove(id);
@@ -55,8 +74,9 @@ var groucho = window.groucho || {};
   // SimpleStorage.
   if (location.search.match(/[?&]simplestorage=(.*?)(?=&|$)/) !== null) {
     g.storage = {
-      set: function set(id, value) {
-        return simpleStorage.set(id, value);
+      set: function set(id, value, ttl) {
+        ttl = ttl || g.config.ttl || 0;
+        return simpleStorage.set(id, value, {TTL: ttl});
       },
       get: function get(id) {
         return simpleStorage.get(id);

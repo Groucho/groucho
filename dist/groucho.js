@@ -18,6 +18,7 @@ var groucho = window.groucho || {};
           'tags'
         ],
         'lastClicked': 'a',
+        'ttl': 0,
         'addons': {}
       };
 
@@ -394,9 +395,11 @@ var groucho = window.groucho || {};
        *
        * @param {string} id
        * @param {string} value
+       * @param {number} ttl
        */
-      set: (defaultStorage) ? function set(id, value) {
-        return $.jStorage.set(id, value);
+      set: (defaultStorage) ? function set(id, value, ttl) {
+        ttl = ttl || groucho.config.ttl;
+        return $.jStorage.set(id, value, {TTL: ttl});
       } : error,
 
       /**
