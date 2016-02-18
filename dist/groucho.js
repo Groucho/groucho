@@ -68,7 +68,7 @@ var groucho = window.groucho || {};
     if (typeof dataLayer !== 'undefined') {
       for (var i in trackIds) {
         // Safety measure.
-        if (!trackIds.hasOwnProperty(i)) return;
+        if (!trackIds.hasOwnProperty(i)) continue;
 
         // Add each item.
         if (typeof dlHelper.get(trackIds[i]) !== 'undefined') {
@@ -128,7 +128,7 @@ var groucho = window.groucho || {};
 
     for (var i in results) {
       // Safety measure.
-      if (!results.hasOwnProperty(i)) return;
+      if (!results.hasOwnProperty(i)) continue;
 
       // Remove unwanted types and return records.
       if (group) {
@@ -260,7 +260,7 @@ var groucho = window.groucho || {};
       // Walk through all tracking records.
       for (var i in results) {
         // Safety measure.
-        if (!results.hasOwnProperty(i)) return;
+        if (!results.hasOwnProperty(i)) continue;
 
         // Only count each URL once.
         if (typeof pages[results[i].url] === 'undefined' && results[i].hasOwnProperty(termProp)) {
