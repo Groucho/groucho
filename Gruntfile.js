@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         sourceMap: 'dist/<%= pkg.name %>.map',
         //sourceMapIncludeSources: true,
         //sourceMapIn: 'dist/<%= pkg.name %>.map',
-        compress: true
+        compress: {}
       },
       dist: {
         src: '<%= concat.dist.dest %>',

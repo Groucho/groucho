@@ -1,6 +1,6 @@
-/*! Groucho - v0.2.1 - 2015-06-15
+/*! Groucho - v0.2.3 - 2016-02-18
 * https://github.com/tableau-mkt/groucho
-* Copyright (c) 2015 Josh Lind; Licensed MIT */
+* Copyright (c) 2016 Josh Lind; Licensed MIT */
 
 var groucho = window.groucho || {};
 
@@ -65,8 +65,11 @@ var groucho = window.groucho || {};
 
     // Log all configured items.
     // @todo Allow toggling tracking on and off as a localStorage help config override.
-    if (typeof trackExtent !== false && typeof dataLayer !== 'undefined') {
+    if (typeof dataLayer !== 'undefined') {
       for (var i in trackIds) {
+        // Safety measure.
+        if (!trackIds.hasOwnProperty(i)) continue;
+
         // Add each item.
         if (typeof dlHelper.get(trackIds[i]) !== 'undefined') {
           trackVals[trackIds[i]] = dlHelper.get(trackIds[i]);
@@ -124,6 +127,9 @@ var groucho = window.groucho || {};
         record;
 
     for (var i in results) {
+      // Safety measure.
+      if (!results.hasOwnProperty(i)) continue;
+
       // Remove unwanted types and return records.
       if (group) {
         if (results[i].match(matchable) !== null) {
@@ -253,6 +259,9 @@ var groucho = window.groucho || {};
     if (typeof termProp !== 'undefined') {
       // Walk through all tracking records.
       for (var i in results) {
+        // Safety measure.
+        if (!results.hasOwnProperty(i)) continue;
+
         // Only count each URL once.
         if (typeof pages[results[i].url] === 'undefined' && results[i].hasOwnProperty(termProp)) {
           // For de-duping URL hits.
