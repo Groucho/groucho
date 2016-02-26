@@ -98,7 +98,7 @@ var groucho = window.groucho || {};
     if (!groucho.config.lastClicked) return;
     // Bind click event to configured selector.
     if ($.click === 'function') {
-      $(groucho.config.lastClicked).on('click', function () {
+      $(groucho.config.lastClicked).click(function () {
         groucho.storage.set('user.lastClicked', $(this).text());
       });
     }
