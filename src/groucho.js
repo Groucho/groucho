@@ -9,17 +9,26 @@ var groucho = window.groucho || {};
 (function($, groucho) {
 
   // Defaults.
-  groucho.config = groucho.config || {
-    'taxonomyProperty': 'tags',
-    'trackExtent': 50,
-    'favThreshold': 1,
-    'trackProperties': [
-      'title',
-      'type',
-      'tags'
-    ],
-    'addons': {}
-  };
+  var defaults = {
+        'taxonomyProperty': 'tags',
+        'trackExtent': 50,
+        'favThreshold': 1,
+        'trackProperties': [
+          'title',
+          'type',
+          'tags'
+        ],
+        'lastClicked': 'a',
+        'addons': {}
+      };
+
+  // Set empty configs to defaults.
+  for (var config in defaults) {
+    if (!groucho.config.hasOwnProperty(config)) {
+      groucho.config[config] = defaults[config];
+    }
+  }
+
   // Data availability.
   groucho.userDeferred = groucho.userDeferred || $.Deferred();
   // Make favorites "static".
@@ -80,6 +89,20 @@ var groucho = window.groucho || {};
 
     // Stash tracking in localStorage.
     groucho.createActivity('browsing', trackVals);
+  };
+
+
+  /**
+   * Stash last clicked text.
+   */
+  groucho.trackClicks = function () {
+    if (!groucho.config.lastClicked) return;
+    // Bind click event to configured selector.
+    if ($.click === 'function') {
+      $(groucho.config.lastClicked).on('click', function () {
+        groucho.storage.set('user.lastClicked', $(this).text());
+      });
+    }
   };
 
 
@@ -341,6 +364,7 @@ var groucho = window.groucho || {};
     // Automatic events.
     groucho.trackOrigins();
     groucho.trackHit();
+    groucho.trackClicks();
   });
 
 })(window.jQuery || window.Zepto || window.$, groucho);
