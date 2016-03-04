@@ -1,4 +1,4 @@
-/*! Groucho - v0.2.3 - 2016-02-26
+/*! Groucho - v0.2.3 - 2016-03-03
 * https://github.com/tableau-mkt/groucho
 * Copyright (c) 2016 Josh Lind; Licensed MIT */
 
@@ -97,7 +97,7 @@ var groucho = window.groucho || {};
   groucho.trackClicks = function () {
     if (!groucho.config.lastClicked) return;
     // Bind click event to configured selector.
-    if ($.click === 'function') {
+    if (typeof $.fn.click === 'function') {
       $(groucho.config.lastClicked).click(function () {
         groucho.storage.set('user.lastClicked', $(this).text());
       });
