@@ -115,7 +115,7 @@ var groucho = window.groucho || {};
    * @param {string} data
    *   Data to store-- string, int, object.
    */
-  groucho.createActivity = function createActivity(group, data) {
+    groucho.createActivity = function createActivity(group, data) {
     var results = groucho.getActivities(group),
         n = new Date().getTime(),
         diff = 0;
@@ -175,10 +175,17 @@ var groucho = window.groucho || {};
 
     // Ensure sorting regardless of index.
     returnVals.sort(function (a, b) {
+      // Created non-standard or outside Groucho.
+      if (!b.hasOwnProperty('_key')) {
+        return 1;
+      }
+      //
       if (parseInt(b._key.split('.')[2], 10) > parseInt(a._key.split('.')[2], 10)) {
         return -1;
       }
-      else return 1;
+      else {
+        return 1;
+      }
     });
 
     return returnVals;
