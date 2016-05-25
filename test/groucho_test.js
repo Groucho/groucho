@@ -295,7 +295,7 @@
     );
   });
 
-  test('Threhold enforced', 2, function () {
+  test('Threshold enforced', 2, function () {
     var favDataThreshold;
 
     // Alter page meta data for testable activity results.

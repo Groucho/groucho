@@ -19,6 +19,7 @@ var groucho = window.groucho || {};
           'tags'
         ],
         'lastClicked': 'a',
+        'ttl': 0,
         'addons': {}
       };
 
@@ -108,20 +109,21 @@ var groucho = window.groucho || {};
 
   /**
    * Put a tracking record into storage.
-   * @todo Could allow TTL as an optional parameter.
    *
    * @param {string} group
    *   Name of the tracking group to store the data as.
    * @param {string} data
    *   Data to store-- string, int, object.
+   * @param {number} ttl (optional)
+   *   Time-to-live in milliseconds.
    */
-    groucho.createActivity = function createActivity(group, data) {
+  groucho.createActivity = function createActivity(group, data, ttl) {
     var results = groucho.getActivities(group),
         n = new Date().getTime(),
         diff = 0;
 
     // Log event, first.
-    groucho.storage.set('track.' + group + '.' + n, data);
+    groucho.storage.set('track.' + group + '.' + n, data, ttl);
 
     // Ensure space limit is maintained.
     if (results.length >= groucho.config.trackExtent) {

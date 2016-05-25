@@ -59,7 +59,8 @@ Include the dependencies on your pages, add groucho configs if you want to devia
     'taxonomyProperty': 'tags',
     'trackExtent': 50,
     'favThreshold': 1,
-    'trackProperties': ['type', 'tags']
+    'trackProperties': ['type', 'tags'],
+    'ttl': 0
   };
 </script>
 ```
@@ -135,7 +136,7 @@ if (history.length) {
 }
 ```
 
-## Custom Activies
+## Custom Activities
 
 Register your own tracking activities like this...
 
@@ -148,7 +149,7 @@ $('.my-special-links').bind('click', function (e) {
   });
 });
 // Later...
-myActivites = groucho.getActivities('my_activity');
+myActivities = groucho.getActivities('my_activity');
 ```
 
 ### Basic User Info

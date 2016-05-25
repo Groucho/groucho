@@ -42,9 +42,11 @@ var groucho = window.groucho || {};
        *
        * @param {string} id
        * @param {string} value
+       * @param {number} ttl
        */
-      set: (defaultStorage) ? function set(id, value) {
-        return $.jStorage.set(id, value);
+      set: (defaultStorage) ? function set(id, value, ttl) {
+        ttl = ttl || g.config.ttl || 0;
+        return $.jStorage.set(id, value, {TTL: ttl});
       } : error,
 
       /**
