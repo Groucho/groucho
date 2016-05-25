@@ -174,12 +174,18 @@ var groucho = window.groucho || {};
     }
 
     // Ensure sorting regardless of index.
-    returnVals.sort(function (a, b) {
-      if (parseInt(b._key.split('.')[2], 10) > parseInt(a._key.split('.')[2], 10)) {
-        return -1;
-      }
-      else return 1;
-    });
+    if (group) {
+      // Ensure sorting regardless of index.
+      returnVals.sort(function (a, b) {
+        var timeA = b._key.split('.')[2],
+            timeB = a._key.split('.')[2];
+
+        if (parseInt(timeA, 10) > parseInt(timeB, 10)) {
+          return -1;
+        }
+        else return 1;
+      });
+    }
 
     return returnVals;
   };
