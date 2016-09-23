@@ -48,31 +48,6 @@
   });
 
 
-  module('User');
-
-  test('Origins', 3, function() {
-    var origin = groucho.storage.get('user.origin'),
-        sessionOrigin = groucho.storage.get('user.sessionOrigin');
-
-    // @todo Could perform param slice first or parse the URL for real.
-    strictEqual(
-      origin.url.split('?')[0].slice(-12),
-      'groucho.html',
-      'Origin should be test file.'
-    );
-    strictEqual(
-      sessionOrigin.url.split('?')[0].slice(-12),
-      'groucho.html',
-      'Session origin should be test file.'
-    );
-    strictEqual(
-      typeof groucho.userDeferred.resolve,
-      'function',
-      'UserDeferred is a deferred object'
-    );
-  });
-
-
   module('Tracking');
 
   test('Scafolding', function() {
@@ -181,10 +156,20 @@
 
   });
 
+  test('External localStorage use', 1, function () {
+    // Set an unexpected localStorage value to attempt to gum up the works.
+    groucho.storage.set('nonStandardValue', 'junk');
+    strictEqual(
+      typeof groucho.getActivities(),
+      'object',
+      'All activities returned as array even with non-standard value set'
+    );
+  });
+
 
   module('Favorites');
 
-// @todo Need a test for ascending counts in favorites list.
+  // @todo Need a test for ascending counts in favorites list.
 
   test('Default', 7, function () {
     var favData = groucho.getFavoriteTerms();
@@ -321,6 +306,78 @@
       Object.keys(favDataThreshold).length,
       0,
       'Threshold increased beyond term counts, results empty'
+    );
+  });
+
+
+  module('User');
+
+  test('Origins', 3, function() {
+    var origin = groucho.storage.get('user.origin'),
+        sessionOrigin = groucho.storage.get('user.sessionOrigin'),
+        splitURL;
+
+    // @todo Could perform param slice first or parse the URL for real.
+    // @note cli testing includes "?", while in-browser does not.
+    strictEqual(
+      origin.url.split('?')[0].slice(-12),
+      'groucho.html',
+      'Origin should be test file.'
+    );
+    splitURL = sessionOrigin.url.split('?');
+    splitURL = (splitURL.length > 1) ? splitURL[1] : splitURL[0];
+    strictEqual(
+      splitURL.slice(-12),
+      'another-page',
+      'Session origin should be test file.'
+    );
+    strictEqual(
+      typeof groucho.userDeferred.resolve,
+      'function',
+      'UserDeferred is a deferred object'
+    );
+  });
+
+  test('Properties', 6, function () {
+    var userProperties;
+
+    // Set user property, attempt to set again without overriding.
+    groucho.userSet({thing: 'yulp'});
+    groucho.userSet({thing: 'neato'});
+    strictEqual(
+      groucho.storage.get('user.thing'),
+      'yulp',
+      'User property was properly set and not overridden'
+    );
+
+    // Overwrite the user property.
+    groucho.userSet({thing: 'indeed'}, true);
+    strictEqual(
+      groucho.storage.get('user.thing'),
+      'indeed',
+      'User property was overridden when desired'
+    );
+
+    // Full property lookup checks.
+    userProperties = groucho.userGet();
+    ok(
+      userProperties.hasOwnProperty('origin'),
+      'User property "origin" exists'
+    );
+    ok(
+      userProperties.hasOwnProperty('sessionOrigin'),
+      'User property "sessionOrigin" exists'
+    );
+    ok(
+      userProperties.hasOwnProperty('thing'),
+      'User property "thing" exists'
+    );
+
+    // Single propety lookup.
+    strictEqual(
+      groucho.userGet('thing'),
+      'indeed',
+      'Single user property lookup successful'
     );
   });
 
