@@ -343,7 +343,7 @@
 
     // Set user property, attempt to set again without overriding.
     groucho.userSet({thing: 'yulp'});
-    groucho.userSet({thing: 'neato'});
+    groucho.userSet({thing: 'neato'}, true);
     strictEqual(
       groucho.storage.get('user.thing'),
       'yulp',
@@ -351,7 +351,7 @@
     );
 
     // Overwrite the user property.
-    groucho.userSet({thing: 'indeed'}, true);
+    groucho.userSet({thing: 'indeed'});
     strictEqual(
       groucho.storage.get('user.thing'),
       'indeed',

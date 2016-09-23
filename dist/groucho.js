@@ -352,10 +352,10 @@ var groucho = window.groucho || {};
    * Set user properties in localStorage.
    *
    * @param {object} data
-   * @param {boolean} overwrite
-   *   Default is leave existing values (not overwrite).
+   * @param {boolean} keepExisting
+   *   Default is to overwrite value.
    */
-  groucho.userSet = function (data, overwrite) {
+  groucho.userSet = function (data, keepExisting) {
     var userProperty;
 
     // Walk through data and attempt to set.
@@ -364,7 +364,7 @@ var groucho = window.groucho || {};
         // Irregular, skip.
         continue;
       }
-      if (!overwrite) {
+      if (keepExisting) {
         userProperty = groucho.storage.get('user.' + property);
         if (!(userProperty === null || userProperty === undefined)) {
           // Continue to next property.
