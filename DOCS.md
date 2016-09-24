@@ -25,6 +25,12 @@ This library uses in-browser localStorage to track people. Client-side activitie
 ### Install
 Find basic "installation" details in the main [README](https://github.com/tableau-mkt/groucho/blob/master/README.md) file.
 
+#### Alternate localStorage
+You can use Groucho with your favorite local storage abstraction library, rather
+than sticking with jStorage. To do this have a look at [test/groucho_mock.js](https://github.com/tableau-mkt/groucho/blob/master/test/groucho_mock.js)
+and [src/storage.js](https://github.com/tableau-mkt/groucho/blob/master/src/storage.js)
+to find recipes for mapping, or figure out your own.
+
 ### User Space
 One of the basic features is just knowing where a user came from. Data is organized like this...
 

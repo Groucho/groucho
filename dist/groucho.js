@@ -354,8 +354,9 @@ var groucho = window.groucho || {};
    * @param {object} data
    * @param {boolean} keepExisting
    *   Default is to overwrite value.
+   * @param {number} ttl
    */
-  groucho.userSet = function (data, keepExisting) {
+  groucho.userSet = function (data, keepExisting, ttl) {
     var userProperty;
 
     // Walk through data and attempt to set.
@@ -372,7 +373,7 @@ var groucho = window.groucho || {};
         }
       }
       // Set user property, may be skipped above.
-      groucho.storage.set('user.' + property, data[property]);
+      groucho.storage.set('user.' + property, data[property], ttl);
     }
   };
 
