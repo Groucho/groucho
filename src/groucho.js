@@ -5,7 +5,7 @@
 
 var groucho = window.groucho || {};
 
-// Functions in need of a little jQuery.
+// Functions in need of a little jQuery or similar selector library.
 (function($, groucho) {
 
   // Defaults.
@@ -39,8 +39,7 @@ var groucho = window.groucho || {};
   /**
    * Stash user origins.
    */
-  groucho.trackOrigins = function trackOrigins() {
-
+  groucho.trackOrigins = function () {
     var n = new Date().getTime(),
         hit = {
           'timestamp': n,
@@ -66,8 +65,7 @@ var groucho = window.groucho || {};
   /**
    * Track page hit.
    */
-  groucho.trackHit = function trackHit() {
-
+  groucho.trackHit = function () {
     var dlHelper = new DataLayerHelper(dataLayer),
         trackIds = groucho.config.trackProperties,
         trackVals = {
@@ -117,7 +115,7 @@ var groucho = window.groucho || {};
    * @param {number} ttl (optional)
    *   Time-to-live in milliseconds.
    */
-  groucho.createActivity = function createActivity(group, data, ttl) {
+  groucho.createActivity = function (group, data, ttl) {
     var results = groucho.getActivities(group),
         n = new Date().getTime(),
         diff = 0;
@@ -142,11 +140,10 @@ var groucho = window.groucho || {};
    * @param {string} group
    *   Name of the tracking group to return values for.
    *
-   * return {array}
+   * @return {array}
    *   List of tracking localStorage entries.
    */
-  groucho.getActivities = function getActivities(group) {
-
+  groucho.getActivities = function (group) {
     var results = groucho.storage.index(),
         returnVals = [],
         matchable = (group) ? new RegExp("^track." + group + ".", "g") : false,
@@ -175,13 +172,15 @@ var groucho = window.groucho || {};
       }
     }
 
-    // Ensure sorting regardless of index.
+    // Ensure proper key sorting regardless of index result order.
     returnVals.sort(function (a, b) {
       // Created non-standard or outside Groucho.
-      if (!b.hasOwnProperty('_key')) {
-        return 1;
+      // Should always contain an original key which contains a dot.
+      if (!a.hasOwnProperty('_key') || !a._key.match(/\./) ||
+          !b.hasOwnProperty('_key') || !b._key.match(/\./)) {
+        return 0;
       }
-      //
+      // Sort by post-prefix key.
       if (parseInt(b._key.split('.')[2], 10) > parseInt(a._key.split('.')[2], 10)) {
         return -1;
       }
@@ -202,11 +201,10 @@ var groucho = window.groucho || {};
    * @param {boolean} returnAll
    *   Whether or not to return all term hit counts.
    *
-   * return {array}
+   * @return {array}
    *   List of vocabs with top taxonomy terms and counts.
    */
-  groucho.getFavoriteTerms = function getFavoriteTerms(vocab, returnAll, threshold) {
-
+  groucho.getFavoriteTerms = function (vocab, returnAll, threshold) {
     var results = groucho.getActivities('browsing'),
         termProp = groucho.config.taxonomyProperty,
         pages = [],
@@ -220,6 +218,8 @@ var groucho = window.groucho || {};
 
     /**
      * Assemble term counts.
+     *
+     * @param {string} vocName
      */
     function collectTerms(vocName, i) {
       for (var tid in results[i][termProp][vocName]) {
@@ -241,6 +241,8 @@ var groucho = window.groucho || {};
 
     /**
      * Remove lesser count terms.
+     *
+     * @param {string} vocName
      */
     function filterByCount(vocName) {
       var topCount = threshold;
@@ -278,6 +280,8 @@ var groucho = window.groucho || {};
 
     /**
      * Utility: check for empty vocab object.
+     *
+     * @param {object} obj
      */
     function isEmpty(obj) {
       for (var prop in obj) {
@@ -346,9 +350,68 @@ var groucho = window.groucho || {};
 
 
   /**
+   * Set user properties in localStorage.
+   *
+   * @param {object} data
+   * @param {boolean} keepExisting
+   *   Default is to overwrite value.
+   * @param {number} ttl
+   */
+  groucho.userSet = function (data, keepExisting, ttl) {
+    var userProperty;
+
+    // Walk through data and attempt to set.
+    for (var property in data) {
+      if (!data.hasOwnProperty(property) || typeof property !== 'string') {
+        // Irregular, skip.
+        continue;
+      }
+      if (keepExisting) {
+        userProperty = groucho.storage.get('user.' + property);
+        if (!(userProperty === null || userProperty === undefined)) {
+          // Continue to next property.
+          continue;
+        }
+      }
+      // Set user property, may be skipped above.
+      groucho.storage.set('user.' + property, data[property], ttl);
+    }
+  };
+
+
+  /**
+   * Retrieve user data, one or all properties.
+   *
+   * @param {string} property
+   *   Optionally specify a property.
+   *
+   * @return {mixed}
+   */
+  groucho.userGet = function (property) {
+    var index = groucho.storage.index(),
+        userProperties = {},
+        propertyName;
+
+    // Handle single property lookup.
+    if (typeof property !== 'undefined') {
+      return groucho.storage.get('user.' + property);
+    }
+    // Look for all user properties.
+    for (var i in index) {
+      if ((typeof index[i] === 'string') && (index[i].indexOf('user.') === 0)) {
+        propertyName = index[i].replace('user.', '');
+        userProperties[propertyName] = groucho.storage.get(index[i]);
+      }
+    }
+
+    return userProperties;
+  };
+
+
+  /**
    * Data transforms due to version updates.
    */
-  groucho.schema = function schema() {
+  groucho.schema = function () {
     // Update keys.
     var keys = {
           'user.sessionOrigin': {
