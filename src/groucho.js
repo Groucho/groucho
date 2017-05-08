@@ -35,13 +35,16 @@ var groucho = window.groucho || {};
   groucho.favoriteTerms = false;
 
   // React to page load.
-  $(document).ready(function () {
+  $(document).ready(function grouchoInit () {
+    //groucho.personalizeInit();
     // Data transforms due to version updates.
     groucho.schema();
     // Automatic events.
     groucho.trackOrigins();
     groucho.trackHit();
     groucho.trackClicks();
+    //groucho.personalize();
+    //groucho.favoritesInit();
   });
 
 })(window.jQuery || window.Zepto || window.$, groucho);

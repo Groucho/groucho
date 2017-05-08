@@ -7,6 +7,26 @@ var groucho = window.groucho || {};
 (function($, groucho) {
 
   /**
+   * Continually update some properties as favorites are generated.
+   */
+  groucho.favoritesInit = function () {
+    var settings = {};
+    // Sanity check.
+    if (groucho.config.hasOwnProperty('favorites')) {
+      // Discover favorites and create change set.
+      groucho.getFavoriteTerms();
+      $.each(groucho.config.favorites, function (userKey, favorite) {
+        if (groucho.favorites[favorite]) {
+          settings[userKey] = groucho.favorites[favorite];
+        }
+      });
+      // Update all configured favorites.
+      groucho.userSet(settings);
+    }
+  };
+
+
+  /**
    * Use browsing history and find user's top terms.
    *
    * @param {string} vocab

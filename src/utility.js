@@ -177,4 +177,27 @@ var groucho = window.groucho || {};
     }
   };
 
+
+  /**
+   * Get URL query parameter.
+   *
+   * http://stackoverflow.com/questions/19491336
+   *
+   * @param {string} param
+   *
+   * @return {string}
+   */
+   groucho.getQueryParam = function (param) {
+     var sPageURL = window.location.search.substring(1),
+         sURLVariables = sPageURL.split('&'),
+        sParameterName;
+
+     for (var i = 0; i < sURLVariables.length; i++) {
+       sParameterName = sURLVariables[i].split('=');
+       if (sParameterName[0] === param) {
+         return sParameterName[1];
+       }
+     }
+   };
+
 })(window.jQuery || window.Zepto || window.$, groucho);
