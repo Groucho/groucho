@@ -4,21 +4,19 @@
  * Use any local storage backend.
  * Provide simple wrappers for library functions where you do other groucho configs...
  *
- * g.storage.set = function(id, val) {
+ * groucho.storage.set = function(id, val) {
  *   mySetter(id, val);
  * }
  *
- * g.storage.get = function(id) {
+ * groucho.storage.get = function(id) {
  *  myGetter(id);
  * }
- *
- * Include: get(), set(), remove(), index(), just for testing: available(), and clear().
  */
 
 
 var groucho = window.groucho || {};
 
-(function($, g) {
+(function($, groucho) {
 
   var defaultStorage,
       error;
@@ -32,11 +30,11 @@ var groucho = window.groucho || {};
   // jStorage default, or error handler.
   // @todo Allow only overriding some functions.
 
-  if (!g.storage) {
+  if (!groucho.storage) {
     defaultStorage = ($.hasOwnProperty('jStorage')) && (typeof $.jStorage === 'object');
 
     // Assign storage function defaults.
-    g.storage = {
+    groucho.storage = {
       /**
        * Set localStorage item.
        *
@@ -45,7 +43,7 @@ var groucho = window.groucho || {};
        * @param {number} ttl
        */
       set: (defaultStorage) ? function set(id, value, ttl) {
-        ttl = ttl || g.config.ttl || 0;
+        ttl = ttl || groucho.config.ttl || 0;
         return $.jStorage.set(id, value, {TTL: ttl});
       } : error,
 
