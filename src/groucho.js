@@ -31,11 +31,12 @@ var groucho = window.groucho || {};
 
   // Data availability.
   groucho.userDeferred = groucho.userDeferred || $.Deferred();
-  // Make favorites "static".
+  // Make favorites static.
   groucho.favoriteTerms = false;
 
   // React to page load.
   $(document).ready(function grouchoInit () {
+    // Manage page for later adjuments.
     //groucho.personalizeInit();
     // Data transforms due to version updates.
     groucho.schema();
@@ -43,8 +44,10 @@ var groucho = window.groucho || {};
     groucho.trackOrigins();
     groucho.trackHit();
     groucho.trackClicks();
-    //groucho.personalize();
+    // Update configured user preferences.
     //groucho.favoritesInit();
+    // Adjust page.
+    //groucho.personalize();
   });
 
 })(window.jQuery || window.Zepto || window.$, groucho);

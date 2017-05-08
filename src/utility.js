@@ -158,6 +158,30 @@ var groucho = window.groucho || {};
 
 
   /**
+   * Update user preferences via configured URL param overrides.
+   *
+   * @return {object}
+   */
+  groucho.overrides = function () {
+    var settings = {};
+    // Sanity check.
+    if (groucho.config.hasOwnProperty('overrides')) {
+      // Discover all configured override values.
+      $.each(groucho.config.overrides, function (key, value) {
+        var paramVal = groucho.getQueryParam(key),
+            property = typeof(value === 'string') ? value : key;
+        // Value found, set configured property.
+        if (paramVal) {
+          settings[property] = paramVal;
+        }
+      });
+      return settings;
+    }
+    return {};
+  };
+
+
+  /**
    * Data transforms due to version updates. Prevents past use data corruption.
    */
   groucho.schema = function () {
@@ -187,17 +211,17 @@ var groucho = window.groucho || {};
    *
    * @return {string}
    */
-   groucho.getQueryParam = function (param) {
-     var sPageURL = window.location.search.substring(1),
-         sURLVariables = sPageURL.split('&'),
-        sParameterName;
+  groucho.getQueryParam = function (param) {
+   var sPageURL = window.location.search.substring(1),
+       sURLVariables = sPageURL.split('&'),
+       sParameterName;
 
-     for (var i = 0; i < sURLVariables.length; i++) {
-       sParameterName = sURLVariables[i].split('=');
-       if (sParameterName[0] === param) {
-         return sParameterName[1];
-       }
+   for (var i = 0; i < sURLVariables.length; i++) {
+     sParameterName = sURLVariables[i].split('=');
+     if (sParameterName[0] === param) {
+       return sParameterName[1];
      }
-   };
+   }
+  };
 
 })(window.jQuery || window.Zepto || window.$, groucho);

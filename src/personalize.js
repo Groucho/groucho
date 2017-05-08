@@ -54,28 +54,4 @@ var groucho = window.groucho || {};
     });
   };
 
-
-  /**
-   * Update user preferences via configured URL param overrides.
-   *
-   * @return {object}
-   */
-  groucho.overrides = function () {
-    var settings = {};
-    // Sanity check.
-    if (groucho.config.hasOwnProperty('overrides')) {
-      // Discover all configured override values.
-      $.each(groucho.config.overrides, function (key, value) {
-        var paramVal = groucho.getQueryParam(key),
-            property = typeof(value === 'string') ? value : key;
-        // Value found, set configured property.
-        if (paramVal) {
-          settings[property] = paramVal;
-        }
-      });
-      return settings;
-    }
-    return {};
-  };
-
 })(window.jQuery || window.Zepto || window.$, groucho);
