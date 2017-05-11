@@ -1,9 +1,5 @@
 /**
- * @file Library utilities for accessing data strcuture.
- *
- * Helper functions used throughout the library for common operations.
- *
- * groucho.userSet = function({country: "US"});
+ * @file Library utilities for common operations like accessing data strcuture.
  */
 
 var groucho = window.groucho || {};

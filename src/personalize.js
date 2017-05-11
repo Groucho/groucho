@@ -1,10 +1,5 @@
 /**
  * @file Adjust DOM based on user values.
- *
- * <section data-groucho-pane="user.genre" class="hidden">
- *   <span data-groucho="pop">Gaga</span>
- *   <span data-groucho="rock">Zeppelin</span>
- * </section>
  */
 
 var groucho = window.groucho || {};
@@ -37,13 +32,9 @@ var groucho = window.groucho || {};
         // Match found.
         if (userPref === $(this).data('groucho')) {
           anyKept = true;
-          // Reveal item if pane is hidden.
-          if (paneHidden) {
-            $(this).show();
-          }
         }
-        else if (!paneHidden) {
-          // Hide items if pane is not hidden.
+        else {
+          // Hide irrelvant items.
           $(this).hide();
         }
       });
@@ -51,6 +42,15 @@ var groucho = window.groucho || {};
       if (paneHidden && anyKept) {
         $(this).show();
       }
+      // Emit event.
+      $(this).trigger('groucho:personalize', [{
+        classes: $(this).attr('class'),
+        userPref: userPref,
+        overridden: overrides.hasOwnProperty(property),
+        url: window.location.href,
+        paneHidden: paneHidden,
+        anyKept: anyKept
+      }]);
     });
   };
 
