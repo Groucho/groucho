@@ -45,9 +45,9 @@ var groucho = window.groucho || {};
     groucho.trackHit();
     groucho.trackClicks();
     // Update configured user preferences.
-    //groucho.favoritesInit();
+    groucho.favorites();
     // Adjust page.
-    //groucho.personalize();
+    groucho.personalize();
   });
 
 })(window.jQuery || window.Zepto || window.$, groucho);

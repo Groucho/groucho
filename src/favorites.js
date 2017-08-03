@@ -9,7 +9,7 @@ var groucho = window.groucho || {};
   /**
    * Continually update some properties as favorites are generated.
    */
-  groucho.favoritesInit = function () {
+  groucho.favorites = function () {
     var settings = {};
     // Sanity check.
     if (groucho.config.hasOwnProperty('favorites')) {
@@ -94,35 +94,9 @@ var groucho = window.groucho || {};
         }
       }
       // Destroy empty vocabs.
-      if (isEmpty(returnTerms[vocName])) {
+      if (groucho.isEmpty(returnTerms[vocName])) {
         delete returnTerms[vocName];
       }
-    }
-
-    /**
-     * Utility: Term returns should be an array.
-     */
-    function makeArray(obj) {
-      var arr = [];
-      for (var i in obj) {
-        obj[i].id = i;
-        arr.push(obj[i]);
-      }
-      return arr;
-    }
-
-    /**
-     * Utility: check for empty vocab object.
-     *
-     * @param {object} obj
-     */
-    function isEmpty(obj) {
-      for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          return false;
-        }
-      }
-      return true;
     }
 
     // No data will be available.
@@ -164,7 +138,7 @@ var groucho = window.groucho || {};
       if (vocab === '*') {
         for (vocName in returnTerms) {
           // Return arrays of terms.
-          returnTerms[vocName] = makeArray(returnTerms[vocName]);
+          returnTerms[vocName] = groucho.makeArray(returnTerms[vocName]);
         }
 
         // Set favorites on page if no arguments were passed.
@@ -174,7 +148,7 @@ var groucho = window.groucho || {};
       }
       else {
         // // Return array of terms in requested vocabulary.
-        returnTerms = makeArray(returnTerms[vocab]);
+        returnTerms = groucho.makeArray(returnTerms[vocab]);
       }
     }
 

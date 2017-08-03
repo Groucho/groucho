@@ -122,7 +122,7 @@
     // Limited tracking extext.
     for (var i = 0; i < (groucho.config.trackExtent + 3); i++) {
       // Prevent clobbering.
-      timeout = i * 150;
+      timeout = i * 50;
       stop();
       setTimeout(function () {
           groucho.createActivity('fake_thing', fakeData);
@@ -379,6 +379,34 @@
       'indeed',
       'Single user property lookup successful'
     );
+  });
+
+  module('Personalize');
+
+  test('URL params', 1, function() {
+
+    ok(
+      true,
+      'A personalization test ran'
+    );
+
+    // No params shows default, others are hidden.
+
+    // Param shows the appropriate content and no others.
+
+  });
+
+  test('User properties', 1, function() {
+
+    ok(
+      true,
+      'A personalization test ran'
+    );
+
+    // No params shows default, others are hidden.
+
+    // Param shows the appropriate content and no others.
+
   });
 
 }(window.jQuery || window.Zepto || window.$, groucho));

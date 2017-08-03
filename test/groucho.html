@@ -46,6 +46,10 @@
         return simpleInclude('groucho_mock.js');
       })
       .then(function() {
+        // Test/example setup.
+        return simpleInclude('../src/polyfill.js');
+      })
+      .then(function() {
         // Utilities.
         return simpleInclude('../src/storage.js');
       })
@@ -60,6 +64,10 @@
       .then(function() {
         // Utilities.
         return simpleInclude('../src/favorites.js');
+      })
+      .then(function() {
+        // Utilities.
+        return simpleInclude('../src/personalize.js');
       })
       .then(function() {
         // Clear out past tests, unless explicitly not.
@@ -103,9 +111,21 @@
     })();
     */
   </script>
+  <style>
+    #mock-dom {
+      margin: 1em;
+      padding: 1em;
+      background: #ddd;
+    }
+  </style>
 </head>
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
+  <div id="mock-dom">
+    <span data-groucho-region="north-america">North America</span>
+    <span data-groucho-region="asia-pacific">Asia Pacific</span>
+    <span data-groucho-region="default">Global Standard</span>
+  </div>
 </body>
 </html>

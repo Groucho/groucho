@@ -154,26 +154,15 @@ var groucho = window.groucho || {};
 
 
   /**
-   * Update user preferences via configured URL param overrides.
+   * Get a combined selector for all adjustments.
    *
-   * @return {object}
+   * @return {string}
    */
-  groucho.overrides = function () {
-    var settings = {};
-    // Sanity check.
-    if (groucho.config.hasOwnProperty('overrides')) {
-      // Discover all configured override values.
-      $.each(groucho.config.overrides, function (key, value) {
-        var paramVal = groucho.getQueryParam(key),
-            property = typeof(value === 'string') ? value : key;
-        // Value found, set configured property.
-        if (paramVal) {
-          settings[property] = paramVal;
-        }
-      });
-      return settings;
+  groucho.adjustmentSelectors = function () {
+    var combinedString = '';
+    for (var i in groucho.config.adjust) {
+      combinedString = '[' + groucho.config.adjust[i].dataAttribute + ']';
     }
-    return {};
   };
 
 
@@ -218,6 +207,34 @@ var groucho = window.groucho || {};
        return sParameterName[1];
      }
    }
+  };
+
+
+  /**
+   * Check for empty vocab object.
+   *
+   * @param {object} obj
+   */
+  groucho.isEmpty = function (obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+
+  /**
+   * Term returns should be an array.
+   */
+  groucho.makeArray = function (obj) {
+    var arr = [];
+    for (var i in obj) {
+      obj[i].id = i;
+      arr.push(obj[i]);
+    }
+    return arr;
   };
 
 })(window.jQuery || window.Zepto || window.$, groucho);

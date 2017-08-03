@@ -143,7 +143,7 @@ module.exports = function(grunt) {
         options: {
           jshintrc: 'src/.jshintrc'
         },
-        src: ['src/*.js']
+        src: ['src/*.js', '!src/polyfill.js']
       },
       test: {
         options: {

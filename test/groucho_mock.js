@@ -11,15 +11,21 @@ var groucho = window.groucho || {};
 
   // Default configs.
   g.config = {
-    'taxonomyProperty': 'entityTaxonomy',
-    'trackExtent': 10,
-    'favThreshold': 1,
-    'trackProperties': [
+    taxonomyProperty: 'entityTaxonomy',
+    trackExtent: 10,
+    favThreshold: 1,
+    trackProperties: [
       'entityType',
       'entityTaxonomy',
       'entityBundle'
     ],
-    'ttl': 0
+    ttl: 0,
+    adjust: {
+      dataAttribute: 'groucho-region',
+      userProperty: 'user.region',
+      paramOverride: 'utm_region',
+      helperCallback: 'myNamespace.myRegionHelperFunc'
+    }
   };
 
   // Alternate storage backend configs.
@@ -148,4 +154,9 @@ dataLayer = [{
   }
 }];
 
-//console.log(groucho);
+// Custom helper function namespace.
+window.myNamespace = {
+  myRegionHelperFunc: function (val) {
+    return val;
+  }
+};
