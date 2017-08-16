@@ -23,9 +23,10 @@ var groucho = window.groucho || {};
       };
 
   // Handle empty config.
-  if (!groucho.hasOwnProperty(config) {
+  if (!groucho.hasOwnProperty('config')) {
     groucho.config = groucho.defaults;
-  } else {
+  } 
+  else {
     // Set empty configs to defaults.
     for (var setting in defaults) {
       if (!groucho.config.hasOwnProperty(setting)) {
