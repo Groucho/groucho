@@ -22,10 +22,16 @@ var groucho = window.groucho || {};
         'addons': {}
       };
 
-  // Set empty configs to defaults.
-  for (var config in defaults) {
-    if (!groucho.config.hasOwnProperty(config)) {
-      groucho.config[config] = defaults[config];
+  // Handle empty config.
+  if (!groucho.hasOwnProperty('config')) {
+    groucho.config = groucho.defaults;
+  } 
+  else {
+    // Set empty configs to defaults.
+    for (var setting in defaults) {
+      if (!groucho.config.hasOwnProperty(setting)) {
+        groucho.config[setting] = defaults[setting];
+      }
     }
   }
 
