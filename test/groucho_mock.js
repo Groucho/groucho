@@ -20,12 +20,12 @@ var groucho = window.groucho || {};
       'entityBundle'
     ],
     ttl: 0,
-    adjust: {
+    adjust: [{
       dataAttribute: 'groucho-region',
       userProperty: 'user.region',
       paramOverride: 'utm_region',
       helperCallback: 'myNamespace.myRegionHelperFunc'
-    }
+    }]
   };
 
   // Alternate storage backend configs.

@@ -398,6 +398,9 @@
 
   test('User properties', 1, function() {
 
+    groucho.userSet({region: 'north-america'});
+    groucho.personalize();
+
     ok(
       true,
       'A personalization test ran'
