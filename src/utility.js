@@ -211,7 +211,7 @@ var groucho = window.groucho || {};
 
 
   /**
-   * Check for empty vocab object.
+   * Check for empty object (used for vocab term lists).
    *
    * @param {object} obj
    */
@@ -226,7 +226,11 @@ var groucho = window.groucho || {};
 
 
   /**
-   * Term returns should be an array.
+   * Terms are always returned as a list.
+   *
+   * @param {object} obj
+   *
+   * @return {array}
    */
   groucho.makeArray = function (obj) {
     var arr = [];
