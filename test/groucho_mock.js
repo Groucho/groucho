@@ -3,7 +3,7 @@
  * Update meta data and settings found within a page.
  */
 
-/* globals store:false, simpleStorage:false */
+/* globals store:false, simpleStorage:false, window:false */
 
 var groucho = window.groucho || {};
 
