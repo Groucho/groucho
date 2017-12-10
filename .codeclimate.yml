@@ -2,3 +2,4 @@ exclude_patterns:
 - "libs/*"
 - "dist/*"
 - Gruntfile.js
+- test/*
