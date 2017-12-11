@@ -2,6 +2,8 @@
  * @file Compute the preferences of a user.
  */
 
+/* jslint latedef:false */
+
 var groucho = window.groucho || {};
 
 (function($, groucho) {
@@ -32,9 +34,11 @@ var groucho = window.groucho || {};
     /**
      * Assemble term counts.
      *
+     * @todo Avoid operating on variables scoped outside function.
+     *
      * @param {string} vocName
      */
-    function collectTerms(vocName, i) {
+    function collectTerms (vocName, i) {
       for (var tid in results[i][termProp][vocName]) {
         // Non-existant vocab.
         if (!returnTerms.hasOwnProperty(vocName)) {
@@ -47,7 +51,10 @@ var groucho = window.groucho || {};
         }
         else {
           // New, add it on and create count.
-          returnTerms[vocName][tid] = { 'name': results[i][termProp][vocName][tid], 'count': 1 };
+          returnTerms[vocName][tid] = {
+            'name': results[i][termProp][vocName][tid],
+            'count': 1
+          };
         }
       }
     }
@@ -55,9 +62,11 @@ var groucho = window.groucho || {};
     /**
      * Remove lesser count terms.
      *
+     * @todo Make into prototype function, act on returnTerms object.
+     *
      * @param {string} vocName
      */
-    function filterByCount(vocName) {
+    function filterByCount (vocName) {
       var topCount = threshold;
 
       // Find top count.
@@ -77,32 +86,6 @@ var groucho = window.groucho || {};
       if (isEmpty(returnTerms[vocName])) {
         delete returnTerms[vocName];
       }
-    }
-
-    /**
-     * Utility: Term returns should be an array.
-     */
-    function makeArray(obj) {
-      var arr = [];
-      for (var i in obj) {
-        obj[i].id = i;
-        arr.push(obj[i]);
-      }
-      return arr;
-    }
-
-    /**
-     * Utility: check for empty vocab object.
-     *
-     * @param {object} obj
-     */
-    function isEmpty(obj) {
-      for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          return false;
-        }
-      }
-      return true;
     }
 
     // No data will be available.
@@ -160,5 +143,31 @@ var groucho = window.groucho || {};
 
     return returnTerms;
   };
+
+  /**
+   * Term returns should be an array.
+   */
+  function makeArray (obj) {
+    var arr = [];
+    for (var i in obj) {
+      obj[i].id = i;
+      arr.push(obj[i]);
+    }
+    return arr;
+  }
+
+  /**
+   * Check for empty vocab object.
+   *
+   * @param {object} obj
+   */
+  function isEmpty (obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 })(window.jQuery || window.Zepto || window.$, groucho);

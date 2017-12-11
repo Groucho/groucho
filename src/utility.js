@@ -6,6 +6,8 @@
  * groucho.userSet = function({country: "US"});
  */
 
+/* jslint latedef:false */
+
 var groucho = window.groucho || {};
 
 (function($, groucho) {
@@ -127,7 +129,7 @@ var groucho = window.groucho || {};
     }
 
     // Ensure key sort regardless of session index, especially for timestamps.
-    return returnVals.sort(sortList);
+    return returnVals.sort(sortActivities);
   };
 
 
@@ -153,7 +155,7 @@ var groucho = window.groucho || {};
    *
    * @return {number}
    */
-  function sortList (a, b) {
+  function sortActivities (a, b) {
     // Eliminate storage entries outside Groucho.
     if (!a.hasOwnProperty('_key') || !a._key.match(/\./) ||
         !b.hasOwnProperty('_key') || !b._key.match(/\./)) {
