@@ -110,29 +110,19 @@ var groucho = window.groucho || {};
   groucho.getActivities = function (group) {
     var results = groucho.storage.index(),
         returnVals = [],
-        matchable = (group) ? new RegExp("^track." + group + ".", "g") : false,
-        record;
+        matchable = (group) ? new RegExp("^track." + group + ".", "g") : false;
 
     for (var i in results) {
       // Safety measure.
       if (!results.hasOwnProperty(i)) continue;
 
-      // Remove unwanted types and return records.
-      if (group) {
-        if (results[i].match(matchable) !== null) {
-          // Collect relevant.
-          record = groucho.storage.get(results[i]);
-          // Move key to property.
-          record._key = results[i];
-          returnVals.push(record);
-        }
+      // Collect and return all.
+      if (!group) {
+        groucho.addRecordRow(returnVals, results[i]);
       }
-      else {
-        // Collect and return all.
-        record = groucho.storage.get(results[i]);
-        // Move key to property.
-        record._key = results[i];
-        returnVals.push(record);
+      // Remove unwanted types, return relevant records.
+      else if (results[i].match(matchable) !== null) {
+        groucho.addRecordRow(returnVals, results[i]);
       }
     }
 
@@ -154,6 +144,20 @@ var groucho = window.groucho || {};
     });
 
     return returnVals;
+  };
+
+
+  /**
+   * Add record to collected values list, and move key to property.
+   *
+   * @param {object} list
+   *   Array of records to be added to.
+   * @param {string} name
+   */
+  groucho.addRecordRow = function (list, name) {
+    var record = groucho.storage.get(name);
+    record._key = name;
+    list.push(record);
   };
 
 
