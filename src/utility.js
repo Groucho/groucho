@@ -118,32 +118,16 @@ var groucho = window.groucho || {};
 
       // Collect and return all.
       if (!group) {
-        groucho.addRecordRow(returnVals, results[i]);
+        addRecordRow(returnVals, results[i]);
       }
       // Remove unwanted types, return relevant records.
       else if (results[i].match(matchable) !== null) {
-        groucho.addRecordRow(returnVals, results[i]);
+        addRecordRow(returnVals, results[i]);
       }
     }
 
-    // Ensure proper key sorting regardless of index result order.
-    returnVals.sort(function (a, b) {
-      // Created non-standard or outside Groucho.
-      // Should always contain an original key which contains a dot.
-      if (!a.hasOwnProperty('_key') || !a._key.match(/\./) ||
-          !b.hasOwnProperty('_key') || !b._key.match(/\./)) {
-        return 0;
-      }
-      // Sort by post-prefix key.
-      if (parseInt(b._key.split('.')[2], 10) > parseInt(a._key.split('.')[2], 10)) {
-        return -1;
-      }
-      else {
-        return 1;
-      }
-    });
-
-    return returnVals;
+    // Ensure key sort regardless of session index, especially for timestamps.
+    return returnVals.sort(sortList);
   };
 
 
@@ -154,11 +138,35 @@ var groucho = window.groucho || {};
    *   Array of records to be added to.
    * @param {string} name
    */
-  groucho.addRecordRow = function (list, name) {
+  function addRecordRow (list, name) {
     var record = groucho.storage.get(name);
     record._key = name;
     list.push(record);
-  };
+  }
+
+
+  /**
+   * Sort after Groucho prefix, eliminate other entries.
+   *
+   * @param {string} a
+   * @param {string} b
+   *
+   * @return {number}
+   */
+  function sortList (a, b) {
+    // Eliminate storage entries outside Groucho.
+    if (!a.hasOwnProperty('_key') || !a._key.match(/\./) ||
+        !b.hasOwnProperty('_key') || !b._key.match(/\./)) {
+      return 0;
+    }
+    // Sort by post-prefix key.
+    if (parseInt(b._key.split('.')[2], 10) > parseInt(a._key.split('.')[2], 10)) {
+      return -1;
+    }
+    else {
+      return 1;
+    }
+  }
 
 
   /**
